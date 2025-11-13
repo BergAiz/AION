@@ -3,66 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AION - AI Dating App</title>
-    <!-- Подключаем все стили -->
-    <link rel="stylesheet" href="src/styles/main.css">
-    <link rel="stylesheet" href="src/styles/cards.css">
-    <link rel="stylesheet" href="src/styles/auth.css">
+    <title>Чат-бот</title>
+    <link rel="stylesheet" href="main.css">
 </head>
 <body>
-    <div id="app">
-        <!-- Шапка приложения с кнопкой выхода -->
-        <div class="app-header">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h1>🎯 AION</h1>
-                    <p>Инновационное dating-приложение с AI</p>
-                </div>
-                <button onclick="logout()" class="logout-btn" style="
-                    background: rgba(239, 68, 68, 0.2);
-                    border: 1px solid rgba(239, 68, 68, 0.5);
-                    color: #fecaca;
-                    padding: 8px 16px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-size: 14px;
-                ">Выйти</button>
+    <div class="chat-wrapper">
+        <div class="chat-header">
+            <h1>Чат-бот</h1>
+            <p>Задайте ваш вопрос</p>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                Привет! Я ваш помощник. Чем могу помочь?
             </div>
         </div>
         
-        <!-- Контейнер для карточек -->
-        <div id="cards-container" class="cards-container">
-            <!-- Карточки будут добавляться через JavaScript -->
-            <div class="loading">Загрузка карточек...</div>
-        </div>
-        
-        <!-- Подсказка по свайпам -->
-        <div class="swipe-hint">
-            👈 Дизлайк • ⭐ Суперлайк • 👍 Лайк • 👆 Отложить
-        </div>
-        
-        <!-- Статистика -->
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-number">0</span>
-                <span class="stat-label">Лайков сегодня</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">0</span>
-                <span class="stat-label">Просмотрено</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number" id="userLikes">0/50</span>
-                <span class="stat-label">Ваши лайки</span>
-            </div>
+        <div class="chat-input-container">
+            <input type="text" id="user-input" placeholder="Введите ваше сообщение...">
+            <button id="send-button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22,2 15,22 11,13 2,9"></polygon>
+                </svg>
+            </button>
         </div>
     </div>
 
-    <!-- Подключаем скрипты в правильном порядке -->
-    <script src="src/services/UserService.js"></script>
-    <script src="src/components/Card.js"></script>
-    <script src="src/components/CardManager.js"></script>
-    <script src="src/components/Auth.js"></script>
-    <script src="src/main.js"></script>
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        // Функция для добавления сообщения в чат
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Функция для обработки отправки сообщения
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '') return;
+
+            // Добавляем сообщение пользователя
+            addMessage(message, true);
+            userInput.value = '';
+
+            // Показываем индикатор загрузки
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot-message loading';
+            loadingDiv.textContent = 'Думаю...';
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Имитация ответа бота (замените на реальный API)
+            setTimeout(() => {
+                chatMessages.removeChild(loadingDiv);
+                
+                // Простые ответы бота
+                let response;
+                if (message.toLowerCase().includes('привет')) {
+                    response = 'Привет! Как ваши дела?';
+                } else if (message.toLowerCase().includes('как дела')) {
+                    response = 'У меня всё отлично! Рад вас слышать.';
+                } else if (message.toLowerCase().includes('пока') || message.toLowerCase().includes('до свидания')) {
+                    response = 'До свидания! Хорошего дня!';
+                } else {
+                    response = 'Я пока только учусь. Спросите что-нибудь простое!';
+                }
+                
+                addMessage(response);
+            }, 1000);
+        }
+
+        // Обработчики событий
+        sendButton.addEventListener('click', sendMessage);
+        
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
 </body>
 </html>

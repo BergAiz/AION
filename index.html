@@ -22,6 +22,11 @@
             <div class="loading">Загрузка карточек...</div>
         </div>
         
+        <!-- Подсказка по свайпам -->
+        <div class="swipe-hint">
+            👈 Дизлайк • ⭐ Суперлайк • 👍 Лайк • 👆 Отложить
+        </div>
+        
         <!-- Статистика -->
         <div class="stats">
             <div class="stat-item">
@@ -35,8 +40,9 @@
         </div>
     </div>
 
-    <!-- Подключаем скрипты -->
+    <!-- Подключаем скрипты в правильном порядке -->
     <script src="src/components/Card.js"></script>
+    <script src="src/components/CardManager.js"></script>
     <script src="src/main.js"></script>
 </body>
 </html>

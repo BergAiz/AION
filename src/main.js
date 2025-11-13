@@ -1,5 +1,5 @@
-// AION - Основной JavaScript файл
-console.log('🚀 AION App запущен!');
+// AION - Основной JavaScript файл для dating-приложения
+console.log('🚀 AION Dating App запущен!');
 
 // Инициализация приложения
 document.addEventListener('DOMContentLoaded', function() {
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showAuthForm();
     }
     
-    // Добавляем глобальные обработчики для свайпа вверх
+    // Добавляем глобальные обработчики для свайпа вверх (отложить)
     document.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowUp') {
             handleSwipeUp();
@@ -76,7 +76,10 @@ function logout() {
 
 // Глобальные функции для тестирования
 window.testAddCards = function() {
-    cardManager.loadSampleUsers();
+    // Добавляем тестовых пользователей если их нет
+    if (cardManager.cards.length === 0) {
+        cardManager.loadVisibleUsers();
+    }
     cardManager.currentCardIndex = 0;
     cardManager.renderCurrentCard();
 };
@@ -84,10 +87,23 @@ window.testAddCards = function() {
 window.showStats = function() {
     const currentUser = userService.getCurrentUser();
     if (currentUser) {
-        alert(`Статистика:\nЛайков сегодня: ${currentUser.likesToday}/50\nИмя: ${currentUser.name}`);
+        alert(`Статистика:\nЛайков сегодня: ${currentUser.likesToday}/50\nИмя: ${currentUser.name}\nПолучено лайков: ${currentUser.likesReceivedToday || 0}`);
     } else {
         alert('Сначала войдите в аккаунт');
     }
 };
 
+window.openChat = function(partner) {
+    chatDemo.show(partner);
+};
+
 window.logout = logout;
+
+// Инициализация AI помощника
+window.aiAssistant = new AIAssistant();
+
+// Глобальные экземпляры компонентов
+window.cardManager = new CardManager();
+window.authComponent = new AuthComponent(); 
+window.chatDemo = new ChatDemo();
+window.userService = new UserService();

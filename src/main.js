@@ -5,8 +5,18 @@ console.log('🚀 AION App запущен!');
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM готов к работе');
     
-    // Инициализируем менеджер карточек
-    cardManager.init();
+    // Проверяем авторизован ли пользователь
+    const currentUser = userService.getCurrentUser();
+    
+    if (currentUser) {
+        // Пользователь уже авторизован - показываем основное приложение
+        document.getElementById('app').style.display = 'block';
+        cardManager.init();
+        console.log('👤 Авторизован:', currentUser.name);
+    } else {
+        // Показываем форму аутентификации
+        showAuthForm();
+    }
     
     // Добавляем глобальные обработчики для свайпа вверх
     document.addEventListener('keydown', function(e) {
@@ -31,8 +41,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Показать форму аутентификации
+function showAuthForm() {
+    const app = document.getElementById('app');
+    app.style.display = 'none'; // Скрываем основное приложение
+    
+    const authContainer = authComponent.create();
+    document.body.appendChild(authContainer);
+}
+
 // Обработка свайпа вверх (отложить)
 function handleSwipeUp() {
+    const currentUser = userService.getCurrentUser();
+    if (!currentUser) return;
+    
     const currentCard = document.querySelector('.aion-card');
     if (currentCard) {
         currentCard.style.transform = 'translateY(-500px) rotate(0deg)';
@@ -46,6 +68,12 @@ function handleSwipeUp() {
     }
 }
 
+// Выход из аккаунта
+function logout() {
+    userService.logout();
+    location.reload(); // Перезагружаем страницу для показа формы входа
+}
+
 // Глобальные функции для тестирования
 window.testAddCards = function() {
     cardManager.loadSampleUsers();
@@ -54,5 +82,12 @@ window.testAddCards = function() {
 };
 
 window.showStats = function() {
-    alert(`Статистика:\nЛайков: ${cardManager.stats.likesToday}\nПросмотрено: ${cardManager.stats.viewed}`);
+    const currentUser = userService.getCurrentUser();
+    if (currentUser) {
+        alert(`Статистика:\nЛайков сегодня: ${currentUser.likesToday}/50\nИмя: ${currentUser.name}`);
+    } else {
+        alert('Сначала войдите в аккаунт');
+    }
 };
+
+window.logout = logout;

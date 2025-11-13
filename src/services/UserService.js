@@ -33,7 +33,7 @@ class UserService {
         const user = {
             id: Date.now().toString(),
             email: userData.email,
-            password: userData.password, // В реальном приложении хэшировать!
+            password: userData.password,
             name: userData.name,
             age: userData.age,
             bio: userData.bio,
@@ -41,7 +41,10 @@ class UserService {
             subscription: 'free',
             createdAt: new Date().toISOString(),
             likesToday: 0,
-            lastLikeReset: new Date().toISOString()
+            lastLikeReset: new Date().toISOString(),
+            likesReceivedToday: 0,
+            lastReceivedReset: new Date().toISOString(),
+            isHidden: false
         };
 
         this.users.push(user);
@@ -56,7 +59,8 @@ class UserService {
         const user = this.users.find(u => u.email === email && u.password === password);
         if (user) {
             this.currentUser = user;
-            this.resetDailyLikesIfNeeded();
+            this.resetDailyLikesIfNeeded(user);
+            this.resetReceivedLikesIfNeeded(user);
             localStorage.setItem('aion_current_user', JSON.stringify(user));
             return user;
         }
@@ -79,16 +83,28 @@ class UserService {
     }
 
     // Сброс дневных лайков если прошел день
-    resetDailyLikesIfNeeded() {
-        if (!this.currentUser) return;
-
-        const lastReset = new Date(this.currentUser.lastLikeReset);
+    resetDailyLikesIfNeeded(user) {
+        const lastReset = new Date(user.lastLikeReset);
         const now = new Date();
         const diffDays = Math.floor((now - lastReset) / (1000 * 60 * 60 * 24));
 
         if (diffDays >= 1) {
-            this.currentUser.likesToday = 0;
-            this.currentUser.lastLikeReset = now.toISOString();
+            user.likesToday = 0;
+            user.lastLikeReset = now.toISOString();
+            this.saveUsers();
+        }
+    }
+
+    // Сброс полученных лайков если прошел день
+    resetReceivedLikesIfNeeded(user) {
+        const lastReset = new Date(user.lastReceivedReset);
+        const now = new Date();
+        const diffDays = Math.floor((now - lastReset) / (1000 * 60 * 60 * 24));
+
+        if (diffDays >= 1) {
+            user.likesReceivedToday = 0;
+            user.isHidden = false; // Снова показываем анкету
+            user.lastReceivedReset = now.toISOString();
             this.saveUsers();
         }
     }
@@ -96,7 +112,7 @@ class UserService {
     // Проверка лимита лайков (50 в день)
     canLike() {
         if (!this.currentUser) return false;
-        this.resetDailyLikesIfNeeded();
+        this.resetDailyLikesIfNeeded(this.currentUser);
         return this.currentUser.likesToday < 50;
     }
 
@@ -108,7 +124,46 @@ class UserService {
         }
     }
 
-    // AI-модерация текста (заглушка - в реальности Yandex GPT API)
+    // Проверка должна ли анкета быть скрыта (50+ лайков за день)
+    shouldHideProfile(userId) {
+        const user = this.getUserById(userId);
+        if (!user) return false;
+        
+        this.resetReceivedLikesIfNeeded(user);
+        
+        // Если пользователь получил 50+ лайков сегодня - скрываем
+        if (user.likesReceivedToday >= 50) {
+            user.isHidden = true;
+            this.saveUsers();
+            return true;
+        }
+        
+        return user.isHidden || false;
+    }
+
+    // Счетчик полученных лайков (для скрытия анкет)
+    incrementReceivedLikes(userId) {
+        const user = this.getUserById(userId);
+        if (user) {
+            if (!user.likesReceivedToday) user.likesReceivedToday = 0;
+            if (!user.lastReceivedReset) user.lastReceivedReset = new Date().toISOString();
+            
+            // Сброс счетчика если прошел день
+            this.resetReceivedLikesIfNeeded(user);
+            
+            user.likesReceivedToday++;
+            
+            // Автоматическое скрытие при 50+ лайках
+            if (user.likesReceivedToday >= 50) {
+                user.isHidden = true;
+                console.log(`🎯 Анкета ${user.name} скрыта (50+ лайков сегодня)`);
+            }
+            
+            this.saveUsers();
+        }
+    }
+
+    // AI-модерация текста
     moderateText(text) {
         const bannedWords = ['оскорбление', 'спам', 'реклама', 'мошенничество'];
         const foundViolations = bannedWords.filter(word => 
@@ -133,13 +188,12 @@ class UserService {
             id: Date.now().toString(),
             reason: reason,
             date: new Date().toISOString(),
-            severity: 'warning' // warning, temp_ban, permanent_ban
+            severity: 'warning'
         };
 
         this.violations[userId].push(violation);
         this.saveViolations();
 
-        // Автоматическая блокировка при множественных нарушениях
         const userViolations = this.violations[userId];
         if (userViolations.length >= 3) {
             this.banUser(userId, 'Автоматический бан за множественные нарушения');
@@ -157,7 +211,6 @@ class UserService {
             user.bannedAt = new Date().toISOString();
             this.saveUsers();
 
-            // Если забанен текущий пользователь - разлогиниваем
             if (this.currentUser && this.currentUser.id === userId) {
                 this.logout();
             }
@@ -184,6 +237,15 @@ class UserService {
             return user;
         }
         return null;
+    }
+
+    // Получение видимых пользователей (исключая скрытых и забаненных)
+    getVisibleUsers(excludeUserId) {
+        return this.users.filter(user => 
+            user.id !== excludeUserId && 
+            !user.banned && 
+            !this.shouldHideProfile(user.id)
+        );
     }
 }
 

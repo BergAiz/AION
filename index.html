@@ -7,13 +7,27 @@
     <!-- Подключаем все стили -->
     <link rel="stylesheet" href="src/styles/main.css">
     <link rel="stylesheet" href="src/styles/cards.css">
+    <link rel="stylesheet" href="src/styles/auth.css">
 </head>
 <body>
     <div id="app">
-        <!-- Заголовок приложения -->
+        <!-- Шапка приложения с кнопкой выхода -->
         <div class="app-header">
-            <h1>🎯 AION</h1>
-            <p>Инновационное dating-приложение с AI</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>🎯 AION</h1>
+                    <p>Инновационное dating-приложение с AI</p>
+                </div>
+                <button onclick="logout()" class="logout-btn" style="
+                    background: rgba(239, 68, 68, 0.2);
+                    border: 1px solid rgba(239, 68, 68, 0.5);
+                    color: #fecaca;
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 14px;
+                ">Выйти</button>
+            </div>
         </div>
         
         <!-- Контейнер для карточек -->
@@ -37,12 +51,18 @@
                 <span class="stat-number">0</span>
                 <span class="stat-label">Просмотрено</span>
             </div>
+            <div class="stat-item">
+                <span class="stat-number" id="userLikes">0/50</span>
+                <span class="stat-label">Ваши лайки</span>
+            </div>
         </div>
     </div>
 
     <!-- Подключаем скрипты в правильном порядке -->
+    <script src="src/services/UserService.js"></script>
     <script src="src/components/Card.js"></script>
     <script src="src/components/CardManager.js"></script>
+    <script src="src/components/Auth.js"></script>
     <script src="src/main.js"></script>
 </body>
 </html>

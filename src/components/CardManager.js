@@ -13,13 +13,13 @@ class CardManager {
             return;
         }
 
-        this.loadSampleUsers();
+        this.loadVisibleUsers();
         this.renderCurrentCard();
         this.updateStats();
     }
 
-    // Загрузка тестовых пользователей (исключая текущего)
-    loadSampleUsers() {
+    // Загрузка ВИДИМЫХ пользователей (исключая скрытых)
+    loadVisibleUsers() {
         const currentUser = userService.getCurrentUser();
         
         const sampleUsers = [
@@ -60,10 +60,18 @@ class CardManager {
             }
         ];
 
-        // Фильтруем, чтобы текущий пользователь не видел себя
+        // Фильтруем: исключаем текущего пользователя и скрытые анкеты
         this.cards = sampleUsers
-            .filter(user => user.id.toString() !== currentUser.id)
+            .filter(user => {
+                const shouldShow = !userService.shouldHideProfile(user.id.toString());
+                if (!shouldShow) {
+                    console.log(`🚫 Анкета ${user.name} скрыта (50+ лайков сегодня)`);
+                }
+                return user.id.toString() !== currentUser.id && shouldShow;
+            })
             .map(user => new AionCard(user));
+
+        console.log(`👥 Загружено видимых анкет: ${this.cards.length}`);
     }
 
     // Отображение текущей карточки
@@ -173,12 +181,11 @@ class CardManager {
             } else {
                 cardElement.style.transform = 'translateX(500px) rotate(30deg)';
                 userService.incrementLikes();
-                console.log('❤️ Лайк:', currentUserCard.user.name);
                 
-                // Скрытая механика: при 50 лайках анкета скроется завтра
-                if (currentUser.likesToday >= 50) {
-                    console.log('🎯 Пользователь достиг 50 лайков - его анкета скроется завтра');
-                }
+                // Увеличиваем счетчик полученных лайков у пользователя в карточке
+                userService.incrementReceivedLikes(currentUserCard.user.id.toString());
+                
+                console.log('❤️ Лайк:', currentUserCard.user.name);
             }
         } else if (action === 'dislike') {
             cardElement.style.transform = 'translateX(-500px) rotate(-30deg)';

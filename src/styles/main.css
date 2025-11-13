@@ -80,6 +80,7 @@ body {
     display: flex;
     gap: 10px;
     align-items: center;
+    position: relative;
 }
 
 #user-input {
@@ -90,11 +91,13 @@ body {
     outline: none;
     font-size: 14px;
     transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
 }
 
 #user-input:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+    background: white;
 }
 
 #send-button {
@@ -109,6 +112,7 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 #send-button:hover {
@@ -126,56 +130,6 @@ body {
     opacity: 0.8;
 }
 
-/* Стили для демо-чата */
-.chat-container {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    width: 350px;
-    height: 500px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    display: none;
-    flex-direction: column;
-    z-index: 1001;
-    font-family: inherit;
-}
-
-.chat-header {
-    padding: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 20px 20px 0 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.chat-header h3 {
-    font-size: 1.2em;
-    font-weight: 600;
-}
-
-.chat-messages {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.chat-input-container {
-    padding: 20px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -185,6 +139,16 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.loading {
+    animation: pulse 1.5s infinite;
 }
 
 /* Полоса прокрутки */
@@ -204,4 +168,52 @@ body {
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
     background: rgba(102, 126, 234, 0.5);
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+    }
+    
+    .chat-wrapper {
+        max-width: 100%;
+        border-radius: 15px;
+        margin-top: 20px;
+    }
+    
+    .chat-messages {
+        height: 300px;
+        padding: 15px;
+    }
+    
+    .message {
+        max-width: 85%;
+    }
+    
+    .chat-header {
+        padding: 15px;
+    }
+    
+    .chat-header h1 {
+        font-size: 1.3em;
+    }
+}
+
+/* Подсказки */
+.chat-input-container::before {
+    content: "💡 Попробуйте: 'привет', 'как дела', 'погода', 'время'";
+    display: block;
+    position: absolute;
+    top: -25px;
+    left: 0;
+    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.8);
+    width: 100%;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
 }

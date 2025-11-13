@@ -4,15 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AION - AI Dating App</title>
+    <!-- Подключаем все стили -->
     <link rel="stylesheet" href="src/styles/main.css">
+    <link rel="stylesheet" href="src/styles/cards.css">
 </head>
 <body>
     <div id="app">
-        <div class="container">
-            <h1>🚀 AION</h1>
-            <p>Создаем инновационное dating-приложение</p>
+        <!-- Заголовок приложения -->
+        <div class="app-header">
+            <h1>🎯 AION</h1>
+            <p>Инновационное dating-приложение с AI</p>
+        </div>
+        
+        <!-- Контейнер для карточек -->
+        <div id="cards-container" class="cards-container">
+            <!-- Карточки будут добавляться через JavaScript -->
+            <div class="loading">Загрузка карточек...</div>
+        </div>
+        
+        <!-- Статистика -->
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number">0</span>
+                <span class="stat-label">Лайков сегодня</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">0</span>
+                <span class="stat-label">Просмотрено</span>
+            </div>
         </div>
     </div>
+
+    <!-- Подключаем скрипты -->
+    <script src="src/components/Card.js"></script>
     <script src="src/main.js"></script>
 </body>
 </html>

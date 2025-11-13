@@ -3,91 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Чат-бот</title>
+    <meta name="description" content="Умный чат-бот с искусственным интеллектом">
+    <meta name="keywords" content="чат-бот, AI, помощник, виртуальный ассистент">
+    <title>Умный Чат-бот | Виртуальный помощник с ИИ</title>
     <link rel="stylesheet" href="main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
+    <!-- Основной контейнер чата -->
     <div class="chat-wrapper">
-        <div class="chat-header">
-            <h1>Чат-бот</h1>
-            <p>Задайте ваш вопрос</p>
-        </div>
         
-        <div class="chat-messages" id="chat-messages">
-            <div class="message bot-message">
-                Привет! Я ваш помощник. Чем могу помочь?
+        <!-- Шапка чата -->
+        <header class="chat-header">
+            <div class="header-content">
+                <div class="bot-avatar">
+                    <span class="avatar-icon">🤖</span>
+                </div>
+                <div class="header-text">
+                    <h1 class="bot-title">Умный Чат-бот</h1>
+                    <p class="bot-subtitle">Виртуальный помощник с искусственным интеллектом</p>
+                    <div class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span class="status-text">В сети</span>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="chat-input-container">
-            <input type="text" id="user-input" placeholder="Введите ваше сообщение...">
-            <button id="send-button">
+            <div class="header-actions">
+                <button class="action-btn" id="minimize-btn" title="Свернуть">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
+                <button class="action-btn" id="settings-btn" title="Настройки">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Область сообщений -->
+        <main class="chat-messages" id="chat-messages">
+            
+            <!-- Приветственное сообщение -->
+            <div class="message bot-message welcome-message">
+                <div class="message-header">
+                    <span class="sender-name">Чат-бот</span>
+                    <span class="message-time" id="welcome-time"></span>
+                </div>
+                <div class="message-content">
+                    👋 Добро пожаловать! Я ваш виртуальный помощник с искусственным интеллектом.
+                </div>
+                <div class="message-footer">
+                    Готов ответить на ваши вопросы в любое время!
+                </div>
+            </div>
+
+            <!-- Пример сообщения бота -->
+            <div class="message bot-message">
+                <div class="message-header">
+                    <span class="sender-name">Чат-бот</span>
+                    <span class="message-time">Только что</span>
+                </div>
+                <div class="message-content">
+                    Я могу помочь вам с различными задачами:
+                </div>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">💬</span>
+                        Ответить на вопросы
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🌤️</span>
+                        Рассказать о погоде
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">⏰</span>
+                        Подсказать время
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">😊</span>
+                        Просто пообщаться
+                    </div>
+                </div>
+            </div>
+
+            <!-- Подсказки для быстрого старта -->
+            <div class="quick-actions">
+                <div class="quick-actions-title">Быстрые действия:</div>
+                <div class="quick-buttons">
+                    <button class="quick-btn" data-message="Привет!">👋 Поздороваться</button>
+                    <button class="quick-btn" data-message="Какая сегодня погода?">🌤️ Погода</button>
+                    <button class="quick-btn" data-message="Который час?">⏰ Время</button>
+                    <button class="quick-btn" data-message="Расскажи шутку">😄 Шутка</button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Область ввода сообщения -->
+        <footer class="chat-input-container">
+            
+            <!-- Дополнительные действия -->
+            <div class="input-actions">
+                <button class="input-action-btn" id="attach-btn" title="Прикрепить файл">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                    </svg>
+                </button>
+                <button class="input-action-btn" id="emoji-btn" title="Смайлики">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                    </svg>
+                </button>
+                <button class="input-action-btn" id="voice-btn" title="Голосовой ввод">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Поле ввода текста -->
+            <div class="input-wrapper">
+                <input type="text" 
+                       id="user-input" 
+                       placeholder="Введите ваше сообщение..." 
+                       maxlength="500"
+                       aria-label="Ввод сообщения">
+                <div class="input-hint">
+                    Нажмите Enter для отправки
+                </div>
+            </div>
+
+            <!-- Кнопка отправки -->
+            <button id="send-button" class="send-button" title="Отправить сообщение">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="22" y1="2" x2="11" y2="13"></line>
                     <polygon points="22,2 15,22 11,13 2,9"></polygon>
                 </svg>
             </button>
+
+        </footer>
+
+        <!-- Нижний колонтитул -->
+        <div class="chat-footer">
+            <div class="footer-info">
+                <span class="footer-text">🔒 Сообщения защищены</span>
+                <span class="footer-separator">•</span>
+                <span class="footer-text">⚡ Быстрые ответы</span>
+                <span class="footer-separator">•</span>
+                <span class="footer-text">🌐 Онлайн 24/7</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Вспомогательные элементы -->
+    <div class="notification-area" id="notification-area"></div>
+    
+    <!-- Модальное окно настроек -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Настройки чата</h3>
+                <button class="modal-close" id="close-settings">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="sound-enabled" checked>
+                        <span class="checkmark"></span>
+                        Звуковые уведомления
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="auto-scroll" checked>
+                        <span class="checkmark"></span>
+                        Автопрокрутка сообщений
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="quick-replies" checked>
+                        <span class="checkmark"></span>
+                        Быстрые ответы
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="reset-settings">Сбросить</button>
+                <button class="btn-primary" id="save-settings">Сохранить</button>
+            </div>
         </div>
     </div>
 
-    <script>
-        const chatMessages = document.getElementById('chat-messages');
-        const userInput = document.getElementById('user-input');
-        const sendButton = document.getElementById('send-button');
-
-        // Функция для добавления сообщения в чат
-        function addMessage(text, isUser = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            messageDiv.textContent = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Функция для обработки отправки сообщения
-        function sendMessage() {
-            const message = userInput.value.trim();
-            if (message === '') return;
-
-            // Добавляем сообщение пользователя
-            addMessage(message, true);
-            userInput.value = '';
-
-            // Показываем индикатор загрузки
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'message bot-message loading';
-            loadingDiv.textContent = 'Думаю...';
-            chatMessages.appendChild(loadingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            // Имитация ответа бота (замените на реальный API)
-            setTimeout(() => {
-                chatMessages.removeChild(loadingDiv);
-                
-                // Простые ответы бота
-                let response;
-                if (message.toLowerCase().includes('привет')) {
-                    response = 'Привет! Как ваши дела?';
-                } else if (message.toLowerCase().includes('как дела')) {
-                    response = 'У меня всё отлично! Рад вас слышать.';
-                } else if (message.toLowerCase().includes('пока') || message.toLowerCase().includes('до свидания')) {
-                    response = 'До свидания! Хорошего дня!';
-                } else {
-                    response = 'Я пока только учусь. Спросите что-нибудь простое!';
-                }
-                
-                addMessage(response);
-            }, 1000);
-        }
-
-        // Обработчики событий
-        sendButton.addEventListener('click', sendMessage);
-        
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    </script>
+    <!-- Скрипты -->
+    <script src="script.js"></script>
+    
 </body>
 </html>

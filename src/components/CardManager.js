@@ -3,21 +3,25 @@ class CardManager {
     constructor() {
         this.cards = [];
         this.currentCardIndex = 0;
-        this.stats = {
-            likesToday: 0,
-            viewed: 0
-        };
     }
 
     // Инициализация менеджера
     init() {
+        const currentUser = userService.getCurrentUser();
+        if (!currentUser) {
+            console.error('Пользователь не авторизован');
+            return;
+        }
+
         this.loadSampleUsers();
         this.renderCurrentCard();
         this.updateStats();
     }
 
-    // Загрузка тестовых пользователей
+    // Загрузка тестовых пользователей (исключая текущего)
     loadSampleUsers() {
+        const currentUser = userService.getCurrentUser();
+        
         const sampleUsers = [
             {
                 id: 1,
@@ -46,16 +50,29 @@ class CardManager {
                 age: 30, 
                 bio: "Предприниматель, ищу умную и целеустремленную девушку.",
                 photos: []
+            },
+            {
+                id: 5,
+                name: "Екатерина",
+                age: 26,
+                bio: "Дизайнер, люблю современное искусство и йогу.",
+                photos: []
             }
         ];
 
-        this.cards = sampleUsers.map(user => new AionCard(user));
+        // Фильтруем, чтобы текущий пользователь не видел себя
+        this.cards = sampleUsers
+            .filter(user => user.id.toString() !== currentUser.id)
+            .map(user => new AionCard(user));
     }
 
     // Отображение текущей карточки
     renderCurrentCard() {
         const container = document.getElementById('cards-container');
+        const currentUser = userService.getCurrentUser();
         
+        if (!currentUser) return;
+
         if (this.currentCardIndex >= this.cards.length) {
             container.innerHTML = `
                 <div class="no-cards">
@@ -72,12 +89,14 @@ class CardManager {
         container.appendChild(cardElement);
         
         this.addSwipeListeners(cardElement);
-        this.stats.viewed++;
         this.updateStats();
     }
 
     // Добавление обработчиков свайпов
     addSwipeListeners(cardElement) {
+        const currentUser = userService.getCurrentUser();
+        if (!currentUser) return;
+
         let startX = 0;
         let currentX = 0;
         let isDragging = false;
@@ -140,18 +159,33 @@ class CardManager {
 
     // Обработка свайпа
     handleSwipe(action) {
+        const currentUser = userService.getCurrentUser();
+        if (!currentUser) return;
+
         const cardElement = document.querySelector('.aion-card');
+        const currentUserCard = this.cards[this.currentCardIndex];
         
         if (action === 'like') {
-            cardElement.style.transform = 'translateX(500px) rotate(30deg)';
-            this.stats.likesToday++;
-            console.log('❤️ Лайк:', this.cards[this.currentCardIndex].user.name);
+            if (!userService.canLike()) {
+                // СКРЫТАЯ МЕХАНИКА - пользователь не узнает о лимите
+                cardElement.style.transform = 'translateX(500px) rotate(30deg)';
+                console.log('🎯 Скрытый лимит: лайк не засчитан, но карточка ушла');
+            } else {
+                cardElement.style.transform = 'translateX(500px) rotate(30deg)';
+                userService.incrementLikes();
+                console.log('❤️ Лайк:', currentUserCard.user.name);
+                
+                // Скрытая механика: при 50 лайках анкета скроется завтра
+                if (currentUser.likesToday >= 50) {
+                    console.log('🎯 Пользователь достиг 50 лайков - его анкета скроется завтра');
+                }
+            }
         } else if (action === 'dislike') {
             cardElement.style.transform = 'translateX(-500px) rotate(-30deg)';
-            console.log('👎 Дизлайк:', this.cards[this.currentCardIndex].user.name);
+            console.log('👎 Дизлайк:', currentUserCard.user.name);
         } else if (action === 'super-like') {
             cardElement.style.transform = 'translateY(-500px)';
-            console.log('⭐ Суперлайк:', this.cards[this.currentCardIndex].user.name);
+            console.log('⭐ Суперлайк:', currentUserCard.user.name);
         }
 
         setTimeout(() => {
@@ -162,8 +196,12 @@ class CardManager {
 
     // Обновление статистики
     updateStats() {
-        document.querySelectorAll('.stat-number')[0].textContent = this.stats.likesToday;
-        document.querySelectorAll('.stat-number')[1].textContent = this.stats.viewed;
+        const currentUser = userService.getCurrentUser();
+        if (!currentUser) return;
+
+        document.querySelectorAll('.stat-number')[0].textContent = currentUser.likesToday;
+        document.querySelectorAll('.stat-number')[1].textContent = this.currentCardIndex;
+        document.getElementById('userLikes').textContent = `${currentUser.likesToday}/50`;
     }
 }
 

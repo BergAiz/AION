@@ -192,6 +192,55 @@ function loadCards() {
     showCard(sampleUsers[0], cardsContainer);
 }
 
+function showMainScreen() {
+    console.log('🔄 Переход к главному экрану');
+    
+    // Получаем текущего пользователя
+    const currentUser = JSON.parse(localStorage.getItem('aion_current_user'));
+    
+    document.body.innerHTML = `
+        <div style="color: white; text-align: center; padding: 20px; width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
+            <!-- Шапка -->
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+                <h1>🎴 AION</h1>
+                <p>Привет, ${currentUser.name}! 👋</p>
+            </div>
+            
+            <!-- Контейнер для карточек -->
+            <div id="cards-container" style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative;">
+                <!-- Карточки будут здесь -->
+            </div>
+            
+            <!-- Кнопки действий -->
+            <div style="padding: 20px; display: flex; justify-content: center; gap: 30px;">
+                <button onclick="swipeLeft()" style="padding: 20px; background: #f56565; color: white; border: none; border-radius: 50%; width: 70px; height: 70px; cursor: pointer; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">👎</button>
+                <button onclick="swipeRight()" style="padding: 20px; background: #48bb78; color: white; border: none; border-radius: 50%; width: 70px; height: 70px; cursor: pointer; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">👍</button>
+            </div>
+            
+            <button onclick="logout()" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 10px; margin: 10px; cursor: pointer;">Выйти</button>
+        </div>
+    `;
+    
+    // ВАЖНО: Загружаем карточки сразу после создания интерфейса
+    loadCards();
+}
+
+// Функция загрузки карточек
+function loadCards() {
+    console.log('🎴 Загрузка карточек...');
+    
+    const cardsContainer = document.getElementById('cards-container');
+    const sampleUsers = [
+        { name: "Анна", age: 25, bio: "Люблю путешествия и фотографию", id: 1 },
+        { name: "Максим", age: 28, bio: "Программист, увлекаюсь спортом", id: 2 },
+        { name: "София", age: 23, bio: "Студентка, обожаю искусство", id: 3 },
+        { name: "Дмитрий", age: 30, bio: "Предприниматель", id: 4 }
+    ];
+    
+    // Показываем первую карточку
+    showCard(sampleUsers[0], cardsContainer);
+}
+
 // Функция показа карточки
 function showCard(user, container) {
     const colors = ['#667eea', '#f093fb', '#4facfe', '#43e97b'];
@@ -216,11 +265,15 @@ function showCard(user, container) {
     
     // Сохраняем текущую карточку
     window.currentCard = user;
+    window.currentCardIndex = 0;
 }
 
 // Функции свайпов
 function swipeRight() {
-    if (!window.currentCard) return;
+    if (!window.currentCard) {
+        alert('❌ Нет карточки для лайка!');
+        return;
+    }
     
     console.log('❤️ Лайк:', window.currentCard.name);
     alert(`❤️ Вы лайкнули ${window.currentCard.name}!`);
@@ -239,7 +292,10 @@ function swipeRight() {
 }
 
 function swipeLeft() {
-    if (!window.currentCard) return;
+    if (!window.currentCard) {
+        alert('❌ Нет карточки для дизлайка!');
+        return;
+    }
     
     console.log('👎 Дизлайк:', window.currentCard.name);
     alert(`👎 Вы дизлайкнули ${window.currentCard.name}`);
@@ -268,10 +324,12 @@ function loadNextCard() {
         { name: "Алексей", age: 29, bio: "Музыкант, играю на гитаре", id: 6 }
     ];
     
-    if (!window.cardIndex) window.cardIndex = 0;
-    window.cardIndex++;
+    if (!window.currentCardIndex) window.currentCardIndex = 0;
+    window.currentCardIndex++;
     
-    if (window.cardIndex >= sampleUsers.length) {
+    console.log('📊 Текущий индекс карточки:', window.currentCardIndex);
+    
+    if (window.currentCardIndex >= sampleUsers.length) {
         // Карточки закончились
         document.getElementById('cards-container').innerHTML = `
             <div style="text-align: center; color: white;">
@@ -284,5 +342,23 @@ function loadNextCard() {
     }
     
     // Показываем следующую карточку
-    showCard(sampleUsers[window.cardIndex], document.getElementById('cards-container'));
+    showCard(sampleUsers[window.currentCardIndex], document.getElementById('cards-container'));
 }
+
+function logout() {
+    localStorage.removeItem('aion_current_user');
+    location.reload();
+}
+
+// ПРОВЕРКА СУЩЕСТВУЮЩЕГО ПОЛЬЗОВАТЕЛЯ ПРИ ЗАГРУЗКЕ
+window.addEventListener('load', function() {
+    console.log('🔍 Проверка существующего пользователя...');
+    const savedUser = localStorage.getItem('aion_current_user');
+    if (savedUser) {
+        const user = JSON.parse(savedUser);
+        console.log('✅ Найден пользователь:', user.name);
+        showMainScreen();
+    } else {
+        console.log('❌ Пользователь не найден, показываем форму');
+    }
+});

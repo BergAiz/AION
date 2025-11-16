@@ -143,56 +143,146 @@
             showMainScreen();
         });
         
-        function showMainScreen() {
-            console.log('🔄 Переход к главному экрану');
+   function showMainScreen() {
+    console.log('🔄 Переход к главному экрану');
+    
+    // Получаем текущего пользователя
+    const currentUser = JSON.parse(localStorage.getItem('aion_current_user'));
+    
+    document.body.innerHTML = `
+        <div style="color: white; text-align: center; padding: 20px; width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
+            <!-- Шапка -->
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+                <h1>🎴 AION</h1>
+                <p>Привет, ${currentUser.name}! 👋</p>
+            </div>
             
-            document.body.innerHTML = `
-                <div style="color: white; text-align: center; padding: 20px; width: 100%;">
-                    <h1>🎴 AION</h1>
-                    <p>Главный экран</p>
-                    
-                    <div style="background: white; color: #333; padding: 30px; border-radius: 20px; margin: 20px auto; max-width: 320px;">
-                        <div style="background: linear-gradient(45deg, #667eea, #764ba2); height: 200px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                            <div style="background: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white;">А</div>
-                        </div>
-                        <h3>Анна, 25</h3>
-                        <p>Люблю путешествия и фотографию</p>
-                        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
-                            <button onclick="swipeLeft()" style="padding: 15px; background: #f56565; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; font-size: 20px;">👎</button>
-                            <button onclick="swipeRight()" style="padding: 15px; background: #48bb78; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; font-size: 20px;">👍</button>
-                        </div>
-                    </div>
-                    
-                    <button onclick="logout()" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 10px; margin: 10px; cursor: pointer;">Выйти</button>
+            <!-- Контейнер для карточек -->
+            <div id="cards-container" style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative;">
+                <!-- Карточки будут здесь -->
+            </div>
+            
+            <!-- Кнопки действий -->
+            <div style="padding: 20px; display: flex; justify-content: center; gap: 30px;">
+                <button onclick="swipeLeft()" style="padding: 20px; background: #f56565; color: white; border: none; border-radius: 50%; width: 70px; height: 70px; cursor: pointer; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">👎</button>
+                <button onclick="swipeRight()" style="padding: 20px; background: #48bb78; color: white; border: none; border-radius: 50%; width: 70px; height: 70px; cursor: pointer; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">👍</button>
+            </div>
+            
+            <button onclick="logout()" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 10px; margin: 10px; cursor: pointer;">Выйти</button>
+        </div>
+    `;
+    
+    // Загружаем карточки после создания интерфейса
+    setTimeout(loadCards, 100);
+}
+
+// Функция загрузки карточек
+function loadCards() {
+    console.log('🎴 Загрузка карточек...');
+    
+    const cardsContainer = document.getElementById('cards-container');
+    const sampleUsers = [
+        { name: "Анна", age: 25, bio: "Люблю путешествия и фотографию", id: 1 },
+        { name: "Максим", age: 28, bio: "Программист, увлекаюсь спортом", id: 2 },
+        { name: "София", age: 23, bio: "Студентка, обожаю искусство", id: 3 },
+        { name: "Дмитрий", age: 30, bio: "Предприниматель", id: 4 }
+    ];
+    
+    // Показываем первую карточку
+    showCard(sampleUsers[0], cardsContainer);
+}
+
+// Функция показа карточки
+function showCard(user, container) {
+    const colors = ['#667eea', '#f093fb', '#4facfe', '#43e97b'];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    
+    container.innerHTML = `
+        <div style="background: white; color: #333; padding: 0; border-radius: 20px; width: 320px; height: 480px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden;">
+            <!-- Фото -->
+            <div style="background: ${randomColor}; height: 60%; display: flex; align-items: center; justify-content: center;">
+                <div style="background: rgba(255,255,255,0.2); width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; border: 3px solid rgba(255,255,255,0.3);">
+                    ${user.name.charAt(0)}
                 </div>
-            `;
-        }
-        
-        function swipeRight() {
-            alert('❤️ Лайк отправлен!');
-        }
-        
-        function swipeLeft() {
-            alert('👎 Дизлайк отправлен!');
-        }
-        
-        function logout() {
-            localStorage.removeItem('aion_current_user');
-            location.reload();
-        }
-        
-        // ПРОВЕРКА СУЩЕСТВУЮЩЕГО ПОЛЬЗОВАТЕЛЯ ПРИ ЗАГРУЗКЕ
-        window.addEventListener('load', function() {
-            console.log('🔍 Проверка существующего пользователя...');
-            const savedUser = localStorage.getItem('aion_current_user');
-            if (savedUser) {
-                const user = JSON.parse(savedUser);
-                console.log('✅ Найден пользователь:', user.name);
-                showMainScreen();
-            } else {
-                console.log('❌ Пользователь не найден, показываем форму');
-            }
-        });
-    </script>
-</body>
-</html>
+            </div>
+            
+            <!-- Информация -->
+            <div style="padding: 30px; height: 40%; display: flex; flex-direction: column; justify-content: center;">
+                <h2 style="margin: 0 0 10px 0; font-size: 24px;">${user.name}, ${user.age}</h2>
+                <p style="margin: 0; color: #666; line-height: 1.4;">${user.bio}</p>
+            </div>
+        </div>
+    `;
+    
+    // Сохраняем текущую карточку
+    window.currentCard = user;
+}
+
+// Функции свайпов
+function swipeRight() {
+    if (!window.currentCard) return;
+    
+    console.log('❤️ Лайк:', window.currentCard.name);
+    alert(`❤️ Вы лайкнули ${window.currentCard.name}!`);
+    
+    // Анимация ухода карточки
+    const card = document.querySelector('#cards-container > div');
+    if (card) {
+        card.style.transform = 'translateX(500px) rotate(30deg)';
+        card.style.transition = 'all 0.5s ease';
+    }
+    
+    // Показываем следующую карточку через 0.5 секунды
+    setTimeout(() => {
+        loadNextCard();
+    }, 500);
+}
+
+function swipeLeft() {
+    if (!window.currentCard) return;
+    
+    console.log('👎 Дизлайк:', window.currentCard.name);
+    alert(`👎 Вы дизлайкнули ${window.currentCard.name}`);
+    
+    // Анимация ухода карточки
+    const card = document.querySelector('#cards-container > div');
+    if (card) {
+        card.style.transform = 'translateX(-500px) rotate(-30deg)';
+        card.style.transition = 'all 0.5s ease';
+    }
+    
+    // Показываем следующую карточку через 0.5 секунды
+    setTimeout(() => {
+        loadNextCard();
+    }, 500);
+}
+
+// Загрузка следующей карточки
+function loadNextCard() {
+    const sampleUsers = [
+        { name: "Анна", age: 25, bio: "Люблю путешествия и фотографию", id: 1 },
+        { name: "Максим", age: 28, bio: "Программист, увлекаюсь спортом", id: 2 },
+        { name: "София", age: 23, bio: "Студентка, обожаю искусство", id: 3 },
+        { name: "Дмитрий", age: 30, bio: "Предприниматель", id: 4 },
+        { name: "Екатерина", age: 26, bio: "Дизайнер, люблю современное искусство", id: 5 },
+        { name: "Алексей", age: 29, bio: "Музыкант, играю на гитаре", id: 6 }
+    ];
+    
+    if (!window.cardIndex) window.cardIndex = 0;
+    window.cardIndex++;
+    
+    if (window.cardIndex >= sampleUsers.length) {
+        // Карточки закончились
+        document.getElementById('cards-container').innerHTML = `
+            <div style="text-align: center; color: white;">
+                <h3>🎉 На сегодня всё!</h3>
+                <p>Завтра появятся новые анкеты</p>
+                <button onclick="location.reload()" style="padding: 10px 20px; background: white; color: #667eea; border: none; border-radius: 10px; margin: 10px; cursor: pointer;">Обновить</button>
+            </div>
+        `;
+        return;
+    }
+    
+    // Показываем следующую карточку
+    showCard(sampleUsers[window.cardIndex], document.getElementById('cards-container'));
+}

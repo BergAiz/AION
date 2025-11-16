@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AION - Dating App</title>
+    <meta name="theme-color" content="#667eea">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+</head>
+<body>
+    <!-- Экран загрузки -->
+    <div id="splash-screen" class="screen active">
+        <div class="splash-content">
+            <div class="logo">🎯</div>
+            <h1>AION</h1>
+            <p>Умное dating-приложение</p>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Экран авторизации -->
+    <div id="auth-screen" class="screen">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🎯 AION</h1>
+                <p>Создайте аккаунт</p>
+            </div>
+
+            <form class="auth-form" id="auth-form">
+                <div class="input-group">
+                    <input type="text" id="name" placeholder="Ваше имя" required>
+                </div>
+                <div class="input-group">
+                    <input type="number" id="age" placeholder="Возраст" min="18" max="100" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="Пароль" required>
+                </div>
+                <div class="input-group">
+                    <textarea id="bio" placeholder="Расскажите о себе..." rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">Создать аккаунт</button>
+            </form>
+
+            <div class="auth-features">
+                <h3>Возможности AION:</h3>
+                <ul>
+                    <li>🤖 AI-помощник в чате</li>
+                    <li>🎴 Умные рекомендации</li>
+                    <li>⚡ Мгновенные мэтчи</li>
+                    <li>🛡️ Безопасное общение</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Главный экран с карточками -->
+    <div id="main-screen" class="screen">
+        <header class="app-header">
+            <div class="header-content">
+                <h1>AION</h1>
+                <div class="user-stats">
+                    <span id="likes-count">0</span> ❤️
+                </div>
+            </div>
+        </header>
+
+        <main class="cards-container">
+            <div id="cards-stack"></div>
+            <div class="no-cards" id="no-cards" style="display: none;">
+                <h3>🎉 На сегодня всё!</h3>
+                <p>Завтра появятся новые анкеты</p>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <div class="action-buttons">
+                <button class="btn-dislike" onclick="swipeCard('left')">👎</button>
+                <button class="btn-super-like" onclick="swipeCard('up')">⭐</button>
+                <button class="btn-like" onclick="swipeCard('right')">👍</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Экран чата -->
+    <div id="chat-screen" class="screen">
+        <header class="chat-header">
+            <button class="btn-back" onclick="showScreen('main-screen')">←</button>
+            <div class="chat-partner-info">
+                <h3 id="chat-partner-name">Анна</h3>
+                <p>online</p>
+            </div>
+        </header>
+
+        <div class="chat-messages" id="chat-messages">
+            <!-- Сообщения будут здесь -->
+        </div>
+
+        <div class="chat-input-container">
+            <input type="text" id="message-input" placeholder="Напишите сообщение...">
+            <button class="btn-send" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/cards.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

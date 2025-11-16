@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AION - Умное dating-приложение</title>
-    <link rel="stylesheet" href="src/styles/auth.css">
-    <link rel="stylesheet" href="src/styles/cards.css">
-    <link rel="stylesheet" href="src/styles/ai.css">
+    <link rel="stylesheet" href="styles/auth.css">
+    <link rel="stylesheet" href="styles/cards.css">
+    <link rel="stylesheet" href="styles/ai.css">
     <style>
         * {
             margin: 0;
@@ -37,57 +37,13 @@
         <div id="cards-container"></div>
     </div>
 
-    <!-- Подключаем все JS файлы -->
-    <script src="src/services/UserService.js"></script>
-    <script src="src/components/Card.js"></script>
-    <script src="src/components/CardManager.js"></script>
-    <script src="src/components/AIAssistant.js"></script>
-    <script src="src/components/ChatDemo.js"></script>
-    <script src="src/components/Auth.js"></script>
-    <script src="src/main.js"></script>
-    <script>
-    // Проверка какие файлы существуют
-    console.log('🔍 Проверка файловой структуры...');
-    
-    const testFiles = [
-        'src/services/UserService.js',
-        'src/components/Auth.js',
-        'src/components/Card.js',
-        'src/components/AIAssistant.js',
-        'src/components/CardManager.js', 
-        'src/components/ChatDemo.js',
-        'src/styles/auth.css',
-        'src/styles/cards.css',
-        'src/styles/ai.css',
-        'src/main.js'
-    ];
-    
-    testFiles.forEach(file => {
-        const img = new Image();
-        img.onload = function() {
-            console.log('✅ Файл существует:', file);
-        };
-        img.onerror = function() {
-            console.log('❌ Файл НЕ существует:', file);
-        };
-        img.src = file + '?t=' + Date.now();
-    });
-    
-    // Простая форма если основные файлы не грузятся
-    setTimeout(() => {
-        if (!document.querySelector('.auth-container')) {
-            console.log('🔄 Создаем резервную форму...');
-            document.body.innerHTML = `
-                <div style="color: white; text-align: center; padding: 50px;">
-                    <h1>🎯 AION</h1>
-                    <p>Умное dating-приложение</p>
-                    <button onclick="alert('Форма в разработке')" style="padding: 15px; background: #8b5cf6; color: white; border: none; border-radius: 10px; cursor: pointer;">
-                        Начать знакомства
-                    </button>
-                </div>
-            `;
-        }
-    }, 3000);
-</script>
+    <!-- ПРАВИЛЬНЫЕ ПУТИ: -->
+    <script src="services/UserService.js"></script>
+    <script src="components/Card.js"></script>
+    <script src="components/CardManager.js"></script>
+    <script src="components/AIAssistant.js"></script>
+    <script src="components/ChatDemo.js"></script>
+    <script src="components/Auth.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

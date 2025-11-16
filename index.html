@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AION - Умное dating-приложение</title>
-    <link rel="stylesheet" href="styles/auth.css">
-    <link rel="stylesheet" href="styles/cards.css">
-    <link rel="stylesheet" href="styles/ai.css">
+    <link rel="stylesheet" href="src/styles/auth.css">
+    <link rel="stylesheet" href="src/styles/cards.css">
+    <link rel="stylesheet" href="src/styles/ai.css">
     <style>
         * {
             margin: 0;
@@ -38,40 +38,12 @@
     </div>
 
     <!-- Подключаем все JS файлы -->
-    <script src="services/UserService.js"></script>
-    <script src="components/Card.js"></script>
-    <script src="components/CardManager.js"></script>
-    <script src="components/AIAssistant.js"></script>
-    <script src="components/ChatDemo.js"></script>
-    <script src="components/Auth.js"></script>
-    <script src="main.js"></script>
-    <script>
-    // Простой тест который точно сработает
-    console.log('🚀 TEST: Страница загружена!');
-    alert('AION загружен! Если видишь это - JS работает');
-    
-    // Проверяем доступность файлов
-    setTimeout(() => {
-        const files = [
-            'services/UserService.js',
-            'components/Auth.js', 
-            'main.js'
-        ];
-        
-        files.forEach(file => {
-            fetch(file)
-                .then(response => {
-                    if (response.ok) {
-                        console.log('✅ Файл найден:', file);
-                    } else {
-                        console.log('❌ Файл НЕ найден:', file);
-                    }
-                })
-                .catch(error => {
-                    console.log('❌ Ошибка загрузки:', file, error);
-                });
-        });
-    }, 1000);
-</script>
+    <script src="src/services/UserService.js"></script>
+    <script src="src/components/Card.js"></script>
+    <script src="src/components/CardManager.js"></script>
+    <script src="src/components/AIAssistant.js"></script>
+    <script src="src/components/ChatDemo.js"></script>
+    <script src="src/components/Auth.js"></script>
+    <script src="src/main.js"></script>
 </body>
 </html>

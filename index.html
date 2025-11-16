@@ -470,6 +470,51 @@
     </div>
 
     <script>
+        // ГИРОСКОП ДЛЯ КАРТОЧЕК
+function initGyroscope() {
+    if (window.DeviceOrientationEvent) {
+        console.log('📱 Гироскоп поддерживается');
+        window.addEventListener('deviceorientation', handleDeviceOrientation);
+    } else {
+        console.log('❌ Гироскоп не поддерживается');
+    }
+}
+
+function handleDeviceOrientation(event) {
+    const card = document.getElementById('current-card');
+    if (!card) return;
+    
+    // Получаем данные гироскопа
+    const beta = event.beta;  // Наклон вперед-назад (-180 до 180)
+    const gamma = event.gamma; // Наклон влево-вправо (-90 до 90)
+    
+    // Ограничиваем значения для плавности
+    const tiltX = gamma ? Math.max(Math.min(gamma / 20, 10), -10) : 0;
+    const tiltY = beta ? Math.max(Math.min(beta / 30, 8), -8) : 0;
+    
+    // Применяем параллакс-эффект
+    card.style.transform = `
+        perspective(1000px) 
+        rotateX(${tiltY}deg) 
+        rotateY(${tiltX}deg)
+        scale(1.02)
+    `;
+    
+    // Параллакс для фона аватара
+    const avatar = document.querySelector('.card-avatar');
+    if (avatar) {
+        avatar.style.transform = `translate(${tiltX * 2}px, ${tiltY * 2}px)`;
+    }
+}
+
+// ОСТАНОВКА ГИРОСКОПА ПРИ СВАЙПЕ
+function stopGyroscope() {
+    const card = document.getElementById('current-card');
+    if (card) {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    }
+}
+        
         // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
         let currentCardIndex = 0;
         let currentCard = null;
@@ -686,40 +731,42 @@
             currentCard = sampleUsers[currentCardIndex];
             const genderIcon = currentCard.gender === 'male' ? '👨' : '👩';
             
-            container.innerHTML = `
-                <div class="card" id="current-card">
-                    <div class="card-photo">
-                        <div class="card-avatar">${genderIcon}</div>
-                    </div>
-                    <div class="card-info">
-                        <div class="card-main-info">
-                            <h2>${currentCard.name} <span class="age">${currentCard.age}</span></h2>
-                            <div class="bio">${currentCard.bio}</div>
-                        </div>
-                        
-                        <div class="expand-toggle" onclick="toggleDetails()">
-                            <div class="expand-icon">⌄</div>
-                            <div style="font-size: 12px; margin-top: 5px;">Узнать больше</div>
-                        </div>
-                        
-                        <div class="card-details" id="card-details">
-                            <div class="detail-item">
-                                <span>Интересы:</span>
-                                <span>${currentCard.details.interests}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span>Образ жизни:</span>
-                                <span>${currentCard.details.lifestyle}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span>Цели:</span>
-                                <span>${currentCard.details.goals}</span>
-                            </div>
-                        </div>
-                    </div>
+           container.innerHTML = `
+    <div class="card" id="current-card" style="transform: perspective(1000px) rotateX(0) rotateY(0); transition: transform 0.3s ease;">
+        <div class="card-photo">
+            <div class="card-avatar">${genderIcon}</div>
+        </div>
+        <div class="card-info">
+            <div class="card-main-info">
+                <h2>${currentCard.name} <span class="age">${currentCard.age}</span></h2>
+                <div class="bio">${currentCard.bio}</div>
+            </div>
+            
+            <div class="expand-toggle" onclick="toggleDetails()">
+                <div class="expand-icon">⌄</div>
+                <div style="font-size: 12px; margin-top: 5px;">Узнать больше</div>
+            </div>
+            
+            <div class="card-details" id="card-details">
+                <div class="detail-item">
+                    <span>Интересы:</span>
+                    <span>${currentCard.details.interests}</span>
                 </div>
-            `;
-        }
+                <div class="detail-item">
+                    <span>Образ жизни:</span>
+                    <span>${currentCard.details.lifestyle}</span>
+                </div>
+                <div class="detail-item">
+                    <span>Цели:</span>
+                    <span>${currentCard.details.goals}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
+// ЗАПУСКАЕМ ГИРОСКОП ДЛЯ НОВОЙ КАРТОЧКИ
+setTimeout(initGyroscope, 100);
         
         // РАСКРЫТЬ ДЕТАЛИ
         function toggleDetails() {

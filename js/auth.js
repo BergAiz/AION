@@ -1,4 +1,4 @@
-// AION - Модуль аутентификации
+// AION - Модуль аутентификации (ИСПРАВЛЕННАЯ ВЕРСИЯ)
 class AuthManager {
     constructor() {
         this.users = this.loadUsers();
@@ -6,11 +6,14 @@ class AuthManager {
     }
 
     loadUsers() {
-        return JSON.parse(localStorage.getItem('aion_users')) || [];
+        const users = localStorage.getItem('aion_users');
+        console.log('📁 Загружены пользователи:', users);
+        return users ? JSON.parse(users) : [];
     }
 
     saveUsers() {
         localStorage.setItem('aion_users', JSON.stringify(this.users));
+        console.log('💾 Пользователи сохранены:', this.users);
     }
 
     initAuthForm() {
@@ -18,21 +21,31 @@ class AuthManager {
         if (authForm) {
             authForm.addEventListener('submit', (e) => {
                 e.preventDefault();
+                console.log('🎯 Форма отправлена');
                 this.handleRegistration();
             });
         }
     }
 
     handleRegistration() {
-        const formData = new FormData(document.getElementById('auth-form'));
+        console.log('🔄 Начало регистрации...');
         
+        // Получаем значения напрямую
+        const name = document.getElementById('name').value;
+        const age = parseInt(document.getElementById('age').value);
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const bio = document.getElementById('bio').value;
+
+        console.log('📝 Данные формы:', { name, age, email, bio });
+
         const userData = {
             id: Date.now().toString(),
-            name: formData.get('name'),
-            age: parseInt(formData.get('age')),
-            email: formData.get('email'),
-            password: formData.get('password'),
-            bio: document.getElementById('bio').value || 'Новый пользователь AION',
+            name: name,
+            age: age,
+            email: email,
+            password: password,
+            bio: bio || 'Новый пользователь AION',
             photos: [],
             subscription: 'free',
             createdAt: new Date().toISOString(),
@@ -44,95 +57,53 @@ class AuthManager {
 
         // Валидация
         if (userData.age < 18) {
-            this.showError('Минимальный возраст - 18 лет');
+            alert('❌ Минимальный возраст - 18 лет');
             return;
         }
 
         if (userData.name.length < 2) {
-            this.showError('Имя должно содержать минимум 2 символа');
+            alert('❌ Имя должно содержать минимум 2 символа');
+            return;
+        }
+
+        if (!userData.email || !userData.password) {
+            alert('❌ Заполните email и пароль');
             return;
         }
 
         // Проверка email
         const existingUser = this.users.find(u => u.email === userData.email);
         if (existingUser) {
-            this.showError('Пользователь с таким email уже существует');
+            alert('❌ Пользователь с таким email уже существует');
             return;
         }
 
-        // Модерация био
-        const moderationResult = this.moderateText(userData.bio);
-        if (!moderationResult.isClean) {
-            this.showError(`Недопустимое описание: ${moderationResult.warning}`);
-            return;
-        }
+        console.log('✅ Валидация пройдена');
 
         // Регистрация
         this.register(userData);
     }
 
-    moderateText(text) {
-        const bannedWords = ['оскорбление', 'спам', 'реклама', 'мошенничество'];
-        const foundViolations = bannedWords.filter(word => 
-            text.toLowerCase().includes(word)
-        );
-
-        return {
-            isClean: foundViolations.length === 0,
-            violations: foundViolations,
-            warning: foundViolations.length > 0 ? 
-                `Обнаружены запрещенные слова: ${foundViolations.join(', ')}` : null
-        };
-    }
-
     register(userData) {
+        console.log('👤 Регистрация пользователя:', userData.name);
+        
+        // Добавляем пользователя
         this.users.push(userData);
         this.saveUsers();
         
-        // Автоматический вход
-        aionApp.setCurrentUser(userData);
+        // Сохраняем текущего пользователя
+        localStorage.setItem('aion_current_user', JSON.stringify(userData));
         
-        console.log('✅ Пользователь зарегистрирован:', userData.name);
+        console.log('✅ Пользователь зарегистрирован и сохранен');
+        console.log('📊 Текущий пользователь:', localStorage.getItem('aion_current_user'));
         
-        // Показываем главный экран
-        aionApp.showScreen('main-screen');
+        // Показываем уведомление
+        alert(`🎉 Добро пожаловать, ${userData.name}!`);
         
-        // Инициализируем карточки
-        if (window.cardsManager) {
-            cardsManager.init(userData);
-        }
-    }
-
-    login(email, password) {
-        const user = this.users.find(u => u.email === email && u.password === password);
-        if (user) {
-            aionApp.setCurrentUser(user);
-            return user;
-        }
-        return null;
-    }
-
-    showError(message) {
-        // Удаляем старые ошибки
-        const oldError = document.querySelector('.auth-error');
-        if (oldError) oldError.remove();
-
-        // Создаем сообщение об ошибке
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'auth-error';
-        errorDiv.innerHTML = `❌ ${message}`;
-        errorDiv.style.cssText = `
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #ef4444;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-        `;
-
-        const form = document.getElementById('auth-form');
-        form.parentNode.insertBefore(errorDiv, form);
+        // Перезагружаем страницу для применения изменений
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
     }
 }
 

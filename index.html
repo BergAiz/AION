@@ -112,5 +112,18 @@
     <script src="js/cards.js"></script>
     <script src="js/chat.js"></script>
     <script src="js/app.js"></script>
+    <script>
+    // Отладочная информация
+    console.log('🐛 ОТЛАДКА:');
+    console.log('📍 Текущий URL:', window.location.href);
+    console.log('📁 LocalStorage users:', localStorage.getItem('aion_users'));
+    console.log('👤 Current user:', localStorage.getItem('aion_current_user'));
+    console.log('🛠️ CardsManager:', typeof cardsManager);
+    console.log('🛠️ AuthManager:', typeof authManager);
+    
+    // Принудительная очистка для теста (раскомментируйте если нужно)
+    // localStorage.removeItem('aion_current_user');
+    // console.log('🧹 LocalStorage очищен');
+</script>
 </body>
 </html>

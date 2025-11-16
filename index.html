@@ -572,62 +572,58 @@ function stopGyroscope() {
             }
         }
         
-        // ЭКРАН АВТОРИЗАЦИИ
-        function showAuthScreen() {
-            document.getElementById('app').innerHTML = `
-                <div class="auth-container">
-                    <div class="auth-header">
-                        <h1>AION</h1>
-                        <p>Место, где знакомства становятся уютными</p>
+// ЭКРАН АВТОРИЗАЦИИ
+function showAuthScreen() {
+    document.getElementById('app').innerHTML = `
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>AION</h1>
+                <p>Место, где знакомства становятся уютными</p>
+            </div>
+            
+            <form id="auth-form">
+                <div class="input-group">
+                    <input type="text" id="name" placeholder="Ваше прекрасное имя" required>
+                </div>
+                
+                <div class="input-group">
+                    <input type="number" id="age" placeholder="Возраст" min="18" required>
+                </div>
+
+                <div class="gender-selection">
+                    <div class="gender-option" onclick="selectGender('male')">
+                        <span class="icon">👨</span>
+                        <div>Мужской</div>
                     </div>
-                    
-                    <form id="auth-form">
-                        <div class="input-group">
-                            <input type="text" id="name" placeholder="Ваше прекрасное имя" required>
-                        </div>
-                        
-                        <div class="input-group">
-                            <input type="number" id="age" placeholder="Возраст" min="18" required>
-                        </div>
-
-                        <div class="input-group">
-                            <input type="password" id="password" placeholder="Пароль" required>
-                        </div>
-
-                            <div class="input-group">
-                            <textarea id="bio" placeholder="Расскажите о себе... Что делает вас счастливым?" rows="3"></textarea>
-                        </div>
-                        
-                        <div class="gender-selection">
-                            <div class="gender-option" onclick="selectGender('male')">
-                                <span class="icon">👨</span>
-                                <div>Мужской</div>
-                            </div>
-                            <div class="gender-option" onclick="selectGender('female')">
-                                <span class="icon">👩</span>
-                                <div>Женский</div>
-                            </div>
-                        </div>
-                        
-                        <div class="input-group">
-                            <input type="email" id="email" placeholder="Email" required>
-                        </div>
-                        
-                        <div class="input-group">
-                            <textarea id="bio" placeholder="Расскажите о себе... Что делает вас счастливым?" rows="3"></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn-primary">Начать знакомиться</button>
-                    </form>
-                    
-                    <div class="comfort-text">
-                        Здесь не важно количество лайков, а важно качество общения
+                    <div class="gender-option" onclick="selectGender('female')">
+                        <span class="icon">👩</span>
+                        <div>Женский</div>
                     </div>
                 </div>
-            `;
+                
+                <div class="input-group">
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+                
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="Пароль" required>
+                </div>
+
+                <div class="input-group">
+                    <textarea id="bio" placeholder="Расскажите о себе... Что делает вас счастливым?" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-primary">Начать знакомиться</button>
+            </form>
             
-            document.getElementById('auth-form').addEventListener('submit', handleRegistration);
-        }
+            <div class="comfort-text">
+                Здесь не важно количество лайков, а важно качество общения
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('auth-form').addEventListener('submit', handleRegistration);
+}
         
         // ВЫБОР ПОЛА
         function selectGender(gender) {

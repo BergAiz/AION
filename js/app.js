@@ -28,15 +28,24 @@ class AionApp {
         this.addSwipeListeners();
     }
 
-    checkAuth() {
-        const currentUser = this.getCurrentUser();
-        if (currentUser) {
-            this.showScreen('main-screen');
+// В файле js/app.js НАЙДИТЕ функцию checkAuth и ЗАМЕНИТЕ её на:
+
+checkAuth() {
+    console.log('🔐 Проверка авторизации...');
+    const currentUser = this.getCurrentUser();
+    console.log('👤 Текущий пользователь:', currentUser);
+    
+    if (currentUser && currentUser.name) {
+        console.log('✅ Пользователь авторизован:', currentUser.name);
+        this.showScreen('main-screen');
+        if (window.cardsManager) {
             cardsManager.init(currentUser);
-        } else {
-            this.showScreen('auth-screen');
         }
+    } else {
+        console.log('❌ Пользователь не авторизован');
+        this.showScreen('auth-screen');
     }
+}
 
     showScreen(screenId) {
         // Скрываем все экраны

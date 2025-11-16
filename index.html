@@ -788,6 +788,12 @@ setTimeout(initGyroscope, 100);
                 alert('🌸 Сначала познакомьтесь с анкетой');
                 return;
             }
+
+             // ОСТАНАВЛИВАЕМ ГИРОСКОП ПРИ СВАЙПЕ
+    stopGyroscope();
+    
+    const card = document.getElementById('current-card');
+    const buttons = document.querySelectorAll('.action-btn');
             
             const card = document.getElementById('current-card');
             const buttons = document.querySelectorAll('.action-btn');

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AION - Простая рабочая версия</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .auth-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .auth-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>🎯 AION</h1>
+            <p>Умное dating-приложение</p>
+        </div>
+        
+        <form id="auth-form">
+            <div class="input-group">
+                <input type="text" id="name" placeholder="Ваше имя" required>
+            </div>
+            <div class="input-group">
+                <input type="number" id="age" placeholder="Возраст" min="18" required>
+            </div>
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Пароль" required>
+            </div>
+            <div class="input-group">
+                <textarea id="bio" placeholder="О себе" rows="3"></textarea>
+            </div>
+            
+            <button type="submit" id="submit-btn">Создать аккаунт</button>
+        </form>
+    </div>
+
+    <script>
+        console.log('🚀 AION Simple Version загружен');
+        
+        // ПРОСТАЯ И НАДЕЖНАЯ РЕГИСТРАЦИЯ
+        document.getElementById('auth-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('✅ Форма отправлена');
+            
+            // ПРОСТОЙ СПОСОБ получить данные - напрямую по ID
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const bio = document.getElementById('bio').value;
+            
+            console.log('📝 Получены данные:', { name, age, email, password, bio });
+            
+            // ПРОСТАЯ ВАЛИДАЦИЯ
+            if (!name) {
+                alert('❌ Введите имя');
+                return;
+            }
+            if (!age || age < 18) {
+                alert('❌ Вам должно быть больше 18 лет');
+                return;
+            }
+            if (!email) {
+                alert('❌ Введите email');
+                return;
+            }
+            
+            // СОХРАНЕНИЕ ДАННЫХ
+            const userData = {
+                name: name,
+                age: parseInt(age),
+                email: email,
+                password: password,
+                bio: bio || 'Новый пользователь AION',
+                id: Date.now().toString(),
+                createdAt: new Date().toISOString()
+            };
+            
+            console.log('💾 Сохраняем пользователя:', userData);
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('aion_current_user', JSON.stringify(userData));
+            
+            // Проверяем что сохранилось
+            const saved = localStorage.getItem('aion_current_user');
+            console.log('📁 Проверка сохранения:', saved);
+            
+            // УВЕДОМЛЕНИЕ И ПЕРЕХОД
+            alert('🎉 Аккаунт создан! Добро пожаловать, ' + name + '!');
+            
+            // Переходим к карточкам
+            showMainScreen();
+        });
+        
+        function showMainScreen() {
+            console.log('🔄 Переход к главному экрану');
+            
+            document.body.innerHTML = `
+                <div style="color: white; text-align: center; padding: 20px; width: 100%;">
+                    <h1>🎴 AION</h1>
+                    <p>Главный экран</p>
+                    
+                    <div style="background: white; color: #333; padding: 30px; border-radius: 20px; margin: 20px auto; max-width: 320px;">
+                        <div style="background: linear-gradient(45deg, #667eea, #764ba2); height: 200px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                            <div style="background: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white;">А</div>
+                        </div>
+                        <h3>Анна, 25</h3>
+                        <p>Люблю путешествия и фотографию</p>
+                        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                            <button onclick="swipeLeft()" style="padding: 15px; background: #f56565; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; font-size: 20px;">👎</button>
+                            <button onclick="swipeRight()" style="padding: 15px; background: #48bb78; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; font-size: 20px;">👍</button>
+                        </div>
+                    </div>
+                    
+                    <button onclick="logout()" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 10px; margin: 10px; cursor: pointer;">Выйти</button>
+                </div>
+            `;
+        }
+        
+        function swipeRight() {
+            alert('❤️ Лайк отправлен!');
+        }
+        
+        function swipeLeft() {
+            alert('👎 Дизлайк отправлен!');
+        }
+        
+        function logout() {
+            localStorage.removeItem('aion_current_user');
+            location.reload();
+        }
+        
+        // ПРОВЕРКА СУЩЕСТВУЮЩЕГО ПОЛЬЗОВАТЕЛЯ ПРИ ЗАГРУЗКЕ
+        window.addEventListener('load', function() {
+            console.log('🔍 Проверка существующего пользователя...');
+            const savedUser = localStorage.getItem('aion_current_user');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                console.log('✅ Найден пользователь:', user.name);
+                showMainScreen();
+            } else {
+                console.log('❌ Пользователь не найден, показываем форму');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AION - ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .auth-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .auth-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        /* Стили для карточек */
+        .card {
+            background: white;
+            border-radius: 20px;
+            width: 320px;
+            height: 480px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        .card-photo {
+            height: 60%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-avatar {
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        .card-info {
+            padding: 30px;
+            height: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .card-info h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .card-info p {
+            margin: 0;
+            color: #666;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Форма регистрации будет здесь -->
+    </div>
+
+    <script>
+        // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+        let currentCardIndex = 0;
+        let currentCard = null;
+        
+        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ
+        const sampleUsers = [
+            { name: "Анна", age: 25, bio: "Люблю путешествия и фотографию", id: 1 },
+            { name: "Максим", age: 28, bio: "Программист, увлекаюсь спортом", id: 2 },
+            { name: "София", age: 23, bio: "Студентка, обожаю искусство", id: 3 },
+            { name: "Дмитрий", age: 30, bio: "Предприниматель", id: 4 },
+            { name: "Екатерина", age: 26, bio: "Дизайнер, люблю современное искусство", id: 5 }
+        ];
+        
+        // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
+        function initApp() {
+            console.log('🚀 AION Final Version запущен');
+            
+            const savedUser = localStorage.getItem('aion_current_user');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                console.log('✅ Найден пользователь:', user.name);
+                showMainScreen(user);
+            } else {
+                console.log('❌ Пользователь не найден');
+                showAuthScreen();
+            }
+        }
+        
+        // ЭКРАН АВТОРИЗАЦИИ
+        function showAuthScreen() {
+            document.getElementById('app').innerHTML = `
+                <div class="auth-container">
+                    <div class="auth-header">
+                        <h1>🎯 AION</h1>
+                        <p>Умное dating-приложение</p>
+                    </div>
+                    
+                    <form id="auth-form">
+                        <div class="input-group">
+                            <input type="text" id="name" placeholder="Ваше имя" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="age" placeholder="Возраст" min="18" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="email" id="email" placeholder="Email" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" id="password" placeholder="Пароль" required>
+                        </div>
+                        <div class="input-group">
+                            <textarea id="bio" placeholder="О себе" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit">Создать аккаунт</button>
+                    </form>
+                </div>
+            `;
+            
+            document.getElementById('auth-form').addEventListener('submit', handleRegistration);
+        }
+        
+        // ОБРАБОТКА РЕГИСТРАЦИИ
+        function handleRegistration(e) {
+            e.preventDefault();
+            console.log('🎯 Регистрация начата');
+            
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const email = document.getElementById('email').value;
+            
+            if (!name || !age || !email) {
+                alert('❌ Заполните все поля');
+                return;
+            }
+            
+            if (age < 18) {
+                alert('❌ Минимальный возраст 18 лет');
+                return;
+            }
+            
+            const userData = {
+                name: name,
+                age: parseInt(age),
+                email: email,
+                id: Date.now().toString()
+            };
+            
+            localStorage.setItem('aion_current_user', JSON.stringify(userData));
+            console.log('💾 Пользователь сохранен:', userData);
+            
+            alert('🎉 Аккаунт создан! Добро пожаловать, ' + name + '!');
+            showMainScreen(userData);
+        }
+        
+        // ГЛАВНЫЙ ЭКРАН С КАРТОЧКАМИ
+        function showMainScreen(user) {
+            document.getElementById('app').innerHTML = `
+                <div style="color: white; text-align: center; width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+                        <h1>🎴 AION</h1>
+                        <p>Привет, ${user.name}! 👋</p>
+                    </div>
+                    
+                    <div id="cards-container" style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative;">
+                        <!-- Карточки будут здесь -->
+                    </div>
+                    
+                    <div style="padding: 20px; display: flex; justify-content: center; gap: 30px;">
+                        <button onclick="handleSwipe('left')" style="padding: 20px; background: #f56565; color: white; border: none; border-radius: 50%; width: 70px; height: 70px; cursor: pointer; font-size: 24px;">👎</button>
+                        <button onclick="handleSwipe('right')" style="padding: 20px; background: #48bb78; color: white; border: none; border-radius: 50%; width: 70px; height: 70px; cursor: pointer; font-size: 24px;">👍</button>
+                    </div>
+                    
+                    <button onclick="logout()" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 10px; margin: 10px; cursor: pointer;">Выйти</button>
+                </div>
+            `;
+            
+            // ПОКАЗЫВАЕМ ПЕРВУЮ КАРТОЧКУ СРАЗУ
+            showCurrentCard();
+        }
+        
+        // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ
+        function showCurrentCard() {
+            const container = document.getElementById('cards-container');
+            
+            if (currentCardIndex >= sampleUsers.length) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: white;">
+                        <h3>🎉 На сегодня всё!</h3>
+                        <p>Завтра появятся новые анкеты</p>
+                        <button onclick="location.reload()" style="padding: 10px 20px; background: white; color: #667eea; border: none; border-radius: 10px; margin: 10px; cursor: pointer;">Обновить</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            currentCard = sampleUsers[currentCardIndex];
+            const colors = ['#667eea', '#f093fb', '#4facfe', '#43e97b'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            container.innerHTML = `
+                <div class="card">
+                    <div class="card-photo" style="background: ${randomColor}">
+                        <div class="card-avatar">${currentCard.name.charAt(0)}</div>
+                    </div>
+                    <div class="card-info">
+                        <h2>${currentCard.name}, ${currentCard.age}</h2>
+                        <p>${currentCard.bio}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ОБРАБОТКА СВАЙПОВ
+        function handleSwipe(direction) {
+            if (!currentCard) {
+                alert('❌ Нет карточки!');
+                return;
+            }
+            
+            const card = document.querySelector('.card');
+            if (card) {
+                if (direction === 'right') {
+                    card.style.transform = 'translateX(500px) rotate(30deg)';
+                    alert('❤️ Лайк отправлен!');
+                } else {
+                    card.style.transform = 'translateX(-500px) rotate(-30deg)';
+                    alert('👎 Дизлайк отправлен!');
+                }
+                card.style.transition = 'all 0.5s ease';
+            }
+            
+            setTimeout(() => {
+                currentCardIndex++;
+                showCurrentCard();
+            }, 500);
+        }
+        
+        // ВЫХОД
+        function logout() {
+            localStorage.removeItem('aion_current_user');
+            location.reload();
+        }
+        
+        // ЗАПУСК ПРИЛОЖЕНИЯ
+        window.addEventListener('load', initApp);
+        
+        // ДЕЛАЕМ ФУНКЦИИ ГЛОБАЛЬНЫМИ
+        window.handleSwipe = handleSwipe;
+        window.logout = logout;
+    </script>
+</body>
+</html>

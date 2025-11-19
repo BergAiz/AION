@@ -89,7 +89,7 @@
             50% { transform: scale(1.02); opacity: 1; }
         }
         
-        .auth-container, .card {
+        .auth-container, .card, .subscription-card, .settings-menu {
             animation: gentleBreath 6s ease-in-out infinite;
         }
         
@@ -99,6 +99,166 @@
             z-index: 2;
             width: 100%;
             max-width: 400px;
+        }
+        
+        /* Кнопка настроек */
+        .settings-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(20, 20, 35, 0.9);
+            border: 1px solid rgba(80, 200, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(80, 200, 255, 0.2);
+        }
+        
+        .settings-button:hover {
+            transform: scale(1.1) rotate(90deg);
+            border-color: rgba(80, 200, 255, 0.6);
+            box-shadow: 0 0 25px rgba(80, 200, 255, 0.4);
+        }
+        
+        .settings-icon {
+            font-size: 24px;
+            color: #80c8ff;
+            transition: all 0.3s ease;
+        }
+        
+        /* Меню настроек */
+        .settings-menu {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(20, 20, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(80, 200, 255, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            width: 300px;
+            box-shadow: 
+                0 0 30px rgba(80, 200, 255, 0.2),
+                0 25px 50px rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            visibility: hidden;
+        }
+        
+        .settings-menu.active {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .settings-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .settings-title {
+            font-size: 24px;
+            color: #80c8ff;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .settings-subtitle {
+            color: rgba(224, 224, 255, 0.7);
+            font-size: 14px;
+        }
+        
+        .settings-section {
+            margin-bottom: 20px;
+        }
+        
+        .settings-item {
+            padding: 15px;
+            background: rgba(30, 30, 50, 0.6);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .settings-item:hover {
+            background: rgba(40, 40, 70, 0.8);
+            border-color: rgba(80, 200, 255, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .settings-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .settings-item-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .settings-icon-small {
+            font-size: 18px;
+            color: #80c8ff;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .settings-text {
+            color: #e0e0ff;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        .settings-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(80, 200, 255, 0.3), transparent);
+            margin: 20px 0;
+        }
+        
+        /* Навигационные вкладки */
+        .nav-tabs {
+            display: flex;
+            background: rgba(20, 20, 35, 0.9);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(80, 200, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 12px 20px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: rgba(224, 224, 255, 0.7);
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-tab.active {
+            background: rgba(80, 200, 255, 0.15);
+            color: #80c8ff;
+            box-shadow: 0 0 10px rgba(80, 200, 255, 0.2);
+        }
+        
+        .nav-tab:hover:not(.active) {
+            background: rgba(80, 200, 255, 0.05);
+            color: #a0d8ff;
         }
         
         /* Стили аутентификации */
@@ -369,7 +529,7 @@
             font-size: 15px;
         }
         
-        /* Стрелочка для раскрытия - ВОЗВРАЩЕНА К ИСХОДНОМУ ВИДУ */
+        /* Стрелочка для раскрытия */
         .expand-toggle {
             text-align: center;
             padding: 15px 0 5px;
@@ -518,6 +678,225 @@
             transform: scale(0.95);
         }
         
+        /* Стили для подписок */
+        .subscription-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            overflow-x: auto;
+            padding: 10px 5px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .subscription-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .subscription-card {
+            background: rgba(20, 20, 35, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(80, 200, 255, 0.25);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 
+                0 0 20px rgba(80, 200, 255, 0.1),
+                0 25px 50px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            min-width: 280px;
+            flex-shrink: 0;
+        }
+        
+        .subscription-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(80, 200, 255, 0.4);
+            box-shadow: 
+                0 0 30px rgba(80, 200, 255, 0.2),
+                0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Бесплатная версия */
+        .subscription-card.free {
+            border-color: rgba(160, 160, 160, 0.4);
+            box-shadow: 
+                0 0 20px rgba(160, 160, 160, 0.1),
+                0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subscription-card.free:hover {
+            border-color: rgba(200, 200, 200, 0.6);
+            box-shadow: 
+                0 0 30px rgba(200, 200, 200, 0.2),
+                0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Plus+ версия */
+        .subscription-card.plus {
+            border-color: rgba(0, 245, 204, 0.6);
+            box-shadow: 
+                0 0 20px rgba(0, 245, 204, 0.2),
+                0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subscription-card.plus:hover {
+            border-color: rgba(0, 245, 204, 0.8);
+            box-shadow: 
+                0 0 30px rgba(0, 245, 204, 0.4),
+                0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* PREMIUM версия */
+        .subscription-card.premium {
+            border-color: rgba(255, 0, 127, 0.6);
+            box-shadow: 
+                0 0 20px rgba(255, 0, 127, 0.3),
+                0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subscription-card.premium:hover {
+            border-color: rgba(255, 0, 127, 0.9);
+            box-shadow: 
+                0 0 30px rgba(255, 0, 127, 0.5),
+                0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subscription-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .subscription-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .subscription-card.free .subscription-title {
+            color: #a0a0a0;
+        }
+        
+        .subscription-card.plus .subscription-title {
+            color: #00F5CC;
+        }
+        
+        .subscription-card.premium .subscription-title {
+            color: #FF007F;
+            background: linear-gradient(45deg, #FF007F, #FF66B2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subscription-price {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .subscription-card.free .subscription-price {
+            color: #c0c0c0;
+        }
+        
+        .subscription-card.plus .subscription-price {
+            color: #00F5CC;
+        }
+        
+        .subscription-card.premium .subscription-price {
+            color: #FF007F;
+        }
+        
+        .subscription-period {
+            color: rgba(224, 224, 255, 0.7);
+            font-size: 14px;
+        }
+        
+        .subscription-features {
+            list-style: none;
+            margin-bottom: 20px;
+            height: 180px;
+            overflow-y: auto;
+        }
+        
+        .subscription-features::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .subscription-features::-webkit-scrollbar-track {
+            background: rgba(80, 200, 255, 0.1);
+            border-radius: 2px;
+        }
+        
+        .subscription-features::-webkit-scrollbar-thumb {
+            background: rgba(80, 200, 255, 0.3);
+            border-radius: 2px;
+        }
+        
+        .subscription-features li {
+            padding: 6px 0;
+            color: rgba(224, 224, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        
+        .subscription-features li::before {
+            content: '✓';
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .subscription-card.free .subscription-features li::before {
+            color: #a0a0a0;
+        }
+        
+        .subscription-card.plus .subscription-features li::before {
+            color: #00F5CC;
+        }
+        
+        .subscription-card.premium .subscription-features li::before {
+            color: #FF007F;
+        }
+        
+        .btn-subscribe {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .subscription-card.free .btn-subscribe {
+            background: rgba(160, 160, 160, 0.3);
+            color: #c0c0c0;
+            cursor: not-allowed;
+        }
+        
+        .subscription-card.plus .btn-subscribe {
+            background: linear-gradient(45deg, #00F5CC, #00D4AA);
+            color: #0f0f1f;
+        }
+        
+        .subscription-card.premium .btn-subscribe {
+            background: linear-gradient(45deg, #FF007F, #FF3399);
+            color: #0f0f1f;
+        }
+        
+        .btn-subscribe:hover:not(.subscription-card.free .btn-subscribe) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subscription-card.plus .btn-subscribe:hover {
+            box-shadow: 0 8px 20px rgba(0, 245, 204, 0.3);
+        }
+        
+        .subscription-card.premium .btn-subscribe:hover {
+            box-shadow: 0 8px 20px rgba(255, 0, 127, 0.3);
+        }
+        
         /* Анимации свайпов */
         @keyframes swipeRight {
             0% { transform: translateX(0) rotate(0); }
@@ -551,18 +930,32 @@
             animation: liquidLike 0.6s ease-in-out;
         }
         
-        /* Текст уюта */
-        .comfort-text {
-            text-align: center;
-            color: rgba(160, 160, 255, 0.7);
-            font-size: 14px;
-            margin-top: 15px;
-            font-style: italic;
-            font-weight: 300;
+        /* Индикатор параллакса */
+        .parallax-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(20, 20, 35, 0.9);
+            padding: 12px 18px;
+            border-radius: 25px;
+            color: #80c8ff;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(160, 160, 160, 0.4);
+            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(160, 160, 160, 0.1);
         }
         
-        /* Индикатор гироскопа */
-        .gyro-indicator {
+        .parallax-indicator.active {
+            border-color: rgba(100, 200, 255, 0.6);
+            box-shadow: 0 0 15px rgba(100, 200, 255, 0.3);
+            color: #80c8ff;
+        }
+
+        /* Индикатор устройства */
+        .device-indicator {
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -572,20 +965,19 @@
             color: #80c8ff;
             font-size: 12px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(80, 200, 255, 0.3);
+            border: 1px solid rgba(160, 160, 160, 0.4);
             z-index: 1000;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(160, 160, 160, 0.1);
+            max-width: 150px;
+            text-align: center;
         }
         
-        .gyro-indicator:hover {
-            background: rgba(80, 200, 255, 0.1);
-            border-color: rgba(80, 200, 255, 0.5);
-        }
-        
-        .gyro-indicator.inactive {
-            color: #a0a0ff;
-            border-color: rgba(160, 160, 255, 0.3);
+        .device-indicator:hover {
+            border-color: rgba(100, 200, 255, 0.6);
+            box-shadow: 0 0 15px rgba(100, 200, 255, 0.3);
+            transform: scale(1.05);
         }
         
         /* Уведомления о свайпах */
@@ -621,6 +1013,158 @@
             80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
         }
+        
+        /* Оверлей для меню настроек */
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .settings-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Мобильные стили */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            #app {
+                max-width: 100%;
+            }
+            
+            .card {
+                width: 100%;
+                max-width: 340px;
+                height: 500px;
+            }
+            
+            .settings-menu {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+                top: 80px;
+            }
+            
+            .action-buttons {
+                gap: 30px;
+                padding: 20px 15px;
+            }
+            
+            .action-btn {
+                width: 65px;
+                height: 65px;
+                font-size: 26px;
+            }
+            
+            .subscription-container {
+                padding: 5px;
+            }
+            
+            .subscription-card {
+                min-width: 260px;
+                padding: 20px;
+            }
+            
+            .parallax-indicator {
+                bottom: 10px;
+                left: 10px;
+                font-size: 11px;
+                padding: 10px 15px;
+            }
+
+            .device-indicator {
+                bottom: 60px;
+                right: 10px;
+                font-size: 11px;
+                padding: 10px 15px;
+                max-width: 130px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 30px 20px;
+            }
+            
+            .auth-header h1 {
+                font-size: 2.5em;
+            }
+            
+            .card {
+                height: 480px;
+            }
+            
+            .card-info {
+                padding: 20px;
+            }
+            
+            .card-main-info h2 {
+                font-size: 24px;
+            }
+            
+            .action-buttons {
+                gap: 25px;
+            }
+            
+            .action-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .subscription-card {
+                min-width: 240px;
+                padding: 15px;
+            }
+        }
+        
+        /* Поддержка сенсорных устройств */
+        @media (hover: none) {
+            .action-btn:hover {
+                transform: none;
+            }
+            
+            .settings-item:hover {
+                transform: none;
+                background: rgba(30, 30, 50, 0.6);
+            }
+            
+            .gender-option:hover {
+                transform: none;
+                background: rgba(30, 30, 50, 0.8);
+            }
+            
+            .nav-tab:hover:not(.active) {
+                background: transparent;
+            }
+            
+            .subscription-card:hover {
+                transform: none;
+            }
+        }
+        
+        /* Улучшенная поддержка iOS */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                min-height: -webkit-fill-available;
+            }
+            
+            #app {
+                min-height: -webkit-fill-available;
+            }
+        }
     </style>
 </head>
 <body>
@@ -629,9 +1173,96 @@
     <div class="glow-effect glow-2"></div>
     <div class="glow-effect glow-3"></div>
     
-    <!-- Индикатор гироскопа -->
-    <div class="gyro-indicator" id="gyro-indicator" onclick="toggleGyroscope()">
-        📱 Гироскоп: активен
+    <!-- Кнопка настроек -->
+    <div class="settings-button" id="settings-button" onclick="toggleSettings()">
+        <div class="settings-icon">⚙️</div>
+    </div>
+    
+    <!-- Меню настроек -->
+    <div class="settings-menu" id="settings-menu">
+        <div class="settings-header">
+            <div class="settings-title">Настройки</div>
+            <div class="settings-subtitle">Управление приложением</div>
+        </div>
+        
+        <div class="settings-section">
+            <div class="settings-item" onclick="handleSettingsAction('parallax')">
+                <div class="settings-item-content">
+                    <div class="settings-icon-small">🎮</div>
+                    <div class="settings-text">Управление параллаксом</div>
+                </div>
+            </div>
+            
+            <div class="settings-item" onclick="handleSettingsAction('notifications')">
+                <div class="settings-item-content">
+                    <div class="settings-icon-small">🔔</div>
+                    <div class="settings-text">Уведомления</div>
+                </div>
+            </div>
+            
+            <div class="settings-item" onclick="handleSettingsAction('theme')">
+                <div class="settings-item-content">
+                    <div class="settings-icon-small">🎨</div>
+                    <div class="settings-text">Тема оформления</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-divider"></div>
+        
+        <div class="settings-section">
+            <div class="settings-item" onclick="handleSettingsAction('support')">
+                <div class="settings-item-content">
+                    <div class="settings-icon-small">💬</div>
+                    <div class="settings-text">Написать в поддержку</div>
+                </div>
+            </div>
+            
+            <div class="settings-item" onclick="handleSettingsAction('privacy')">
+                <div class="settings-item-content">
+                    <div class="settings-icon-small">📄</div>
+                    <div class="settings-text">Политика конфиденциальности</div>
+                </div>
+            </div>
+            
+            <div class="settings-item" onclick="handleSettingsAction('terms')">
+                <div class="settings-item-content">
+                    <div class="settings-icon-small">📝</div>
+                    <div class="settings-text">Пользовательское соглашение</div>
+                </div>
+            </div>
+            
+            <div class="settings-item" onclick="handleSettingsAction('about')">
+                <div class="settings-item-content">
+                    <div class="settings-icon-small">ℹ️</div>
+                    <div class="settings-text">О приложении</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-divider"></div>
+        
+        <div class="settings-section">
+            <div class="settings-item" onclick="logout()" style="border-color: rgba(255, 100, 100, 0.4);">
+                <div class="settings-item-content">
+                    <div class="settings-icon-small">🚪</div>
+                    <div class="settings-text">Выйти из аккаунта</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Оверлей для меню настроек -->
+    <div class="settings-overlay" id="settings-overlay" onclick="toggleSettings()"></div>
+    
+    <!-- Индикатор параллакса -->
+    <div class="parallax-indicator" id="parallax-indicator" onclick="toggleParallax()">
+        🎮 Параллакс: ВКЛ
+    </div>
+
+    <!-- Индикатор устройства -->
+    <div class="device-indicator" id="device-indicator" onclick="showDeviceInfo()">
+        📱 Устройство
     </div>
     
     <div id="app">
@@ -643,10 +1274,95 @@
         let currentCardIndex = 0;
         let currentCard = null;
         let userGender = '';
-        let isGyroActive = true;
+        let isParallaxActive = true;
         let isCardExpanded = false;
-        
-        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ С ДОПОЛНИТЕЛЬНОЙ ИНФОРМАЦИЕЙ
+        let currentTab = 'dating';
+        let isSettingsOpen = false;
+        let deviceInfo = {};
+
+        // ОПРЕДЕЛЕНИЕ УСТРОЙСТВА
+        function detectDevice() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isMobile = /iphone|ipad|ipod|android|blackberry|windows phone/g.test(userAgent);
+            const isIOS = /iphone|ipad|ipod/g.test(userAgent);
+            const isAndroid = /android/g.test(userAgent);
+            const isiPhone = /iphone/g.test(userAgent);
+            const isiPad = /ipad/g.test(userAgent);
+            const isSafari = /safari/g.test(userAgent) && !/chrome/g.test(userAgent);
+            const isChrome = /chrome/g.test(userAgent);
+            const isFirefox = /firefox/g.test(userAgent);
+            
+            deviceInfo = {
+                isMobile,
+                isIOS, 
+                isAndroid,
+                isiPhone,
+                isiPad,
+                isSafari,
+                isChrome,
+                isFirefox,
+                userAgent: navigator.userAgent,
+                screenSize: window.screen.width + 'x' + window.screen.height,
+                viewport: window.innerWidth + 'x' + window.innerHeight
+            };
+            
+            console.log('📱 Информация об устройстве:');
+            console.log('Мобильное:', deviceInfo.isMobile);
+            console.log('iOS:', deviceInfo.isIOS);
+            console.log('Android:', deviceInfo.isAndroid);
+            console.log('iPhone:', deviceInfo.isiPhone);
+            console.log('iPad:', deviceInfo.isiPad);
+            console.log('Браузер Safari:', deviceInfo.isSafari);
+            console.log('Браузер Chrome:', deviceInfo.isChrome);
+            console.log('Браузер Firefox:', deviceInfo.isFirefox);
+            console.log('Экран:', deviceInfo.screenSize);
+            console.log('Вьюпорт:', deviceInfo.viewport);
+            
+            updateDeviceIndicator();
+            return deviceInfo;
+        }
+
+        function updateDeviceIndicator() {
+            const indicator = document.getElementById('device-indicator');
+            if (indicator) {
+                let deviceText = '📱 ';
+                if (deviceInfo.isMobile) {
+                    if (deviceInfo.isiPhone) deviceText += 'iPhone';
+                    else if (deviceInfo.isiPad) deviceText += 'iPad';
+                    else if (deviceInfo.isAndroid) deviceText += 'Android';
+                    else deviceText += 'Mobile';
+                } else {
+                    deviceText += 'Desktop';
+                }
+                
+                if (deviceInfo.isSafari) deviceText += ' Safari';
+                else if (deviceInfo.isChrome) deviceText += ' Chrome';
+                else if (deviceInfo.isFirefox) deviceText += ' Firefox';
+                
+                indicator.textContent = deviceText;
+            }
+        }
+
+        function showDeviceInfo() {
+            const info = `
+📊 Информация об устройстве:
+
+📱 Устройство: ${deviceInfo.isMobile ? 'Мобильное' : 'Десктоп'}
+${deviceInfo.isiPhone ? '📱 iPhone' : deviceInfo.isiPad ? '📱 iPad' : deviceInfo.isAndroid ? '🤖 Android' : '💻 Браузер'}
+
+🖥️ Экран: ${deviceInfo.screenSize}
+👀 Вьюпорт: ${deviceInfo.viewport}
+
+🌐 Браузер: ${deviceInfo.isSafari ? 'Safari' : deviceInfo.isChrome ? 'Chrome' : deviceInfo.isFirefox ? 'Firefox' : 'Другой'}
+
+📋 User Agent:
+${deviceInfo.userAgent}
+            `.trim();
+            
+            alert(info);
+        }
+
+        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ
         const sampleUsers = [
             { 
                 name: "Анна", 
@@ -692,37 +1408,141 @@
             }
         ];
         
-        // ГИРОСКОП ДЛЯ КАРТОЧЕК
-        function initGyroscope() {
-            if (window.DeviceOrientationEvent) {
-                console.log('📱 Гироскоп поддерживается');
-                window.addEventListener('deviceorientation', handleDeviceOrientation);
-                updateGyroIndicator('активен 🎯');
-                isGyroActive = true;
+        // УПРАВЛЕНИЕ НАСТРОЙКАМИ
+        function toggleSettings() {
+            const menu = document.getElementById('settings-menu');
+            const overlay = document.getElementById('settings-overlay');
+            const button = document.getElementById('settings-button');
+            
+            isSettingsOpen = !isSettingsOpen;
+            
+            if (isSettingsOpen) {
+                menu.classList.add('active');
+                overlay.classList.add('active');
+                button.style.transform = 'scale(1.1) rotate(90deg)';
+                button.style.borderColor = 'rgba(80, 200, 255, 0.6)';
+                button.style.boxShadow = '0 0 25px rgba(80, 200, 255, 0.4)';
             } else {
-                console.log('❌ Гироскоп не поддерживается');
-                updateGyroIndicator('не поддерживается ❌');
-                isGyroActive = false;
+                menu.classList.remove('active');
+                overlay.classList.remove('active');
+                button.style.transform = 'scale(1) rotate(0deg)';
+                button.style.borderColor = 'rgba(80, 200, 255, 0.3)';
+                button.style.boxShadow = '0 0 15px rgba(80, 200, 255, 0.2)';
+            }
+        }
+        
+        function handleSettingsAction(action) {
+            switch(action) {
+                case 'parallax':
+                    toggleParallax();
+                    showSwipeNotification('right', 'параллакс');
+                    break;
+                case 'notifications':
+                    showSwipeNotification('right', 'настройки уведомлений');
+                    break;
+                case 'theme':
+                    showSwipeNotification('right', 'смену темы');
+                    break;
+                case 'support':
+                    showSwipeNotification('right', 'поддержку');
+                    break;
+                case 'privacy':
+                    showSwipeNotification('right', 'политику конфиденциальности');
+                    break;
+                case 'terms':
+                    showSwipeNotification('right', 'пользовательское соглашение');
+                    break;
+                case 'about':
+                    showSwipeNotification('right', 'о приложении');
+                    break;
+            }
+            toggleSettings();
+        }
+        
+        // ПАРАЛЛАКС ДЛЯ КАРТОЧЕК
+        function initParallax() {
+            console.log('🎮 Инициализация параллакса');
+            const card = document.getElementById('current-card');
+            if (card) {
+                card.addEventListener('mousemove', handleCardMouseMove);
+                card.addEventListener('mouseleave', handleCardMouseLeave);
+                
+                // Добавляем обработчики для сенсорных устройств
+                card.addEventListener('touchmove', handleCardTouchMove, { passive: true });
+                card.addEventListener('touchend', handleCardMouseLeave);
             }
         }
 
-        function handleDeviceOrientation(event) {
-            if (!isGyroActive || isCardExpanded) return;
+        function handleCardMouseMove(event) {
+            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating') return;
             
+            const card = event.currentTarget;
+            const cardRect = card.getBoundingClientRect();
+            
+            // Получаем позицию мыши относительно карточки
+            const mouseX = event.clientX - cardRect.left;
+            const mouseY = event.clientY - cardRect.top;
+            
+            // Вычисляем наклон на основе позиции мыши внутри карточки
+            const centerX = cardRect.width / 2;
+            const centerY = cardRect.height / 2;
+            
+            const tiltX = ((mouseX - centerX) / centerX) * 10;
+            const tiltY = ((mouseY - centerY) / centerY) * 8;
+            
+            // Применяем 3D-эффект
+            applyCardTilt(tiltX, tiltY, 0);
+        }
+
+        function handleCardTouchMove(event) {
+            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating') return;
+            
+            const card = event.currentTarget;
+            const cardRect = card.getBoundingClientRect();
+            const touch = event.touches[0];
+            
+            // Получаем позицию касания относительно карточки
+            const touchX = touch.clientX - cardRect.left;
+            const touchY = touch.clientY - cardRect.top;
+            
+            // Вычисляем наклон на основе позиции касания внутри карточки
+            const centerX = cardRect.width / 2;
+            const centerY = cardRect.height / 2;
+            
+            const tiltX = ((touchX - centerX) / centerX) * 10;
+            const tiltY = ((touchY - centerY) / centerY) * 8;
+            
+            // Применяем 3D-эффект
+            applyCardTilt(tiltX, tiltY, 0);
+        }
+
+        function handleCardMouseLeave() {
+            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating') return;
+            
+            // Возвращаем карточку в исходное положение
+            const card = document.getElementById('current-card');
+            if (card) {
+                card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
+                
+                // Возвращаем аватар в исходное положение
+                const avatar = document.querySelector('.card-avatar');
+                if (avatar) {
+                    avatar.style.transform = 'translate(0px, 0px)';
+                }
+                
+                // Возвращаем фон в исходное положение
+                const photo = document.querySelector('.card-photo');
+                if (photo) {
+                    photo.style.backgroundPosition = '0px 0px';
+                }
+            }
+        }
+
+        function applyCardTilt(tiltX, tiltY, rotation) {
             const card = document.getElementById('current-card');
             if (!card) return;
             
-            // Получаем данные гироскопа
-            const beta = event.beta;  // Наклон вперед-назад (-180 до 180)
-            const gamma = event.gamma; // Наклон влево-вправо (-90 до 90)
-            const alpha = event.alpha; // Поворот вокруг оси (0 до 360)
-            
-            // Ограничиваем значения для плавности
-            const tiltX = gamma ? Math.max(Math.min(gamma / 15, 15), -15) : 0;
-            const tiltY = beta ? Math.max(Math.min(beta / 20, 12), -12) : 0;
-            const rotation = alpha ? alpha / 20 : 0;
-            
-            // Применяем 3D-эффект с параллаксом
+            // Применяем наклон ко всей карточке
             card.style.transform = `
                 perspective(1200px) 
                 rotateX(${tiltY}deg) 
@@ -742,36 +1562,42 @@
             if (photo) {
                 photo.style.backgroundPosition = `${tiltX * 2}px ${tiltY * 2}px`;
             }
-            
-            // Обновляем индикатор
-            updateGyroIndicator(`активен X:${tiltX.toFixed(1)} Y:${tiltY.toFixed(1)}`);
         }
 
-        function stopGyroscope() {
+        function stopParallax() {
             const card = document.getElementById('current-card');
             if (card) {
                 card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
+                
+                // Удаляем обработчики событий
+                card.removeEventListener('mousemove', handleCardMouseMove);
+                card.removeEventListener('mouseleave', handleCardMouseLeave);
+                card.removeEventListener('touchmove', handleCardTouchMove);
+                card.removeEventListener('touchend', handleCardMouseLeave);
             }
-            isGyroActive = false;
-            updateGyroIndicator('выключен ⏸️');
+            isParallaxActive = false;
+            updateParallaxIndicator(false);
         }
         
-        function toggleGyroscope() {
-            if (isGyroActive) {
-                stopGyroscope();
+        function toggleParallax() {
+            if (isParallaxActive) {
+                stopParallax();
             } else {
-                initGyroscope();
+                isParallaxActive = true;
+                updateParallaxIndicator(true);
+                initParallax();
             }
         }
         
-        function updateGyroIndicator(status) {
-            const indicator = document.getElementById('gyro-indicator');
+        function updateParallaxIndicator(active) {
+            const indicator = document.getElementById('parallax-indicator');
             if (indicator) {
-                indicator.innerHTML = `📱 Гироскоп: ${status}`;
-                if (status.includes('выключен') || status.includes('не поддерживается')) {
-                    indicator.classList.add('inactive');
+                if (active) {
+                    indicator.innerHTML = `🎮 Параллакс: ВКЛ`;
+                    indicator.classList.add('active');
                 } else {
-                    indicator.classList.remove('inactive');
+                    indicator.innerHTML = `🎮 Параллакс: ВЫКЛ`;
+                    indicator.classList.remove('active');
                 }
             }
         }
@@ -779,8 +1605,8 @@
         // ПОКАЗАТЬ УВЕДОМЛЕНИЕ О СВАЙПЕ
         function showSwipeNotification(type, name) {
             const message = type === 'right' 
-                ? `💖 Интерес к ${name}!` 
-                : `🙏 Отказ от ${name}`;
+                ? `⚙️ ${name} обновлено!` 
+                : `🙏 ${name}`;
                 
             const notification = document.createElement('div');
             notification.className = `swipe-notification ${type === 'right' ? 'like' : 'dislike'}`;
@@ -793,9 +1619,39 @@
             }, 2000);
         }
         
+        // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+        function switchTab(tabName) {
+            currentTab = tabName;
+            const user = JSON.parse(localStorage.getItem('aion_premium_user'));
+            if (user) {
+                showMainScreen(user);
+            }
+        }
+        
         // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
         function initApp() {
             console.log('🧠 AION Premium запущен');
+            
+            // Определяем устройство
+            detectDevice();
+            
+            // Показываем информацию в консоли для отладки
+            if (deviceInfo.isMobile) {
+                console.log('📱 Запуск в мобильном режиме');
+                if (deviceInfo.isIOS) {
+                    console.log('🍎 Оптимизация для iOS');
+                } else if (deviceInfo.isAndroid) {
+                    console.log('🤖 Оптимизация для Android');
+                }
+            } else {
+                console.log('💻 Запуск в десктоп режиме');
+            }
+
+            // Проверяем поддержку браузером необходимых функций
+            if (!('localStorage' in window)) {
+                alert('Ваш браузер не поддерживает необходимое для работы приложения. Пожалуйста, обновите браузер.');
+                return;
+            }
             
             const savedUser = localStorage.getItem('aion_premium_user');
             if (savedUser) {
@@ -852,9 +1708,10 @@
                         <button type="submit" class="btn-primary">Начать знакомиться</button>
                     </form>
                     
-                    <div class="comfort-text">
+                    <div class="comfort-text" style="margin-top: 20px; text-align: center; color: rgba(224, 224, 255, 0.7); font-size: 14px;">
                         Здесь не важно количество лайков, а важно качество общения
-                        <br>📱 На главном экране наклоняйте телефон для 3D-эффекта карточек
+                        <br>🎮 Наводите мышку на карточку для 3D-параллакс эффекта
+                        <br>⚙️ Настройки доступны в правом верхнем углу
                     </div>
                 </div>
             `;
@@ -923,27 +1780,111 @@
                         <p>Привет, ${user.name}! Найди своего человека</p>
                     </div>
                     
-                    <div id="cards-container" style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative;">
-                        <!-- Карточки будут здесь -->
+                    <div class="nav-tabs">
+                        <button class="nav-tab ${currentTab === 'dating' ? 'active' : ''}" onclick="switchTab('dating')">
+                            Знакомства
+                        </button>
+                        <button class="nav-tab ${currentTab === 'subscription' ? 'active' : ''}" onclick="switchTab('subscription')">
+                            Подписка
+                        </button>
                     </div>
                     
-                    <div class="action-buttons">
-                        <button class="action-btn btn-dislike" onclick="handleSwipe('left')">👎</button>
-                        <button class="action-btn btn-like" onclick="handleSwipe('right')">👍</button>
+                    <div id="content-container" style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative;">
+                        <!-- Контент будет здесь -->
                     </div>
                     
-                    <div class="comfort-text">
-                        Не торопитесь. Настоящие связи требуют времени и внимания.
-                        <br>📱 Нажмите на индикатор гироскопа для включения/выключения
-                    </div>
-                    
-                    <button onclick="logout()" style="padding: 12px 25px; background: rgba(30, 30, 50, 0.8); color: #e0e0ff; border: 1px solid rgba(80, 200, 255, 0.2); border-radius: 15px; margin: 20px; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease;">
-                        Выйти
-                    </button>
+                    ${currentTab === 'dating' ? `
+                        <div class="action-buttons">
+                            <button class="action-btn btn-dislike" onclick="handleSwipe('left')">👎</button>
+                            <button class="action-btn btn-like" onclick="handleSwipe('right')">👍</button>
+                        </div>
+                    ` : ''}
                 </div>
             `;
             
-            showCurrentCard();
+            if (currentTab === 'dating') {
+                showCurrentCard();
+            } else {
+                showSubscriptionScreen();
+            }
+        }
+        
+        // ЭКРАН ПОДПИСКИ
+        function showSubscriptionScreen() {
+            const container = document.getElementById('content-container');
+            container.innerHTML = `
+                <div style="width: 100%;">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="color: rgba(160, 160, 255, 0.8); font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <span style="font-size: 16px;">←</span>
+                            Листай в бок
+                            <span style="font-size: 16px;">→</span>
+                        </div>
+                    </div>
+                    
+                    <div class="subscription-container">
+                        <div class="subscription-card free">
+                            <div class="subscription-header">
+                                <div class="subscription-title">Бесплатно</div>
+                                <div class="subscription-price">₽0</div>
+                                <div class="subscription-period">навсегда</div>
+                            </div>
+                            <ul class="subscription-features">
+                                <li>Базовый поиск партнеров</li>
+                                <li>5 лайков в день</li>
+                                <li>Ограниченный просмотр анкет</li>
+                                <li>Стандартные рекомендации</li>
+                            </ul>
+                            <button class="btn-subscribe" style="cursor: not-allowed;">
+                                Активна
+                            </button>
+                        </div>
+                        
+                        <div class="subscription-card plus">
+                            <div class="subscription-header">
+                                <div class="subscription-title">Plus+</div>
+                                <div class="subscription-price">₽---</div>
+                                <div class="subscription-period">в месяц</div>
+                            </div>
+                            <ul class="subscription-features">
+                                <li>Расширенный поиск партнеров</li>
+                                <li>Неограниченное количество лайков</li>
+                                <li>Просмотр кто проявил к вам интерес</li>
+                                <li>Приоритет в рекомендациях</li>
+                            </ul>
+                            <button class="btn-subscribe" onclick="handleSubscription('plus')">
+                                Выбрать Plus+
+                            </button>
+                        </div>
+                        
+                        <div class="subscription-card premium">
+                            <div class="subscription-header">
+                                <div class="subscription-title">PREMIUM</div>
+                                <div class="subscription-price">₽---</div>
+                                <div class="subscription-period">в месяц</div>
+                            </div>
+                            <ul class="subscription-features">
+                                <li>Все возможности Plus+</li>
+                                <li>Персональный подбор партнеров</li>
+                                <li>Расширенная аналитика совместимости</li>
+                                <li>Эксклюзивные события и встречи</li>
+                                <li>Поддержка 24/7 от персонального консьержа</li>
+                                <li>Приоритетная техническая поддержка</li>
+                            </ul>
+                            <button class="btn-subscribe" onclick="handleSubscription('premium')">
+                                Выбрать PREMIUM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ОБРАБОТКА ВЫБОРА ПОДПИСКИ
+        function handleSubscription(type) {
+            const subscriptionName = type === 'plus' ? 'Plus+' : 'PREMIUM';
+            showSwipeNotification('right', `подписку ${subscriptionName}`);
+            console.log(`🎯 Пользователь выбрал подписку: ${subscriptionName}`);
         }
         
         // Функция для форматирования текста с переносами строк
@@ -953,15 +1894,15 @@
         
         // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ
         function showCurrentCard() {
-            const container = document.getElementById('cards-container');
+            const container = document.getElementById('content-container');
             
             if (currentCardIndex >= sampleUsers.length) {
                 container.innerHTML = `
                     <div style="text-align: center; color: #e0e0ff; padding: 40px;">
                         <h3 style="margin-bottom: 15px; font-size: 24px; color: #80c8ff;">🌸 На сегодня достаточно</h3>
                         <p style="margin-bottom: 20px; opacity: 0.9;">Вы познакомились со всеми анкетами. Завтра появятся новые люди.</p>
-                        <button onclick="location.reload()" style="padding: 12px 25px; background: rgba(30, 30, 50, 0.8); color: #e0e0ff; border: 1px solid rgba(80, 200, 255, 0.2); border-radius: 15px; cursor: pointer; backdrop-filter: blur(10px);">
-                            Отдохнуть
+                        <button onclick="resetCards()" style="padding: 12px 25px; background: rgba(30, 30, 50, 0.8); color: #e0e0ff; border: 1px solid rgba(80, 200, 255, 0.2); border-radius: 15px; cursor: pointer; backdrop-filter: blur(10px);">
+                            Начать заново
                         </button>
                     </div>
                 `;
@@ -1017,12 +1958,18 @@
                 </div>
             `;
 
-            // Запускаем гироскоп для новой карточки
+            // Инициализируем параллакс для новой карточки
             setTimeout(() => {
-                if (isGyroActive) {
-                    initGyroscope();
+                if (isParallaxActive) {
+                    initParallax();
                 }
             }, 100);
+        }
+        
+        // СБРОС КАРТОЧЕК
+        function resetCards() {
+            currentCardIndex = 0;
+            showCurrentCard();
         }
         
         // РАСКРЫТЬ ДЕТАЛИ
@@ -1041,10 +1988,10 @@
                 text.textContent = 'Узнать больше';
                 isCardExpanded = false;
                 
-                // Включаем гироскоп обратно
+                // Включаем параллакс обратно
                 setTimeout(() => {
-                    if (isGyroActive) {
-                        initGyroscope();
+                    if (isParallaxActive) {
+                        initParallax();
                     }
                 }, 100);
             } else {
@@ -1055,8 +2002,8 @@
                 text.textContent = 'Свернуть';
                 isCardExpanded = true;
                 
-                // Отключаем гироскоп при раскрытой карточке
-                stopGyroscope();
+                // Отключаем параллакс при раскрытой карточке
+                stopParallax();
             }
         }
         
@@ -1067,7 +2014,7 @@
                 return;
             }
 
-            stopGyroscope();
+            stopParallax();
             
             const card = document.getElementById('current-card');
             const buttons = document.querySelectorAll('.action-btn');
@@ -1096,10 +2043,23 @@
             }
         }
         
-        // ВЫХОД
+        // ВЫХОД - ИСПРАВЛЕННАЯ ВЕРСИЯ
         function logout() {
-            localStorage.removeItem('aion_premium_user');
-            location.reload();
+            // Закрываем меню настроек
+            toggleSettings();
+            
+            // Показываем уведомление о выходе
+            showSwipeNotification('right', 'выход из аккаунта');
+            
+            // Ждем завершения анимаций
+            setTimeout(() => {
+                // Удаляем пользователя
+                localStorage.removeItem('aion_premium_user');
+                currentCardIndex = 0;
+                
+                // Показываем экран аутентификации
+                showAuthScreen();
+            }, 1000);
         }
         
         // ЗАПУСК ПРИЛОЖЕНИЯ
@@ -1109,8 +2069,14 @@
         window.selectGender = selectGender;
         window.handleSwipe = handleSwipe;
         window.toggleDetails = toggleDetails;
-        window.toggleGyroscope = toggleGyroscope;
+        window.toggleParallax = toggleParallax;
+        window.toggleSettings = toggleSettings;
+        window.handleSettingsAction = handleSettingsAction;
+        window.switchTab = switchTab;
+        window.handleSubscription = handleSubscription;
+        window.resetCards = resetCards;
         window.logout = logout;
+        window.showDeviceInfo = showDeviceInfo;
     </script>
 </body>
 </html>

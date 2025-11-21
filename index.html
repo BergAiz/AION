@@ -83,14 +83,15 @@
             66% { transform: translateY(10px) scale(0.9); }
         }
         
-        /* Анимация дыхания */
+        /* Анимация дыхания - ИСПРАВЛЕНА ДЛЯ ПЛАВНОСТИ */
         @keyframes gentleBreath {
             0%, 100% { transform: scale(1); opacity: 0.95; }
             50% { transform: scale(1.02); opacity: 1; }
         }
         
-        .auth-container, .card, .subscription-card, .settings-menu {
-            animation: gentleBreath 6s ease-in-out infinite;
+        .auth-container, .card, .subscription-card, .settings-menu, .chat-container {
+            animation: gentleBreath 8s ease-in-out infinite;
+            will-change: transform, opacity; /* Улучшение производительности */
         }
         
         /* Контейнер приложения */
@@ -133,7 +134,33 @@
             transition: all 0.3s ease;
         }
         
-        /* Меню настроек - ИСПРАВЛЕНА ПРОБЛЕМА СКРОЛЛА */
+        /* Индикатор устройства */
+        .device-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(20, 20, 35, 0.9);
+            padding: 12px 18px;
+            border-radius: 25px;
+            color: #80c8ff;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(160, 160, 160, 0.4);
+            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(160, 160, 160, 0.1);
+            max-width: 150px;
+            text-align: center;
+        }
+        
+        .device-indicator:hover {
+            border-color: rgba(100, 200, 255, 0.6);
+            box-shadow: 0 0 15px rgba(100, 200, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        /* Меню настроек */
         .settings-menu {
             position: fixed;
             top: 80px;
@@ -231,6 +258,44 @@
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(80, 200, 255, 0.3), transparent);
             margin: 20px 0;
+        }
+        
+        /* Подменю поддержки */
+        .support-submenu {
+            background: rgba(25, 25, 45, 0.8);
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(80, 200, 255, 0.2);
+        }
+        
+        .support-option {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(80, 200, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .support-option:last-child {
+            border-bottom: none;
+        }
+        
+        .support-option:hover {
+            background: rgba(80, 200, 255, 0.1);
+        }
+        
+        .support-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .support-text {
+            color: #e0e0ff;
+            font-size: 14px;
         }
         
         /* Навигационные вкладки */
@@ -536,14 +601,14 @@
             font-size: 15px;
         }
         
-        /* Стрелочка для раскрытия - ИСПРАВЛЕНО: поднято на 1мм выше */
+        /* Стрелочка для раскрытия */
         .expand-toggle {
             text-align: center;
-            padding: 10px 0 5px; /* Изменено с 15px 0 5px на 10px 0 5px */
+            padding: 10px 0 5px;
             cursor: pointer;
             color: rgba(128, 200, 255, 0.8);
             transition: all 0.3s ease;
-            margin-top: 5px; /* Добавлено для компенсации */
+            margin-top: 5px;
         }
         
         .expand-toggle:hover {
@@ -960,66 +1025,6 @@
             box-shadow: 0 0 15px rgba(100, 200, 255, 0.3);
             color: #80c8ff;
         }
-
-        /* Индикатор устройства */
-        .device-indicator {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(20, 20, 35, 0.9);
-            padding: 12px 18px;
-            border-radius: 25px;
-            color: #80c8ff;
-            font-size: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(160, 160, 160, 0.4);
-            z-index: 1000;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(160, 160, 160, 0.1);
-            max-width: 150px;
-            text-align: center;
-        }
-        
-        .device-indicator:hover {
-            border-color: rgba(100, 200, 255, 0.6);
-            box-shadow: 0 0 15px rgba(100, 200, 255, 0.3);
-            transform: scale(1.05);
-        }
-        
-        /* Уведомления о свайпах */
-        .swipe-notification {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(20, 20, 35, 0.95);
-            border: 1px solid;
-            border-radius: 15px;
-            padding: 20px 30px;
-            font-size: 18px;
-            font-weight: 600;
-            z-index: 1000;
-            backdrop-filter: blur(20px);
-            animation: fadeInOut 2s ease-in-out forwards;
-        }
-        
-        .swipe-notification.like {
-            border-color: #80ff80;
-            color: #80ff80;
-        }
-        
-        .swipe-notification.dislike {
-            border-color: #ff8080;
-            color: #ff8080;
-        }
-        
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-        }
         
         /* Оверлей для меню настроек */
         .settings-overlay {
@@ -1039,6 +1044,421 @@
         .settings-overlay.active {
             opacity: 1;
             visibility: visible;
+        }
+        
+        /* Модальные окна */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(20, 20, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(80, 200, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: #80c8ff;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .modal-content {
+            color: #e0e0ff;
+            line-height: 1.6;
+        }
+        
+        .modal-content p {
+            margin-bottom: 15px;
+        }
+        
+        .modal-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .modal-content li {
+            margin-bottom: 8px;
+        }
+        
+        .modal-close {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: rgba(30, 30, 50, 0.8);
+            border: 1px solid rgba(80, 200, 255, 0.3);
+            color: #80c8ff;
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1002;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+        
+        .modal-close.active {
+            display: flex;
+        }
+        
+        .modal-close:hover {
+            background: rgba(80, 200, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        /* Оверлей для модальных окон */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Стили для вкладки чата */
+        .chat-container {
+            background: rgba(20, 20, 35, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(80, 200, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            max-width: 400px;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        
+        .message.user {
+            align-self: flex-end;
+            background: rgba(80, 200, 255, 0.2);
+            border: 1px solid rgba(80, 200, 255, 0.4);
+            color: #e0e0ff;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message.other {
+            align-self: flex-start;
+            background: rgba(40, 40, 60, 0.8);
+            border: 1px solid rgba(80, 200, 255, 0.3);
+            color: #e0e0ff;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message-time {
+            font-size: 10px;
+            opacity: 0.6;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(30, 30, 50, 0.8);
+            border: 1px solid rgba(80, 200, 255, 0.3);
+            border-radius: 20px;
+            color: #e0e0ff;
+            font-size: 14px;
+            resize: none;
+            min-height: 50px;
+            max-height: 120px;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: rgba(80, 200, 255, 0.6);
+        }
+        
+        .chat-send-button {
+            padding: 12px 15px;
+            background: linear-gradient(45deg, #80c8ff, #a0d8ff);
+            border: none;
+            border-radius: 50%;
+            color: #0f0f1f;
+            cursor: pointer;
+            font-weight: 600;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-send-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(80, 200, 255, 0.4);
+        }
+        
+        .emoji-button {
+            padding: 12px 15px;
+            background: rgba(30, 30, 50, 0.8);
+            border: 1px solid rgba(80, 200, 255, 0.3);
+            border-radius: 50%;
+            color: #80c8ff;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .emoji-button:hover {
+            background: rgba(80, 200, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .emoji-picker {
+            position: absolute;
+            bottom: 70px;
+            background: rgba(20, 20, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(80, 200, 255, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            display: none;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            z-index: 100;
+            max-width: 300px;
+        }
+        
+        .emoji-picker.active {
+            display: grid;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .emoji-option {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .emoji-option:hover {
+            background: rgba(80, 200, 255, 0.2);
+            transform: scale(1.2);
+        }
+        
+        /* AI помощник в чате */
+        .ai-assistant-chat {
+            background: rgba(30, 30, 50, 0.9);
+            border: 1px solid rgba(78, 205, 196, 0.4);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .ai-assistant-chat.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .ai-suggestions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .ai-suggestion-btn {
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: #e0e0ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .ai-suggestion-btn:hover {
+            background: rgba(78, 205, 196, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4ECDC4;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        /* Индикатор модерации */
+        .moderation-warning {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(239, 68, 68, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 100, 100, 0.6);
+            border-radius: 10px;
+            padding: 15px 20px;
+            color: white;
+            font-weight: 600;
+            z-index: 1003;
+            display: none;
+            animation: fadeInOut 3s ease-in-out;
+        }
+        
+        /* Список чатов */
+        .chats-list {
+            background: rgba(20, 20, 35, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(80, 200, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            max-width: 400px;
+            overflow-y: auto;
+        }
+        
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+            background: rgba(30, 30, 50, 0.6);
+            border: 1px solid transparent;
+        }
+        
+        .chat-item:hover {
+            background: rgba(40, 40, 70, 0.8);
+            border-color: rgba(80, 200, 255, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .chat-item.active {
+            background: rgba(80, 200, 255, 0.1);
+            border-color: rgba(80, 200, 255, 0.5);
+        }
+        
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: rgba(80, 200, 255, 0.2);
+            border: 2px solid rgba(80, 200, 255, 0.4);
+        }
+        
+        .chat-info {
+            flex: 1;
+        }
+        
+        .chat-name {
+            color: #80c8ff;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .chat-last-message {
+            color: rgba(224, 224, 255, 0.7);
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        
+        .chat-time {
+            color: rgba(224, 224, 255, 0.5);
+            font-size: 12px;
+        }
+        
+        .no-chats {
+            text-align: center;
+            color: rgba(224, 224, 255, 0.7);
+            padding: 40px 20px;
         }
         
         /* Мобильные стили */
@@ -1092,11 +1512,32 @@
             }
 
             .device-indicator {
-                bottom: 60px;
-                right: 10px;
+                top: 10px;
+                left: 10px;
                 font-size: 11px;
                 padding: 10px 15px;
                 max-width: 130px;
+            }
+            
+            .modal {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .modal-close {
+                top: 15px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+            }
+
+            .chat-container {
+                height: 450px;
+            }
+
+            .emoji-picker {
+                max-width: 280px;
+                grid-template-columns: repeat(5, 1fr);
             }
         }
         
@@ -1135,6 +1576,16 @@
                 min-width: 240px;
                 padding: 15px;
             }
+
+            .chat-container {
+                height: 400px;
+                padding: 15px;
+            }
+
+            .emoji-picker {
+                max-width: 250px;
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
         
         /* Поддержка сенсорных устройств */
@@ -1160,6 +1611,26 @@
             .subscription-card:hover {
                 transform: none;
             }
+
+            .emoji-option:hover {
+                transform: none;
+            }
+
+            .ai-suggestion-btn:hover {
+                transform: none;
+            }
+
+            .chat-send-button:hover {
+                transform: none;
+            }
+
+            .emoji-button:hover {
+                transform: none;
+            }
+            
+            .chat-item:hover {
+                transform: none;
+            }
         }
         
         /* Улучшенная поддержка iOS */
@@ -1179,6 +1650,11 @@
     <div class="glow-effect glow-1"></div>
     <div class="glow-effect glow-2"></div>
     <div class="glow-effect glow-3"></div>
+    
+    <!-- Индикатор устройства -->
+    <div class="device-indicator" id="device-indicator" onclick="showDeviceInfo()">
+        📱 Устройство
+    </div>
     
     <!-- Кнопка настроек -->
     <div class="settings-button" id="settings-button" onclick="toggleSettings()">
@@ -1218,28 +1694,43 @@
         <div class="settings-divider"></div>
         
         <div class="settings-section">
-            <div class="settings-item" onclick="handleSettingsAction('support')">
+            <div class="settings-item" onclick="toggleSupportSubmenu()">
                 <div class="settings-item-content">
                     <div class="settings-icon-small">💬</div>
                     <div class="settings-text">Написать в поддержку</div>
                 </div>
             </div>
             
-            <div class="settings-item" onclick="handleSettingsAction('privacy')">
+            <div class="support-submenu" id="support-submenu" style="display: none;">
+                <div class="support-option" onclick="handleSupport('question')">
+                    <div class="support-icon">❓</div>
+                    <div class="support-text">Вопрос</div>
+                </div>
+                <div class="support-option" onclick="handleSupport('complaint')">
+                    <div class="support-icon">⚠️</div>
+                    <div class="support-text">Жалоба</div>
+                </div>
+                <div class="support-option" onclick="handleSupport('suggestion')">
+                    <div class="support-icon">💡</div>
+                    <div class="support-text">Предложение</div>
+                </div>
+            </div>
+            
+            <div class="settings-item" onclick="showModal('privacy')">
                 <div class="settings-item-content">
                     <div class="settings-icon-small">📄</div>
                     <div class="settings-text">Политика конфиденциальности</div>
                 </div>
             </div>
             
-            <div class="settings-item" onclick="handleSettingsAction('terms')">
+            <div class="settings-item" onclick="showModal('terms')">
                 <div class="settings-item-content">
                     <div class="settings-icon-small">📝</div>
                     <div class="settings-text">Пользовательское соглашение</div>
                 </div>
             </div>
             
-            <div class="settings-item" onclick="handleSettingsAction('about')">
+            <div class="settings-item" onclick="showModal('about')">
                 <div class="settings-item-content">
                     <div class="settings-icon-small">ℹ️</div>
                     <div class="settings-text">О приложении</div>
@@ -1262,14 +1753,203 @@
     <!-- Оверлей для меню настроек -->
     <div class="settings-overlay" id="settings-overlay" onclick="toggleSettings()"></div>
     
+    <!-- Оверлей для модальных окон -->
+    <div class="modal-overlay" id="modal-overlay" onclick="closeAllModals()"></div>
+    
+    <!-- Модальные окна -->
+    <div class="modal" id="privacy-modal">
+        <div class="modal-header">
+            <div class="modal-title">Политика конфиденциальности</div>
+        </div>
+        <div class="modal-content">
+            <p><strong>Последнее обновление:</strong> 2024</p>
+            
+            <p>Ваша конфиденциальность очень важна для нас. В этой политике конфиденциальности описывается, как AION Premium собирает, использует и защищает вашу личную информацию.</p>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Собираемая информация</h3>
+            <ul>
+                <li>Основная информация профиля (имя, возраст, пол)</li>
+                <li>Интересы и предпочтения для подбора совместимых партнеров</li>
+                <li>Технические данные (устройство, браузер, IP-адрес)</li>
+                <li>История взаимодействий с другими пользователями</li>
+                <li>Метрики использования приложения</li>
+                <li>Сообщения и медиафайлы, отправленные через платформу</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Использование информации</h3>
+            <ul>
+                <li>Персонализация рекомендаций знакомств</li>
+                <li>Улучшение качества сервиса и алгоритмов подбора</li>
+                <li>Обеспечение безопасности платформы и предотвращение мошенничества</li>
+                <li>Отправка важных уведомлений и обновлений</li>
+                <li>Аналитика для улучшения пользовательского опыта</li>
+                <li>Соблюдение юридических обязательств</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Защита данных</h3>
+            <p>Мы используем современные методы шифрования и защиты данных, включая:</p>
+            <ul>
+                <li>SSL-шифрование всех передаваемых данных</li>
+                <li>Анонимизация аналитических данных</li>
+                <li>Регулярные аудиты безопасности</li>
+                <li>Ограниченный доступ к персональным данным</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Права пользователей</h3>
+            <p>Вы имеете право:</p>
+            <ul>
+                <li>Запрашивать доступ к вашим персональным данным</li>
+                <li>Исправлять неточную информацию</li>
+                <li>Удалять ваш аккаунт и связанные данные</li>
+                <li>Ограничивать обработку ваших данных</li>
+                <li>Переносить ваши данные в другую службу</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Cookies и отслеживание</h3>
+            <p>Мы используем cookies и аналогичные технологии для:</p>
+            <ul>
+                <li>Авторизации и аутентификации</li>
+                <li>Запоминания ваших предпочтений</li>
+                <li>Анализа использования приложения</li>
+                <li>Персонализации контента</li>
+            </ul>
+            
+            <p style="margin-top: 20px; font-size: 14px; color: rgba(224, 224, 255, 0.7);">
+                По вопросам, связанным с конфиденциальностью, обращайтесь: privacy@aion-premium.com
+            </p>
+        </div>
+    </div>
+    
+    <div class="modal" id="terms-modal">
+        <div class="modal-header">
+            <div class="modal-title">Пользовательское соглашение</div>
+        </div>
+        <div class="modal-content">
+            <p><strong>Условия использования AION Premium</strong></p>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">1. Общие положения</h3>
+            <p>Используя приложение AION Premium, вы соглашаетесь с условиями данного соглашения. Сервис предназначен для лиц старше 18 лет.</p>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">2. Регистрация и аккаунт</h3>
+            <ul>
+                <li>Вы обязаны предоставлять точную и актуальную информацию</li>
+                <li>Один пользователь - один аккаунт</li>
+                <li>Запрещена передача аккаунта третьим лицам</li>
+                <li>Вы несете ответственность за безопасность вашего аккаунта</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">3. Правила поведения</h3>
+            <ul>
+                <li>Запрещено размещение ложной информации</li>
+                <li>Не допускается оскорбительное поведение и харассмент</li>
+                <li>Запрещена рассылка спама и рекламы</li>
+                <li>Нельзя использовать чужие фотографии и персональные данные</li>
+                <li>Запрещены любые формы мошенничества</li>
+                <li>Не допускается распространение контента для взрослых</li>
+                <li>Запрещена пропаганда насилия и дискриминации</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">4. Подписки и платежи</h3>
+            <ul>
+                <li>Подписки автоматически продлеваются</li>
+                <li>Вы можете отменить автопродление в настройках вашего устройства</li>
+                <li>Возврат средств осуществляется в соответствии с политикой платформы</li>
+                <li>Цены могут изменяться с уведомлением пользователей</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">5. Интеллектуальная собственность</h3>
+            <p>Все права на приложение, дизайн и контент принадлежат AION Technologies. Вы не можете копировать, модифицировать или распространять приложение без разрешения.</p>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">6. Ответственность</h3>
+            <p>AION Premium не несет ответственности за:</p>
+            <ul>
+                <li>Встречи пользователей в реальной жизни</li>
+                <li>Достоверность информации, предоставленной пользователями</li>
+                <li>Технические сбои, вызванные внешними факторами</li>
+                <li>Действия третьих лиц</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">7. Прекращение обслуживания</h3>
+            <p>Мы оставляем за собой право приостановить или прекратить обслуживание аккаунтов, нарушающих условия соглашения.</p>
+            
+            <p style="margin-top: 20px; font-size: 14px; color: rgba(224, 224, 255, 0.7);">
+                Адрес для юридических уведомлений: legal@aion-premium.com
+            </p>
+        </div>
+    </div>
+    
+    <div class="modal" id="about-modal">
+        <div class="modal-header">
+            <div class="modal-title">О приложении AION Premium</div>
+        </div>
+        <div class="modal-content">
+            <p><strong>AION Premium</strong> — это инновационное приложение для знакомств с фокусом на качественные связи и глубокую совместимость.</p>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Наша миссия</h3>
+            <p>Мы создаем пространство, где технологии служат человеческим связям. Наша цель — помочь вам найти не просто matches, а настоящую совместимость через умные алгоритмы и продуманный пользовательский опыт.</p>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Ключевые особенности</h3>
+            <ul>
+                <li><strong>Умный алгоритм подбора</strong> на основе психологической совместимости и общих интересов</li>
+                <li><strong>3D параллакс-эффекты</strong> для immersive опыта взаимодействия</li>
+                <li><strong>Киберпанк дизайн</strong> с неоновой эстетикой и плавными анимациями</li>
+                <li><strong>Многоуровневая система подписок</strong> для разных потребностей пользователей</li>
+                <li><strong>Расширенная аналитика совместимости</strong> с детальными метриками</li>
+                <li><strong>Приватность и безопасность</strong> как основной приоритет</li>
+                <li><strong>Адаптивный интерфейс</strong> для всех типов устройств</li>
+                <li><strong>AI-помощник</strong> на базе Яндекс GPT для помощи в общении</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Технологический стек</h3>
+            <p>Приложение использует современные веб-технологии для обеспечения максимальной производительности:</p>
+            <ul>
+                <li>HTML5 с семантической разметкой</li>
+                <li>CSS3 с продвинутыми анимациями и 3D-трансформациями</li>
+                <li>JavaScript ES6+ с современными API</li>
+                <li>Adaptive design с mobile-first подходом</li>
+                <li>Local Storage для оффлайн-работы и быстрого доступа</li>
+                <li>Service Workers для кэширования ресурсов</li>
+                <li>WebGL для продвинутой графики (в разработке)</li>
+                <li>Yandex GPT API для AI-помощника</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Архитектура приложения</h3>
+            <ul>
+                <li>Модульная структура кода</li>
+                <li>Компонентный подход к UI</li>
+                <li>Event-driven архитектура</li>
+                <li>Responsive дизайн-система</li>
+                <li>Доступность (a11y) стандарты</li>
+                <li>AI-интеграция для умной помощи</li>
+            </ul>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Версия и обновления</h3>
+            <p><strong>Текущая версия:</strong> 2.1.0</p>
+            <p><strong>Дата сборки:</strong> 2024</p>
+            <p><strong>Следующее обновление:</strong> Q1 2024 - Умные уведомления</p>
+            <p><strong>Разработчик:</strong> AION Technologies</p>
+            
+            <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Обратная связь</h3>
+            <p>Мы постоянно работаем над улучшением приложения. Ваши отзывы и предложения помогают нам становиться лучше!</p>
+            
+            <p style="margin-top: 20px; font-size: 14px; color: rgba(224, 224, 255, 0.7);">
+                © 2024 AION Premium. Все права защищены.<br>
+                AION Technologies - создавая будущее знакомств сегодня.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Кнопка закрытия для модальных окон -->
+    <button class="modal-close" id="modal-close" onclick="closeAllModals()">×</button>
+    
     <!-- Индикатор параллакса -->
     <div class="parallax-indicator" id="parallax-indicator" onclick="toggleParallax()">
         🎮 Параллакс: ВКЛ
     </div>
-
-    <!-- Индикатор устройства -->
-    <div class="device-indicator" id="device-indicator" onclick="showDeviceInfo()">
-        📱 Устройство
+    
+    <!-- Предупреждение модерации -->
+    <div class="moderation-warning" id="moderation-warning">
+        ⚠️ Сообщение содержит неподходящий контент
     </div>
     
     <div id="app">
@@ -1285,7 +1965,98 @@
         let isCardExpanded = false;
         let currentTab = 'dating';
         let isSettingsOpen = false;
+        let isModalOpen = false;
         let deviceInfo = {};
+        
+        // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ AI И ЧАТА
+        let chatMessages = [];
+        let isEmojiPickerOpen = false;
+        let aiSuggestions = [];
+        let activeChatId = null;
+        let userChats = [];
+        
+        // СЛОВАРЬ СЛЕНГА ДЛЯ AI
+        let slangDictionary = {
+            'пон': 'понятно',
+            'го': 'давай, пойдём, начинай',
+            'щас': 'сейчас',
+            'норм': 'нормально, хорошо',
+            'ок': 'хорошо, согласен',
+            'спс': 'спасибо',
+            'пж': 'пожалуйста',
+            'плз': 'пожалуйста',
+            'окей': 'хорошо',
+            'агонь': 'отлично, круто',
+            'рофл': 'шутка',
+            'краш': 'симпатия, человек который нравится',
+            'хейт': 'ненависть',
+            'имхо': 'по моему скромному мнению',
+            'лол': 'смешно',
+            'кринж': 'стыд, неловкость',
+            'чилить': 'расслабляться',
+            'зашквар': 'позор',
+            'сасный': 'привлекательный',
+            'вайб': 'атмосфера, настроение'
+        };
+        
+        // НЕИЗВЕСТНЫЕ СЛОВА ДЛЯ ОБУЧЕНИЯ AI
+        let unknownWords = new Set();
+        
+        const YANDEX_API_KEY = 'AQVN1T7FdGkrMxyulbcXD-e0nndHYbzjbcAKrnv5';
+        const YANDEX_FOLDER_ID = 'b1g5njmid62d8fdbep5i';
+        const YANDEX_API_URL = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion';
+
+        // Эмодзи для выбора
+        const emojis = ['😊', '😂', '🥰', '😍', '🤔', '😎', '👍', '❤️', '🔥', '✨', '🌟', '💫', '💕', '💖', '💯', '🎉', '🙏', '😘', '🤗', '😇', '🥳', '😜', '🤩', '😋', '💝'];
+
+        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ
+        const sampleUsers = [
+            { 
+                id: 'user_1',
+                name: "Анна", 
+                age: 25, 
+                gender: "female",
+                bio: "Люблю путешествия и фотографию. Ищу глубокие и осмысленные отношения. В свободное время занимаюсь йогой и изучаю новые кулинарные рецепты.",
+                details: {
+                    interests: "Фотография, йога, кулинария, путешествия, искусство",
+                    lifestyle: "Активный образ жизни, здоровое питание, регулярные тренировки, медитация",
+                    goals: "Найти партнера для путешествий и совместного развития\nОткрыть свою фотостудию\nИзучить японский язык",
+                    education: "Высшее психологическое образование\nКурсы по фотографии и дизайну",
+                    work: "Фотограф-фрилансер\nПреподаватель йоги на выходных",
+                    hobbies: "Чтение книг, велопрогулки, посещение выставок\nИзучение психологии отношений\nПриготовление здоровой пищи"
+                }
+            },
+            { 
+                id: 'user_2',
+                name: "Максим", 
+                age: 28, 
+                gender: "male",
+                bio: "Программист, увлекаюсь спортом и научной фантастикой. Ценю искренность и честность в отношениях.",
+                details: {
+                    interests: "Программирование, бег, научная фантастика, настольные игры, технологии",
+                    lifestyle: "Спортивный образ жизни, работа из дома, регулярные пробежки, правильное питание",
+                    goals: "Создать семью и развивать собственный проект\nПробежать марафон\nИзучить искусственный интеллект",
+                    education: "Магистр компьютерных наук\nСертификаты по машинному обучению",
+                    work: "Senior разработчик в IT-компании\nКонсультант по технологиям",
+                    hobbies: "Шахматы, походы в горы, коллекционирование комиксов\nЧтение научной литературы\nИгра на гитаре"
+                }
+            },
+            { 
+                id: 'user_3',
+                name: "София", 
+                age: 23, 
+                gender: "female",
+                bio: "Студентка, обожаю искусство и кофе. Верю, что лучшие отношения строятся на дружбе и взаимопонимании.",
+                details: {
+                    interests: "Искусство, литература, кофе, театр, мода, дизайн",
+                    lifestyle: "Активная учеба, встречи с друзьями, творческие вечера, посещение культурных мероприятий",
+                    goals: "Закончить университет и открыть свою галерею\nСтать арт-директором\nПутешествовать по Европе",
+                    education: "Студентка художественного факультета\nКурсы по истории искусств",
+                    work: "Бариста в кофейне\nФриланс-дизайнер",
+                    hobbies: "Акварельная живопись, написание рассказов, танцы\nФотография городских пейзажей\nКоллекционирование винтажных открыток"
+                }
+            }
+        ];
 
         // ОПРЕДЕЛЕНИЕ УСТРОЙСТВА
         function detectDevice() {
@@ -1369,54 +2140,744 @@ ${deviceInfo.userAgent}
             alert(info);
         }
 
-        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ
-        const sampleUsers = [
-            { 
-                name: "Анна", 
-                age: 25, 
-                gender: "female",
-                bio: "Люблю путешествия и фотографию. Ищу глубокие и осмысленные отношения. В свободное время занимаюсь йогой и изучаю новые кулинарные рецепты.",
-                details: {
-                    interests: "Фотография, йога, кулинария, путешествия, искусство",
-                    lifestyle: "Активный образ жизни, здоровое питание, регулярные тренировки, медитация",
-                    goals: "Найти партнера для путешествий и совместного развития\nОткрыть свою фотостудию\nИзучить японский язык",
-                    education: "Высшее психологическое образование\nКурсы по фотографии и дизайну",
-                    work: "Фотограф-фрилансер\nПреподаватель йоги на выходных",
-                    hobbies: "Чтение книг, велопрогулки, посещение выставок\nИзучение психологии отношений\nПриготовление здоровой пищи"
+        // ИНИЦИАЛИЗАЦИЯ ЧАТОВ
+        function initChats() {
+            const savedChats = localStorage.getItem('aion_premium_chats');
+            if (savedChats) {
+                userChats = JSON.parse(savedChats);
+            }
+            
+            // Добавляем демо-чаты если их нет
+            if (userChats.length === 0) {
+                userChats = [
+                    {
+                        id: 'chat_1',
+                        userId: 'user_1',
+                        userName: 'Анна',
+                        userAge: 25,
+                        userGender: 'female',
+                        lastMessage: 'Привет! Как твои дела? 😊',
+                        lastMessageTime: new Date(Date.now() - 3600000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                        messages: [
+                            {
+                                id: 1,
+                                text: "Привет! Как твои дела? 😊",
+                                sender: "other",
+                                time: new Date(Date.now() - 3600000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                            },
+                            {
+                                id: 2,
+                                text: "Привет! Всё отлично, только что закончил(а) работу. А у тебя как?",
+                                sender: "user",
+                                time: new Date(Date.now() - 3500000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                            }
+                        ],
+                        unread: 1
+                    },
+                    {
+                        id: 'chat_2', 
+                        userId: 'user_2',
+                        userName: 'Максим',
+                        userAge: 28,
+                        userGender: 'male',
+                        lastMessage: 'Тоже хорошо! Хотел спросить - не хочешь сходить на кофе в эти выходные? ☕',
+                        lastMessageTime: new Date(Date.now() - 7200000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                        messages: [
+                            {
+                                id: 1,
+                                text: "Привет! Вижу у нас много общих интересов!",
+                                sender: "other",
+                                time: new Date(Date.now() - 7200000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                            },
+                            {
+                                id: 2,
+                                text: "Привет! Да, особенно научная фантастика 😊",
+                                sender: "user", 
+                                time: new Date(Date.now() - 7000000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                            },
+                            {
+                                id: 3,
+                                text: "Тоже хорошо! Хотел спросить - не хочешь сходить на кофе в эти выходные? ☕",
+                                sender: "other",
+                                time: new Date(Date.now() - 6800000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                            }
+                        ],
+                        unread: 0
+                    }
+                ];
+                saveChats();
+            }
+        }
+
+        // СОХРАНЕНИЕ ЧАТОВ
+        function saveChats() {
+            localStorage.setItem('aion_premium_chats', JSON.stringify(userChats));
+        }
+
+        // ОБРАБОТКА ВЗАИМНОГО ЛАЙКА
+        function handleMutualLike(userId) {
+            const user = sampleUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            // Проверяем, есть ли уже чат с этим пользователем
+            const existingChat = userChats.find(chat => chat.userId === userId);
+            
+            if (!existingChat) {
+                // Создаем новый чат
+                const newChat = {
+                    id: 'chat_' + Date.now(),
+                    userId: user.id,
+                    userName: user.name,
+                    userAge: user.age,
+                    userGender: user.gender,
+                    lastMessage: 'Начните общение! 👋',
+                    lastMessageTime: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    messages: [],
+                    unread: 0
+                };
+                
+                userChats.unshift(newChat);
+                saveChats();
+                
+                // Показываем уведомление
+                showMatchNotification(user.name);
+            }
+        }
+
+        // УВЕДОМЛЕНИЕ О МЭТЧЕ
+        function showMatchNotification(userName) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(45deg, #80c8ff, #a0d8ff);
+                color: #0f0f1f;
+                padding: 15px 25px;
+                border-radius: 15px;
+                font-weight: 600;
+                z-index: 1004;
+                box-shadow: 0 10px 25px rgba(80, 200, 255, 0.4);
+                animation: slideInDown 0.5s ease;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 20px;">🎉</span>
+                    <div>
+                        <div style="font-weight: 700;">Это взаимно!</div>
+                        <div>У вас мэтч с ${userName}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutUp 0.5s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+
+        // ПОЛУЧЕНИЕ АКТИВНОГО ЧАТА
+        function getActiveChat() {
+            return userChats.find(chat => chat.id === activeChatId);
+        }
+
+        // ОТОБРАЖЕНИЕ СПИСКА ЧАТОВ
+        function renderChatsList() {
+            const container = document.getElementById('content-container');
+            container.innerHTML = `
+                <div class="chats-list">
+                    <h3 style="color: #80c8ff; margin-bottom: 20px; text-align: center;">Ваши чаты</h3>
+                    ${userChats.length > 0 ? 
+                        userChats.map(chat => `
+                            <div class="chat-item ${activeChatId === chat.id ? 'active' : ''}" onclick="openChat('${chat.id}')">
+                                <div class="chat-avatar">
+                                    ${chat.userGender === 'male' ? '👨' : '👩'}
+                                </div>
+                                <div class="chat-info">
+                                    <div class="chat-name">${chat.userName}, ${chat.userAge}</div>
+                                    <div class="chat-last-message">${chat.lastMessage}</div>
+                                </div>
+                                <div class="chat-time">${chat.lastMessageTime}</div>
+                            </div>
+                        `).join('') 
+                        : 
+                        `<div class="no-chats">
+                            <div style="font-size: 48px; margin-bottom: 15px;">💬</div>
+                            <div style="margin-bottom: 10px;">У вас пока нет чатов</div>
+                            <div style="font-size: 14px; opacity: 0.7;">Взаимные лайки появятся здесь</div>
+                        </div>`
+                    }
+                </div>
+            `;
+        }
+
+        // ОТКРЫТИЕ ЧАТА
+        function openChat(chatId) {
+            activeChatId = chatId;
+            const chat = getActiveChat();
+            if (chat) {
+                chatMessages = chat.messages;
+                renderActiveChat();
+            }
+        }
+
+        // ОТОБРАЖЕНИЕ АКТИВНОГО ЧАТА
+        function renderActiveChat() {
+            const container = document.getElementById('content-container');
+            const chat = getActiveChat();
+            
+            if (!chat) return;
+            
+            container.innerHTML = `
+                <div class="chat-container">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(80, 200, 255, 0.2);">
+                        <button onclick="renderChatsList()" style="background: none; border: none; color: #80c8ff; font-size: 18px; cursor: pointer;">←</button>
+                        <div class="chat-avatar" style="width: 40px; height: 40px; font-size: 16px;">
+                            ${chat.userGender === 'male' ? '👨' : '👩'}
+                        </div>
+                        <div>
+                            <div style="color: #80c8ff; font-weight: 600;">${chat.userName}, ${chat.userAge}</div>
+                            <div style="color: rgba(224, 224, 255, 0.7); font-size: 12px;">в сети</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Сообщения будут здесь -->
+                    </div>
+                    <div class="chat-input-container">
+                        <button class="emoji-button" onclick="toggleEmojiPicker()">
+                            😊
+                        </button>
+                        <textarea class="chat-input" id="chat-input" placeholder="Введите сообщение..." rows="1" oninput="handleChatInput()"></textarea>
+                        <button class="chat-send-button" onclick="sendChatMessage()">
+                            ➤
+                        </button>
+                    </div>
+                    <div class="emoji-picker" id="emoji-picker">
+                        <!-- Emoji будут здесь -->
+                    </div>
+                    <div id="ai-assistant-chat" class="ai-assistant-chat">
+                        <!-- AI помощник будет здесь -->
+                    </div>
+                </div>
+            `;
+            
+            renderChatMessages();
+            initEmojiPicker();
+            
+            // Добавляем обработчик Enter для отправки сообщения
+            const chatInput = document.getElementById('chat-input');
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChatMessage();
                 }
-            },
-            { 
-                name: "Максим", 
-                age: 28, 
-                gender: "male",
-                bio: "Программист, увлекаюсь спортом и научной фантастикой. Ценю искренность и честность в отношениях.",
-                details: {
-                    interests: "Программирование, бег, научная фантастика, настольные игры, технологии",
-                    lifestyle: "Спортивный образ жизни, работа из дома, регулярные пробежки, правильное питание",
-                    goals: "Создать семью и развивать собственный проект\nПробежать марафон\nИзучить искусственный интеллект",
-                    education: "Магистр компьютерных наук\nСертификаты по машинному обучению",
-                    work: "Senior разработчик в IT-компании\nКонсультант по технологиям",
-                    hobbies: "Шахматы, походы в горы, коллекционирование комиксов\nЧтение научной литературы\nИгра на гитаре"
+            });
+            
+            // Автоматическое изменение высоты текстового поля
+            chatInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        }
+
+        // ОТОБРАЖЕНИЕ СООБЩЕНИЙ В ЧАТЕ
+        function renderChatMessages() {
+            const messagesContainer = document.getElementById('chat-messages');
+            if (!messagesContainer) return;
+
+            messagesContainer.innerHTML = '';
+            
+            chatMessages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.className = `message ${message.sender}`;
+                messageElement.innerHTML = `
+                    ${message.text}
+                    <div class="message-time">${message.time}</div>
+                `;
+                messagesContainer.appendChild(messageElement);
+            });
+
+            // Прокручиваем вниз
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // ОБРАБОТКА ВВОДА СООБЩЕНИЯ С AI-ПОМОЩЬЮ
+        let inputTimeout;
+        function handleChatInput() {
+            const input = document.getElementById('chat-input');
+            const messageText = input.value.trim();
+
+            // Очищаем предыдущий таймер
+            clearTimeout(inputTimeout);
+            
+            // Если сообщение достаточно длинное, показываем AI-помощника
+            if (messageText.length > 3) {
+                inputTimeout = setTimeout(() => {
+                    showAISuggestions(messageText);
+                }, 1000);
+            } else {
+                hideAISuggestions();
+            }
+        }
+
+        // АНАЛИЗ И ПРЕОБРАЗОВАНИЕ СЛЕНГА
+        function analyzeAndTransformSlang(message) {
+            const words = message.toLowerCase().split(/\s+/);
+            let transformedMessage = message;
+            let foundUnknownWords = [];
+            
+            words.forEach(word => {
+                // Убираем знаки препинания
+                const cleanWord = word.replace(/[.,!?;:]/g, '');
+                
+                if (slangDictionary[cleanWord]) {
+                    // Заменяем сленг на нормальные слова
+                    transformedMessage = transformedMessage.replace(
+                        new RegExp(`\\b${cleanWord}\\b`, 'gi'), 
+                        slangDictionary[cleanWord]
+                    );
+                } else if (cleanWord.length > 2 && !isKnownWord(cleanWord)) {
+                    // Добавляем в список неизвестных слов
+                    foundUnknownWords.push(cleanWord);
+                    unknownWords.add(cleanWord);
                 }
-            },
-            { 
-                name: "София", 
-                age: 23, 
-                gender: "female",
-                bio: "Студентка, обожаю искусство и кофе. Верю, что лучшие отношения строятся на дружбе и взаимопонимании.",
-                details: {
-                    interests: "Искусство, литература, кофе, театр, мода, дизайн",
-                    lifestyle: "Активная учеба, встречи с друзьями, творческие вечера, посещение культурных мероприятий",
-                    goals: "Закончить университет и открыть свою галерею\nСтать арт-директором\nПутешествовать по Европе",
-                    education: "Студентка художественного факультета\nКурсы по истории искусств",
-                    work: "Бариста в кофейне\nФриланс-дизайнер",
-                    hobbies: "Акварельная живопись, написание рассказов, танцы\nФотография городских пейзажей\nКоллекционирование винтажных открыток"
+            });
+            
+            return {
+                transformedMessage,
+                foundUnknownWords
+            };
+        }
+
+        // ПРОВЕРКА ЯВЛЯЕТСЯ ЛИ СЛОВО ИЗВЕСТНЫМ
+        function isKnownWord(word) {
+            const commonWords = [
+                'как', 'что', 'где', 'когда', 'почему', 'кто', 'привет', 'пока',
+                'да', 'нет', 'хорошо', 'плохо', 'спасибо', 'пожалуйста', 'извини'
+            ];
+            
+            return commonWords.includes(word) || 
+                   Object.keys(slangDictionary).includes(word) ||
+                   word.length < 3;
+        }
+
+        // УЛУЧШЕННАЯ ФУНКЦИЯ ДЛЯ YANDEX GPT С ОБУЧЕНИЕМ
+        async function getAIImprovedMessages(originalMessage, chatContext = null, userProfile = null) {
+            try {
+                // Анализируем сленг и неизвестные слова
+                const { transformedMessage, foundUnknownWords } = analyzeAndTransformSlang(originalMessage);
+                
+                // Если найдены неизвестные слова, добавляем их в промпт
+                let unknownWordsPrompt = '';
+                if (foundUnknownWords.length > 0) {
+                    unknownWordsPrompt = `\n\nВНИМАНИЕ: Пользователь использовал неизвестные слова: ${foundUnknownWords.join(', ')}. 
+                    Если понимаешь их значение, используй в ответе. Если нет, вежливо попроси объяснить значение.`;
+                }
+
+                // Более креативный и контекстный промпт
+                const systemPrompt = `Ты эксперт в области знакомств и отношений с ярким, харизматичным характером. Твоя задача - помогать пользователям писать интересные, естественные и привлекательные сообщения.
+
+КОНТЕКСТ:
+- Платформа для знакомств AION Premium
+- Пользователи ищут серьезные отношения
+- Важно сохранять искренность и индивидуальность
+- Понимай современный сленг: "пон" = понятно, "го" = давай, "норм" = нормально и т.д.
+
+ТВОЙ СТИЛЬ:
+- Естественный, дружелюбный, с легкой долей юмора
+- Неформальный но уважительный
+- Поощряешь открытость и искренность
+- Избегаешь шаблонных фраз вроде "звучит интересно"
+- Если встречаешь неизвестное слово, вежливо проси объяснить его значение
+
+ЗАДАЧА:
+Преобразовать сообщение пользователя в 3 разных варианта, которые:
+1. Более привлекательны и вызывают интерес
+2. Соответствуют контексту знакомств
+3. Сохраняют оригинальный смысл, но подают его лучше
+4. Провоцируют продолжение диалога
+5. Учитывают сленг если он уместен${unknownWordsPrompt}
+
+ФОРМАТ:
+Просто верни 3 варианта, каждый с новой строки, без номеров и пояснений.`;
+
+                // Добавляем контекст если есть
+                let contextInfo = "";
+                if (userProfile) {
+                    contextInfo = `\nПрофиль пользователя: ${userProfile.name}, ${userProfile.age} лет, интересы: ${userProfile.bio || 'не указаны'}`;
+                }
+                
+                if (chatContext && chatContext.length > 0) {
+                    const lastMessages = chatContext.slice(-3).map(msg => `${msg.sender}: ${msg.text}`).join('\n');
+                    contextInfo += `\nПоследние сообщения в чате:\n${lastMessages}`;
+                }
+
+                const requestBody = {
+                    modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt-lite`,
+                    completionOptions: {
+                        stream: false,
+                        temperature: 0.8,
+                        maxTokens: 600
+                    },
+                    messages: [
+                        {
+                            role: "system",
+                            text: systemPrompt
+                        },
+                        {
+                            role: "user", 
+                            text: `Сообщение для улучшения: "${transformedMessage}"${contextInfo}\n\nПожалуйста, предложи 3 креативных варианта этого сообщения:`
+                        }
+                    ]
+                };
+
+                console.log('Отправка улучшенного запроса к Yandex GPT...');
+                
+                const response = await fetch(YANDEX_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Api-Key ${YANDEX_API_KEY}`,
+                        'x-folder-id': YANDEX_FOLDER_ID
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Получен ответ от Yandex GPT:', data);
+                
+                if (data.result && data.result.alternatives && data.result.alternatives[0]) {
+                    let improvedText = data.result.alternatives[0].message.text;
+                    
+                    // Улучшенная обработка ответа
+                    const suggestions = improvedText.split('\n')
+                        .filter(line => {
+                            const trimmed = line.trim();
+                            return trimmed && 
+                                   !trimmed.startsWith('Вариант') && 
+                                   !trimmed.startsWith('---') &&
+                                   trimmed.length > 10;
+                        })
+                        .slice(0, 3)
+                        .map(line => {
+                            return line.replace(/^[0-9]\.\s*/, '')
+                                      .replace(/^[-•*]\s*/, '')
+                                      .replace(/^"|"$/g, '')
+                                      .trim();
+                        });
+                    
+                    // Если получили меньше 3 вариантов, добавляем креативные
+                    if (suggestions.length < 3) {
+                        const creativeSuggestions = generateCreativeSuggestions(originalMessage);
+                        return [...suggestions, ...creativeSuggestions.slice(0, 3 - suggestions.length)];
+                    }
+                    
+                    return suggestions;
+                } else {
+                    throw new Error('Некорректный формат ответа от API');
+                }
+            } catch (error) {
+                console.error('Ошибка при обращении к Yandex GPT:', error);
+                return generateCreativeSuggestions(originalMessage);
+            }
+        }
+
+        // ГЕНЕРАЦИЯ КРЕАТИВНЫХ ПРЕДЛОЖЕНИЙ ПРИ ОШИБКАХ
+        function generateCreativeSuggestions(originalMessage) {
+            const messageLower = originalMessage.toLowerCase();
+            const messageType = analyzeMessageType(originalMessage);
+            
+            let suggestions = [];
+            
+            switch(messageType) {
+                case 'greeting':
+                    suggestions = [
+                        `Привет! Твой профиль сразу привлек внимание - хочется узнать тебя получше 😊`,
+                        `Приветствую! У тебя очень интересные увлечения, не расскажешь о них подробнее?`,
+                        `Привет! Заметил(а) у нас общие интересы - это здорово! Как твой день?`
+                    ];
+                    break;
+                    
+                case 'question':
+                    suggestions = [
+                        `Отлично, особенно когда нахожу интересных собеседников! А у тебя как настроение?`,
+                        `Прекрасно! Твой вопрос уже сделал день лучше) Расскажешь о своем?`,
+                        `Всё замечательно, а с твоим появлением в чате стало еще лучше! Как сам(а)?`
+                    ];
+                    break;
+                    
+                case 'compliment':
+                    suggestions = [
+                        `Ты тоже произвел(а) впечатление! Мне особенно понравилось [упомяни что-то из профиля]`,
+                        `Приятно это слышать! Чувствуется, что у нас может быть хорошее взаимопонимание`,
+                        `Спасибо! Ты тоже кажешься очень интересным человеком. Хочется пообщаться поближе`
+                    ];
+                    break;
+                    
+                case 'invitation':
+                    suggestions = [
+                        `Отличная идея! Я бы с радостью встретился(ась). Когда тебе удобно?`,
+                        `С удовольствием! Предлагаю [день/место] - как тебе такой вариант?`,
+                        `Здорово! Давай обсудим детали - что тебе больше нравится?`
+                    ];
+                    break;
+                    
+                default:
+                    suggestions = [
+                        `Мне нравится твой подход! ${originalMessage} - это действительно важно в общении`,
+                        `Интересная мысль! ${originalMessage} - полностью разделяю твою точку зрения`,
+                        `Обожаю таких искренних людей! ${originalMessage} - это так по-настоящему`
+                    ];
+            }
+            
+            return suggestions.slice(0, 3);
+        }
+
+        // АНАЛИЗ ТИПА СООБЩЕНИЯ
+        function analyzeMessageType(message) {
+            const msg = message.toLowerCase();
+            
+            if (msg.includes('?')) return 'question';
+            if (msg.includes('нравишься') || msg.includes('симпатия') || msg.includes('красив')) return 'compliment';
+            if (msg.includes('встреч') || msg.includes('кофе') || msg.includes('гулят')) return 'invitation';
+            if (msg.includes('привет') || msg.includes('здравств')) return 'greeting';
+            
+            return 'general';
+        }
+
+        // ОБНОВЛЕННАЯ ФУНКЦИЯ ПОКАЗА AI-ПРЕДЛОЖЕНИЙ
+        async function showAISuggestions(originalMessage) {
+            try {
+                // Получаем данные пользователя и контекст чата
+                const userData = JSON.parse(localStorage.getItem('aion_premium_user') || '{}');
+                const chatContext = chatMessages.slice(-5);
+                
+                const improvedVersions = await getAIImprovedMessages(originalMessage, chatContext, userData);
+                aiSuggestions = improvedVersions;
+                renderAISuggestions();
+            } catch (error) {
+                console.error('Ошибка AI предложений:', error);
+                aiSuggestions = generateCreativeSuggestions(originalMessage);
+                renderAISuggestions();
+            }
+        }
+
+        // ОТОБРАЗИТЬ ПРЕДЛОЖЕНИЯ AI
+        function renderAISuggestions() {
+            const chatContainer = document.querySelector('.chat-container');
+            let aiAssistant = document.getElementById('ai-assistant-chat');
+            
+            if (!aiAssistant) {
+                aiAssistant = document.createElement('div');
+                aiAssistant.id = 'ai-assistant-chat';
+                aiAssistant.className = 'ai-assistant-chat';
+                chatContainer.insertBefore(aiAssistant, document.querySelector('.chat-input-container'));
+            }
+            
+            aiAssistant.innerHTML = `
+                <div class="ai-header">
+                    <span>🤖</span>
+                    <span>AI предлагает варианты:</span>
+                </div>
+                <div class="ai-suggestions">
+                    ${aiSuggestions.map((suggestion, index) => `
+                        <button class="ai-suggestion-btn" onclick="useAISuggestion(${index})">
+                            ${suggestion}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            
+            aiAssistant.classList.add('active');
+        }
+
+        // СКРЫТЬ ПРЕДЛОЖЕНИЯ AI
+        function hideAISuggestions() {
+            const aiAssistant = document.getElementById('ai-assistant-chat');
+            if (aiAssistant) {
+                aiAssistant.classList.remove('active');
+            }
+        }
+
+        // ИСПОЛЬЗОВАТЬ ПРЕДЛОЖЕНИЕ AI
+        function useAISuggestion(index) {
+            const input = document.getElementById('chat-input');
+            input.value = aiSuggestions[index];
+            input.focus();
+            hideAISuggestions();
+        }
+
+        // ОТПРАВКА СООБЩЕНИЯ В ЧАТЕ
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const messageText = input.value.trim();
+
+            if (!messageText) return;
+
+            // Скрываем AI-помощника перед отправкой
+            hideAISuggestions();
+
+            // Проверка на неприемлемый контент
+            if (await moderateContent(messageText)) {
+                showModerationWarning();
+                return;
+            }
+
+            // Добавляем сообщение пользователя
+            const userMessage = {
+                id: Date.now(),
+                text: messageText,
+                sender: 'user',
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            };
+
+            chatMessages.push(userMessage);
+            
+            // Обновляем активный чат
+            const activeChat = getActiveChat();
+            if (activeChat) {
+                activeChat.messages = chatMessages;
+                activeChat.lastMessage = messageText;
+                activeChat.lastMessageTime = userMessage.time;
+                saveChats();
+            }
+            
+            renderChatMessages();
+            input.value = '';
+            input.style.height = 'auto';
+
+            // Имитируем ответ через 1-3 секунды
+            setTimeout(() => {
+                const responses = [
+                    "Звучит интересно! Расскажи подробнее 😊",
+                    "Отличная идея! Мне нравится твой подход",
+                    "Хм, никогда об этом не думал(а). Интересная мысль!",
+                    "Согласен(на)! Давай обсудим это подробнее",
+                    "У тебя всегда такие интересные идеи! 🎉"
+                ];
+                
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                
+                const botMessage = {
+                    id: Date.now() + 1,
+                    text: randomResponse,
+                    sender: 'other',
+                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                };
+
+                chatMessages.push(botMessage);
+                
+                // Обновляем активный чат
+                if (activeChat) {
+                    activeChat.messages = chatMessages;
+                    activeChat.lastMessage = randomResponse;
+                    activeChat.lastMessageTime = botMessage.time;
+                    saveChats();
+                }
+                
+                renderChatMessages();
+            }, 1000 + Math.random() * 2000);
+        }
+
+        // МОДЕРАЦИЯ КОНТЕНТА
+        async function moderateContent(text) {
+            const badWords = [
+                'хуй', 'пизда', 'ебал', 'ебать', 'блядь', 'гандон', 'мудак', 'сука', 'шлюха',
+                'fuck', 'shit', 'bitch', 'asshole', 'dick', 'pussy', 'cock', 'whore'
+            ];
+
+            const lowerText = text.toLowerCase();
+            
+            for (const word of badWords) {
+                if (lowerText.includes(word)) {
+                    return true;
                 }
             }
-        ];
-        
-        // УПРАВЛЕНИЕ НАСТРОЙКАМИ - ИСПРАВЛЕННАЯ ВЕРСИЯ
+
+            const aggressivePatterns = [
+                /\b(убью|убить|ненавижу|ненависть|мразь|тварь|скотина)\b/gi,
+                /\b(умри|сдохни|пропади|исчезни)\b/gi
+            ];
+
+            for (const pattern of aggressivePatterns) {
+                if (pattern.test(text)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // ПОКАЗАТЬ ПРЕДУПРЕЖДЕНИЕ МОДЕРАЦИИ
+        function showModerationWarning() {
+            const warning = document.getElementById('moderation-warning');
+            warning.style.display = 'block';
+            
+            setTimeout(() => {
+                warning.style.display = 'none';
+            }, 3000);
+        }
+
+        // УПРАВЛЕНИЕ EMOJI PICKER
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emoji-picker');
+            isEmojiPickerOpen = !isEmojiPickerOpen;
+            
+            if (isEmojiPickerOpen) {
+                picker.classList.add('active');
+            } else {
+                picker.classList.remove('active');
+            }
+        }
+
+        function addEmoji(emoji) {
+            const input = document.getElementById('chat-input');
+            input.value += emoji;
+            input.focus();
+            handleChatInput();
+        }
+
+        function initEmojiPicker() {
+            const picker = document.getElementById('emoji-picker');
+            if (picker) {
+                picker.innerHTML = '';
+                emojis.forEach(emoji => {
+                    const emojiElement = document.createElement('div');
+                    emojiElement.className = 'emoji-option';
+                    emojiElement.textContent = emoji;
+                    emojiElement.onclick = () => addEmoji(emoji);
+                    picker.appendChild(emojiElement);
+                });
+            }
+        }
+
+        // Закрытие emoji picker при клике вне его
+        document.addEventListener('click', (e) => {
+            const picker = document.getElementById('emoji-picker');
+            const emojiButton = document.querySelector('.emoji-button');
+            
+            if (picker && emojiButton && isEmojiPickerOpen && 
+                !picker.contains(e.target) && 
+                !emojiButton.contains(e.target)) {
+                toggleEmojiPicker();
+            }
+        });
+
+        // УПРАВЛЕНИЕ НАСТРОЙКАМИ
         function toggleSettings() {
+            if (isModalOpen) return;
+            
             const menu = document.getElementById('settings-menu');
             const overlay = document.getElementById('settings-overlay');
             const button = document.getElementById('settings-button');
@@ -1424,51 +2885,114 @@ ${deviceInfo.userAgent}
             isSettingsOpen = !isSettingsOpen;
             
             if (isSettingsOpen) {
-                // Открываем меню
                 document.body.classList.add('menu-open');
                 menu.classList.add('active');
                 overlay.classList.add('active');
                 button.style.transform = 'scale(1.1) rotate(90deg)';
                 button.style.borderColor = 'rgba(80, 200, 255, 0.6)';
                 button.style.boxShadow = '0 0 25px rgba(80, 200, 255, 0.4)';
-                
-                // ВКЛЮЧАЕМ скролл для меню настроек
                 menu.style.overflowY = 'auto';
-                
             } else {
-                // Закрываем меню
                 document.body.classList.remove('menu-open');
                 menu.classList.remove('active');
                 overlay.classList.remove('active');
                 button.style.transform = 'scale(1) rotate(0deg)';
                 button.style.borderColor = 'rgba(80, 200, 255, 0.3)';
                 button.style.boxShadow = '0 0 15px rgba(80, 200, 255, 0.2)';
+                
+                const supportSubmenu = document.getElementById('support-submenu');
+                if (supportSubmenu) {
+                    supportSubmenu.style.display = 'none';
+                }
             }
+        }
+
+        // ПОДМЕНЮ ПОДДЕРЖКИ
+        function toggleSupportSubmenu() {
+            const submenu = document.getElementById('support-submenu');
+            if (submenu.style.display === 'none') {
+                submenu.style.display = 'block';
+            } else {
+                submenu.style.display = 'none';
+            }
+        }
+
+        // ОБРАБОТКА ВЫБОРА ПОДДЕРЖКИ
+        function handleSupport(type) {
+            let message = '';
+            switch(type) {
+                case 'question':
+                    message = '📧 Открыта форма для вопроса в поддержку';
+                    break;
+                case 'complaint':
+                    message = '⚠️ Открыта форма для жалобы';
+                    break;
+                case 'suggestion':
+                    message = '💡 Открыта форма для предложения';
+                    break;
+            }
+            alert(`Форма для ${type === 'question' ? 'вопроса' : type === 'complaint' ? 'жалобы' : 'предложения'} будет реализована в следующем обновлении!`);
+            toggleSettings();
+        }
+        
+        // МОДАЛЬНЫЕ ОКНА
+        function showModal(type) {
+            const modal = document.getElementById(`${type}-modal`);
+            const overlay = document.getElementById('modal-overlay');
+            const closeBtn = document.getElementById('modal-close');
+            
+            if (modal) {
+                if (isSettingsOpen) {
+                    toggleSettings();
+                }
+                
+                modal.classList.add('active');
+                overlay.classList.add('active');
+                closeBtn.classList.add('active');
+                document.body.classList.add('menu-open');
+                isModalOpen = true;
+            }
+        }
+
+        function closeModal(type) {
+            const modal = document.getElementById(`${type}-modal`);
+            const overlay = document.getElementById('modal-overlay');
+            const closeBtn = document.getElementById('modal-close');
+            
+            if (modal) {
+                modal.classList.remove('active');
+            }
+            overlay.classList.remove('active');
+            closeBtn.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            isModalOpen = false;
+        }
+
+        function closeAllModals() {
+            const modals = document.querySelectorAll('.modal');
+            const overlay = document.getElementById('modal-overlay');
+            const closeBtn = document.getElementById('modal-close');
+            
+            modals.forEach(modal => {
+                modal.classList.remove('active');
+            });
+            
+            overlay.classList.remove('active');
+            closeBtn.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            isModalOpen = false;
         }
         
         function handleSettingsAction(action) {
             switch(action) {
                 case 'parallax':
                     toggleParallax();
-                    showSwipeNotification('right', 'параллакс');
                     break;
                 case 'notifications':
-                    showSwipeNotification('right', 'настройки уведомлений');
+                    alert('Настройки уведомлений будут доступны в следующем обновлении');
                     break;
                 case 'theme':
-                    showSwipeNotification('right', 'смену темы');
-                    break;
-                case 'support':
-                    showSwipeNotification('right', 'поддержку');
-                    break;
-                case 'privacy':
-                    showSwipeNotification('right', 'политику конфиденциальности');
-                    break;
-                case 'terms':
-                    showSwipeNotification('right', 'пользовательское соглашение');
-                    break;
-                case 'about':
-                    showSwipeNotification('right', 'о приложении');
+                    alert('Смена темы будет доступна в следующем обновлении');
                     break;
             }
             toggleSettings();
@@ -1482,70 +3006,60 @@ ${deviceInfo.userAgent}
                 card.addEventListener('mousemove', handleCardMouseMove);
                 card.addEventListener('mouseleave', handleCardMouseLeave);
                 
-                // Добавляем обработчики для сенсорных устройств
                 card.addEventListener('touchmove', handleCardTouchMove, { passive: true });
                 card.addEventListener('touchend', handleCardMouseLeave);
             }
         }
 
         function handleCardMouseMove(event) {
-            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating') return;
+            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating' || isModalOpen) return;
             
             const card = event.currentTarget;
             const cardRect = card.getBoundingClientRect();
             
-            // Получаем позицию мыши относительно карточки
             const mouseX = event.clientX - cardRect.left;
             const mouseY = event.clientY - cardRect.top;
             
-            // Вычисляем наклон на основе позиции мыши внутри карточки
             const centerX = cardRect.width / 2;
             const centerY = cardRect.height / 2;
             
             const tiltX = ((mouseX - centerX) / centerX) * 10;
             const tiltY = ((mouseY - centerY) / centerY) * 8;
             
-            // Применяем 3D-эффект
             applyCardTilt(tiltX, tiltY, 0);
         }
 
         function handleCardTouchMove(event) {
-            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating') return;
+            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating' || isModalOpen) return;
             
             const card = event.currentTarget;
             const cardRect = card.getBoundingClientRect();
             const touch = event.touches[0];
             
-            // Получаем позицию касания относительно карточки
             const touchX = touch.clientX - cardRect.left;
             const touchY = touch.clientY - cardRect.top;
             
-            // Вычисляем наклон на основе позиции касания внутри карточки
             const centerX = cardRect.width / 2;
             const centerY = cardRect.height / 2;
             
             const tiltX = ((touchX - centerX) / centerX) * 10;
             const tiltY = ((touchY - centerY) / centerY) * 8;
             
-            // Применяем 3D-эффект
             applyCardTilt(tiltX, tiltY, 0);
         }
 
         function handleCardMouseLeave() {
-            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating') return;
+            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating' || isModalOpen) return;
             
-            // Возвращаем карточку в исходное положение
             const card = document.getElementById('current-card');
             if (card) {
                 card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
                 
-                // Возвращаем аватар в исходное положение
                 const avatar = document.querySelector('.card-avatar');
                 if (avatar) {
                     avatar.style.transform = 'translate(0px, 0px)';
                 }
                 
-                // Возвращаем фон в исходное положение
                 const photo = document.querySelector('.card-photo');
                 if (photo) {
                     photo.style.backgroundPosition = '0px 0px';
@@ -1557,7 +3071,6 @@ ${deviceInfo.userAgent}
             const card = document.getElementById('current-card');
             if (!card) return;
             
-            // Применяем наклон ко всей карточке
             card.style.transform = `
                 perspective(1200px) 
                 rotateX(${tiltY}deg) 
@@ -1566,13 +3079,11 @@ ${deviceInfo.userAgent}
                 scale(1.02)
             `;
             
-            // Параллакс для аватара (двигается в противоположную сторону)
             const avatar = document.querySelector('.card-avatar');
             if (avatar) {
                 avatar.style.transform = `translate(${-tiltX * 3}px, ${-tiltY * 3}px)`;
             }
             
-            // Параллакс для фона фото
             const photo = document.querySelector('.card-photo');
             if (photo) {
                 photo.style.backgroundPosition = `${tiltX * 2}px ${tiltY * 2}px`;
@@ -1584,7 +3095,6 @@ ${deviceInfo.userAgent}
             if (card) {
                 card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
                 
-                // Удаляем обработчики событий
                 card.removeEventListener('mousemove', handleCardMouseMove);
                 card.removeEventListener('mouseleave', handleCardMouseLeave);
                 card.removeEventListener('touchmove', handleCardTouchMove);
@@ -1595,6 +3105,8 @@ ${deviceInfo.userAgent}
         }
         
         function toggleParallax() {
+            if (isModalOpen) return;
+            
             if (isParallaxActive) {
                 stopParallax();
             } else {
@@ -1617,25 +3129,10 @@ ${deviceInfo.userAgent}
             }
         }
         
-        // ПОКАЗАТЬ УВЕДОМЛЕНИЕ О СВАЙПЕ
-        function showSwipeNotification(type, name) {
-            const message = type === 'right' 
-                ? `⚙️ ${name} обновлено!` 
-                : `🙏 ${name}`;
-                
-            const notification = document.createElement('div');
-            notification.className = `swipe-notification ${type === 'right' ? 'like' : 'dislike'}`;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 2000);
-        }
-        
         // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
         function switchTab(tabName) {
+            if (isModalOpen) return;
+            
             currentTab = tabName;
             const user = JSON.parse(localStorage.getItem('aion_premium_user'));
             if (user) {
@@ -1647,22 +3144,10 @@ ${deviceInfo.userAgent}
         function initApp() {
             console.log('🧠 AION Premium запущен');
             
-            // Определяем устройство
             detectDevice();
+            initChats();
+            initEmojiPicker();
             
-            // Показываем информацию в консоли для отладки
-            if (deviceInfo.isMobile) {
-                console.log('📱 Запуск в мобильном режиме');
-                if (deviceInfo.isIOS) {
-                    console.log('🍎 Оптимизация для iOS');
-                } else if (deviceInfo.isAndroid) {
-                    console.log('🤖 Оптимизация для Android');
-                }
-            } else {
-                console.log('💻 Запуск в десктоп режиме');
-            }
-
-            // Проверяем поддержку браузером необходимых функций
             if (!('localStorage' in window)) {
                 alert('Ваш браузер не поддерживает необходимое для работы приложения. Пожалуйста, обновите браузер.');
                 return;
@@ -1727,6 +3212,7 @@ ${deviceInfo.userAgent}
                         Здесь не важно количество лайков, а важно качество общения
                         <br>🎮 Наводите мышку на карточку для 3D-параллакс эффекта
                         <br>⚙️ Настройки доступны в правом верхнем углу
+                        <br>💬 Новый чат с AI-помощником для улучшения общения
                     </div>
                 </div>
             `;
@@ -1736,6 +3222,8 @@ ${deviceInfo.userAgent}
         
         // ВЫБОР ПОЛА
         function selectGender(gender) {
+            if (isModalOpen) return;
+            
             userGender = gender;
             document.querySelectorAll('.gender-option').forEach(option => {
                 option.classList.remove('selected');
@@ -1746,6 +3234,8 @@ ${deviceInfo.userAgent}
         // ОБРАБОТКА РЕГИСТРАЦИИ
         function handleRegistration(e) {
             e.preventDefault();
+            if (isModalOpen) return;
+            
             console.log('🎯 Начало регистрации');
             
             const name = document.getElementById('name').value;
@@ -1755,12 +3245,12 @@ ${deviceInfo.userAgent}
             const bio = document.getElementById('bio').value;
             
             if (!name || !age || !email || !password || !userGender) {
-                showSwipeNotification('left', 'заполнить все поля');
+                alert('Пожалуйста, заполните все поля');
                 return;
             }
             
             if (age < 18) {
-                showSwipeNotification('left', 'использовать приложение');
+                alert('Для использования приложения вам должно быть не менее 18 лет');
                 return;
             }
             
@@ -1799,6 +3289,9 @@ ${deviceInfo.userAgent}
                         <button class="nav-tab ${currentTab === 'dating' ? 'active' : ''}" onclick="switchTab('dating')">
                             Знакомства
                         </button>
+                        <button class="nav-tab ${currentTab === 'chat' ? 'active' : ''}" onclick="switchTab('chat')">
+                            Чат
+                        </button>
                         <button class="nav-tab ${currentTab === 'subscription' ? 'active' : ''}" onclick="switchTab('subscription')">
                             Подписка
                         </button>
@@ -1819,6 +3312,12 @@ ${deviceInfo.userAgent}
             
             if (currentTab === 'dating') {
                 showCurrentCard();
+            } else if (currentTab === 'chat') {
+                if (activeChatId) {
+                    renderActiveChat();
+                } else {
+                    renderChatsList();
+                }
             } else {
                 showSubscriptionScreen();
             }
@@ -1897,9 +3396,10 @@ ${deviceInfo.userAgent}
         
         // ОБРАБОТКА ВЫБОРА ПОДПИСКИ
         function handleSubscription(type) {
+            if (isModalOpen) return;
+            
             const subscriptionName = type === 'plus' ? 'Plus+' : 'PREMIUM';
-            showSwipeNotification('right', `подписку ${subscriptionName}`);
-            console.log(`🎯 Пользователь выбрал подписку: ${subscriptionName}`);
+            alert(`Вы выбрали подписку ${subscriptionName}! В следующем обновлении будет реализована система платежей.`);
         }
         
         // Функция для форматирования текста с переносами строк
@@ -1973,9 +3473,8 @@ ${deviceInfo.userAgent}
                 </div>
             `;
 
-            // Инициализируем параллакс для новой карточки
             setTimeout(() => {
-                if (isParallaxActive) {
+                if (isParallaxActive && !isModalOpen) {
                     initParallax();
                 }
             }, 100);
@@ -1983,12 +3482,16 @@ ${deviceInfo.userAgent}
         
         // СБРОС КАРТОЧЕК
         function resetCards() {
+            if (isModalOpen) return;
+            
             currentCardIndex = 0;
             showCurrentCard();
         }
         
         // РАСКРЫТЬ ДЕТАЛИ
         function toggleDetails() {
+            if (isModalOpen) return;
+            
             const card = document.getElementById('current-card');
             const details = document.getElementById('card-details');
             const toggle = document.querySelector('.expand-toggle');
@@ -1996,36 +3499,33 @@ ${deviceInfo.userAgent}
             const text = toggle.querySelector('div:last-child');
             
             if (isCardExpanded) {
-                // Сворачиваем карточку
                 card.classList.remove('expanded');
                 details.classList.remove('show');
                 icon.style.transform = 'rotate(0deg)';
                 text.textContent = 'Узнать больше';
                 isCardExpanded = false;
                 
-                // Включаем параллакс обратно
                 setTimeout(() => {
-                    if (isParallaxActive) {
+                    if (isParallaxActive && !isModalOpen) {
                         initParallax();
                     }
                 }, 100);
             } else {
-                // Раскрываем карточку
                 card.classList.add('expanded');
                 details.classList.add('show');
                 icon.style.transform = 'rotate(180deg)';
                 text.textContent = 'Свернуть';
                 isCardExpanded = true;
                 
-                // Отключаем параллакс при раскрытой карточке
                 stopParallax();
             }
         }
         
-        // ОБРАБОТКА СВАЙПОВ
+        // ОБРАБОТКА СВАЙПОВ (С ВЗАИМНЫМИ ЛАЙКАМИ)
         function handleSwipe(direction) {
+            if (isModalOpen) return;
+            
             if (!currentCard) {
-                showSwipeNotification('left', 'познакомиться с анкетой');
                 return;
             }
 
@@ -2041,8 +3541,15 @@ ${deviceInfo.userAgent}
             
             if (direction === 'right') {
                 card.classList.add('swipe-right');
+                
+                // С вероятностью 30% создаем мэтч
+                if (Math.random() < 0.3) {
+                    setTimeout(() => {
+                        handleMutualLike(currentCard.id);
+                    }, 500);
+                }
+                
                 setTimeout(() => {
-                    showSwipeNotification('right', currentCard.name);
                     currentCardIndex++;
                     isCardExpanded = false;
                     showCurrentCard();
@@ -2050,7 +3557,6 @@ ${deviceInfo.userAgent}
             } else {
                 card.classList.add('swipe-left');
                 setTimeout(() => {
-                    showSwipeNotification('left', currentCard.name);
                     currentCardIndex++;
                     isCardExpanded = false;
                     showCurrentCard();
@@ -2058,21 +3564,15 @@ ${deviceInfo.userAgent}
             }
         }
         
-        // ВЫХОД - ИСПРАВЛЕННАЯ ВЕРСИЯ
+        // ВЫХОД
         function logout() {
-            // Закрываем меню настроек
+            if (isModalOpen) return;
+            
             toggleSettings();
             
-            // Показываем уведомление о выходе
-            showSwipeNotification('right', 'выход из аккаунта');
-            
-            // Ждем завершения анимаций
             setTimeout(() => {
-                // Удаляем пользователя
                 localStorage.removeItem('aion_premium_user');
                 currentCardIndex = 0;
-                
-                // Показываем экран аутентификации
                 showAuthScreen();
             }, 1000);
         }
@@ -2086,12 +3586,24 @@ ${deviceInfo.userAgent}
         window.toggleDetails = toggleDetails;
         window.toggleParallax = toggleParallax;
         window.toggleSettings = toggleSettings;
+        window.toggleSupportSubmenu = toggleSupportSubmenu;
+        window.handleSupport = handleSupport;
+        window.showModal = showModal;
+        window.closeModal = closeModal;
+        window.closeAllModals = closeAllModals;
         window.handleSettingsAction = handleSettingsAction;
         window.switchTab = switchTab;
         window.handleSubscription = handleSubscription;
         window.resetCards = resetCards;
         window.logout = logout;
         window.showDeviceInfo = showDeviceInfo;
+        window.sendChatMessage = sendChatMessage;
+        window.toggleEmojiPicker = toggleEmojiPicker;
+        window.addEmoji = addEmoji;
+        window.handleChatInput = handleChatInput;
+        window.useAISuggestion = useAISuggestion;
+        window.openChat = openChat;
+        window.renderChatsList = renderChatsList;
     </script>
 </body>
 </html>

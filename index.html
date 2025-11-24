@@ -1484,6 +1484,33 @@
             text-decoration: underline;
         }
         
+        /* Кнопка возврата в чат */
+        .back-to-chat-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(20, 20, 35, 0.9);
+            border: 1px solid rgba(80, 200, 255, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            color: #80c8ff;
+            font-size: 18px;
+        }
+        
+        .back-to-chat-btn:hover {
+            transform: scale(1.1);
+            border-color: rgba(80, 200, 255, 0.6);
+            box-shadow: 0 0 15px rgba(80, 200, 255, 0.3);
+        }
+        
         /* Мобильные стили */
         @media (max-width: 768px) {
             body {
@@ -1569,6 +1596,14 @@
                 height: 100%;
                 padding: 15px;
             }
+            
+            .back-to-chat-btn {
+                top: 15px;
+                left: 15px;
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -1621,6 +1656,14 @@
                 height: 100%;
                 padding: 15px;
             }
+            
+            .back-to-chat-btn {
+                top: 10px;
+                left: 10px;
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
         }
         
         /* Поддержка сенсорных устройств */
@@ -1664,6 +1707,10 @@
             }
             
             .chat-item:hover {
+                transform: none;
+            }
+            
+            .back-to-chat-btn:hover {
                 transform: none;
             }
         }
@@ -2432,6 +2479,9 @@ ${deviceInfo.userAgent}
             
             const container = document.getElementById('content-container');
             container.innerHTML = `
+                <div class="back-to-chat-btn" onclick="renderActiveChat()">
+                    ←
+                </div>
                 <div class="card" id="chat-profile-card" style="transform: perspective(1200px) rotateX(0) rotateY(0) rotateZ(0); transition: transform 0.3s ease; width: 100%; max-width: 340px; margin: 0 auto;">
                     <div class="card-photo">
                         <div class="card-avatar">${genderIcon}</div>
@@ -2473,11 +2523,6 @@ ${deviceInfo.userAgent}
                                 <div class="detail-content">${formatMultilineText(user.details.hobbies)}</div>
                             </div>
                         </div>
-                    </div>
-                    <div style="padding: 20px; text-align: center;">
-                        <button onclick="renderActiveChat()" style="padding: 12px 25px; background: rgba(80, 200, 255, 0.1); color: #80c8ff; border: 1px solid rgba(80, 200, 255, 0.3); border-radius: 15px; cursor: pointer; backdrop-filter: blur(10px);">
-                            ← Назад к чату
-                        </button>
                     </div>
                 </div>
             `;
@@ -2582,45 +2627,45 @@ ${deviceInfo.userAgent}
             }
         }
 
-// ПЕРЕКЛЮЧЕНИЕ ДЕТАЛЕЙ ПРОФИЛЯ В ЧАТЕ - ИСПРАВЛЕННАЯ ВЕРСИЯ
-function toggleChatProfileDetails() {
-    if (isModalOpen) return;
-    
-    const card = document.getElementById('chat-profile-card');
-    if (!card) return;
-    
-    const details = document.getElementById('chat-profile-details');
-    const toggle = card.querySelector('.expand-toggle');
-    const icon = card.querySelector('.expand-icon');
-    const text = card.querySelector('.expand-toggle div:last-child');
-    
-    if (!details || !toggle || !icon || !text) return;
-    
-    if (card.classList.contains('expanded')) {
-        card.classList.remove('expanded');
-        details.classList.remove('show');
-        icon.style.transform = 'rotate(0deg)';
-        text.textContent = 'Узнать больше';
-        
-        setTimeout(() => {
-            if (isParallaxActive && !isModalOpen) {
-                initChatProfileParallax();
+        // ПЕРЕКЛЮЧЕНИЕ ДЕТАЛЕЙ ПРОФИЛЯ В ЧАТЕ - ИСПРАВЛЕННАЯ ВЕРСИЯ
+        function toggleChatProfileDetails() {
+            if (isModalOpen) return;
+            
+            const card = document.getElementById('chat-profile-card');
+            if (!card) return;
+            
+            const details = document.getElementById('chat-profile-details');
+            const toggle = card.querySelector('.expand-toggle');
+            const icon = card.querySelector('.expand-icon');
+            const text = card.querySelector('.expand-toggle div:last-child');
+            
+            if (!details || !toggle || !icon || !text) return;
+            
+            if (card.classList.contains('expanded')) {
+                card.classList.remove('expanded');
+                details.classList.remove('show');
+                icon.style.transform = 'rotate(0deg)';
+                text.textContent = 'Узнать больше';
+                
+                setTimeout(() => {
+                    if (isParallaxActive && !isModalOpen) {
+                        initChatProfileParallax();
+                    }
+                }, 100);
+            } else {
+                card.classList.add('expanded');
+                details.classList.add('show');
+                icon.style.transform = 'rotate(180deg)';
+                text.textContent = 'Свернуть';
+                
+                // Останавливаем параллакс при раскрытии
+                card.removeEventListener('mousemove', handleChatProfileMouseMove);
+                card.removeEventListener('mouseleave', handleChatProfileMouseLeave);
+                card.removeEventListener('touchmove', handleChatProfileTouchMove);
+                card.removeEventListener('touchend', handleChatProfileMouseLeave);
+                card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
             }
-        }, 100);
-    } else {
-        card.classList.add('expanded');
-        details.classList.add('show');
-        icon.style.transform = 'rotate(180deg)';
-        text.textContent = 'Свернуть';
-        
-        // Останавливаем параллакс при раскрытии
-        card.removeEventListener('mousemove', handleChatProfileMouseMove);
-        card.removeEventListener('mouseleave', handleChatProfileMouseLeave);
-        card.removeEventListener('touchmove', handleChatProfileTouchMove);
-        card.removeEventListener('touchend', handleChatProfileMouseLeave);
-        card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
-    }
-}
+        }
 
         // ОТОБРАЖЕНИЕ СООБЩЕНИЙ В ЧАТЕ
         function renderChatMessages() {

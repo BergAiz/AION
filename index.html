@@ -100,6 +100,9 @@
             z-index: 2;
             width: 100%;
             max-width: 400px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
         /* Кнопка настроек */
@@ -1154,18 +1157,19 @@
             visibility: visible;
         }
         
-        /* Стили для вкладки чата */
+        /* Стили для вкладки чата - ПОЛНОЭКРАННЫЕ */
         .chat-container {
             background: rgba(20, 20, 35, 0.9);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(80, 200, 255, 0.2);
             border-radius: 20px;
             padding: 20px;
-            height: 500px;
+            height: 100%;
             display: flex;
             flex-direction: column;
             margin: 0 auto;
-            max-width: 400px;
+            width: 100%;
+            max-width: 100%;
         }
         
         .chat-messages {
@@ -1380,18 +1384,19 @@
             animation: fadeInOut 3s ease-in-out;
         }
         
-        /* Список чатов */
+        /* Список чатов - ПОЛНОЭКРАННЫЙ */
         .chats-list {
             background: rgba(20, 20, 35, 0.9);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(80, 200, 255, 0.2);
             border-radius: 20px;
             padding: 20px;
-            height: 500px;
+            height: 100%;
             display: flex;
             flex-direction: column;
             margin: 0 auto;
-            max-width: 400px;
+            width: 100%;
+            max-width: 100%;
             overflow-y: auto;
         }
         
@@ -1461,6 +1466,24 @@
             padding: 40px 20px;
         }
         
+        /* Переключатель между регистрацией и входом */
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(224, 224, 255, 0.7);
+        }
+        
+        .auth-switch a {
+            color: #80c8ff;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+        
         /* Мобильные стили */
         @media (max-width: 768px) {
             body {
@@ -1469,6 +1492,7 @@
             
             #app {
                 max-width: 100%;
+                height: 100vh;
             }
             
             .card {
@@ -1532,12 +1556,18 @@
             }
 
             .chat-container {
-                height: 450px;
+                height: 100%;
+                padding: 15px;
             }
 
             .emoji-picker {
                 max-width: 280px;
                 grid-template-columns: repeat(5, 1fr);
+            }
+            
+            .chats-list {
+                height: 100%;
+                padding: 15px;
             }
         }
         
@@ -1578,13 +1608,18 @@
             }
 
             .chat-container {
-                height: 400px;
+                height: 100%;
                 padding: 15px;
             }
 
             .emoji-picker {
                 max-width: 250px;
                 grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .chats-list {
+                height: 100%;
+                padding: 15px;
             }
         }
         
@@ -1967,6 +2002,7 @@
         let isSettingsOpen = false;
         let isModalOpen = false;
         let deviceInfo = {};
+        let isLoginMode = false; // Новый флаг для определения режима (вход/регистрация)
         
         // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ AI И ЧАТА
         let chatMessages = [];
@@ -2336,12 +2372,12 @@ ${deviceInfo.userAgent}
             
             container.innerHTML = `
                 <div class="chat-container">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(80, 200, 255, 0.2);">
-                        <button onclick="renderChatsList()" style="background: none; border: none; color: #80c8ff; font-size: 18px; cursor: pointer;">←</button>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(80, 200, 255, 0.2); cursor: pointer;" onclick="showChatProfile('${chat.userId}')">
+                        <button onclick="event.stopPropagation(); renderChatsList()" style="background: none; border: none; color: #80c8ff; font-size: 18px; cursor: pointer;">←</button>
                         <div class="chat-avatar" style="width: 40px; height: 40px; font-size: 16px;">
                             ${chat.userGender === 'male' ? '👨' : '👩'}
                         </div>
-                        <div>
+                        <div style="flex: 1;">
                             <div style="color: #80c8ff; font-weight: 600;">${chat.userName}, ${chat.userAge}</div>
                             <div style="color: rgba(224, 224, 255, 0.7); font-size: 12px;">в сети</div>
                         </div>
@@ -2386,6 +2422,205 @@ ${deviceInfo.userAgent}
                 this.style.height = (this.scrollHeight) + 'px';
             });
         }
+
+        // ПОКАЗАТЬ ПРОФИЛЬ В ЧАТЕ С ПАРАЛЛАКСОМ
+        function showChatProfile(userId) {
+            const user = sampleUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            const genderIcon = user.gender === 'male' ? '👨' : '👩';
+            
+            const container = document.getElementById('content-container');
+            container.innerHTML = `
+                <div class="card" id="chat-profile-card" style="transform: perspective(1200px) rotateX(0) rotateY(0) rotateZ(0); transition: transform 0.3s ease; width: 100%; max-width: 340px; margin: 0 auto;">
+                    <div class="card-photo">
+                        <div class="card-avatar">${genderIcon}</div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-main-info">
+                            <h2>${user.name} <span class="age">${user.age}</span></h2>
+                            <div class="bio">${user.bio}</div>
+                        </div>
+                        
+                        <div class="expand-toggle" onclick="toggleChatProfileDetails()">
+                            <div class="expand-icon">⌄</div>
+                            <div style="font-size: 12px; margin-top: 5px;">Узнать больше</div>
+                        </div>
+                        
+                        <div class="card-details" id="chat-profile-details">
+                            <div class="detail-section">
+                                <div class="detail-section-title">Интересы</div>
+                                <div class="detail-content">${formatMultilineText(user.details.interests)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Образ жизни</div>
+                                <div class="detail-content">${formatMultilineText(user.details.lifestyle)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Цели и мечты</div>
+                                <div class="detail-content">${formatMultilineText(user.details.goals)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Образование</div>
+                                <div class="detail-content">${formatMultilineText(user.details.education)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Работа</div>
+                                <div class="detail-content">${formatMultilineText(user.details.work)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Хобби и увлечения</div>
+                                <div class="detail-content">${formatMultilineText(user.details.hobbies)}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px; text-align: center;">
+                        <button onclick="renderActiveChat()" style="padding: 12px 25px; background: rgba(80, 200, 255, 0.1); color: #80c8ff; border: 1px solid rgba(80, 200, 255, 0.3); border-radius: 15px; cursor: pointer; backdrop-filter: blur(10px);">
+                            ← Назад к чату
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Инициализируем параллакс для профиля в чате
+            setTimeout(() => {
+                if (isParallaxActive && !isModalOpen) {
+                    initChatProfileParallax();
+                }
+            }, 100);
+        }
+
+        // ИНИЦИАЛИЗАЦИЯ ПАРАЛЛАКСА ДЛЯ ПРОФИЛЯ В ЧАТЕ
+        function initChatProfileParallax() {
+            console.log('🎮 Инициализация параллакса для профиля в чате');
+            const card = document.getElementById('chat-profile-card');
+            if (card) {
+                card.addEventListener('mousemove', handleChatProfileMouseMove);
+                card.addEventListener('mouseleave', handleChatProfileMouseLeave);
+                
+                card.addEventListener('touchmove', handleChatProfileTouchMove, { passive: true });
+                card.addEventListener('touchend', handleChatProfileMouseLeave);
+            }
+        }
+
+        function handleChatProfileMouseMove(event) {
+            if (!isParallaxActive || isModalOpen) return;
+            
+            const card = event.currentTarget;
+            const cardRect = card.getBoundingClientRect();
+            
+            const mouseX = event.clientX - cardRect.left;
+            const mouseY = event.clientY - cardRect.top;
+            
+            const centerX = cardRect.width / 2;
+            const centerY = cardRect.height / 2;
+            
+            const tiltX = ((mouseX - centerX) / centerX) * 10;
+            const tiltY = ((mouseY - centerY) / centerY) * 8;
+            
+            applyChatProfileTilt(tiltX, tiltY, 0);
+        }
+
+        function handleChatProfileTouchMove(event) {
+            if (!isParallaxActive || isModalOpen) return;
+            
+            const card = event.currentTarget;
+            const cardRect = card.getBoundingClientRect();
+            const touch = event.touches[0];
+            
+            const touchX = touch.clientX - cardRect.left;
+            const touchY = touch.clientY - cardRect.top;
+            
+            const centerX = cardRect.width / 2;
+            const centerY = cardRect.height / 2;
+            
+            const tiltX = ((touchX - centerX) / centerX) * 10;
+            const tiltY = ((touchY - centerY) / centerY) * 8;
+            
+            applyChatProfileTilt(tiltX, tiltY, 0);
+        }
+
+        function handleChatProfileMouseLeave() {
+            if (!isParallaxActive || isModalOpen) return;
+            
+            const card = document.getElementById('chat-profile-card');
+            if (card) {
+                card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
+                
+                const avatar = card.querySelector('.card-avatar');
+                if (avatar) {
+                    avatar.style.transform = 'translate(0px, 0px)';
+                }
+                
+                const photo = card.querySelector('.card-photo');
+                if (photo) {
+                    photo.style.backgroundPosition = '0px 0px';
+                }
+            }
+        }
+
+        function applyChatProfileTilt(tiltX, tiltY, rotation) {
+            const card = document.getElementById('chat-profile-card');
+            if (!card) return;
+            
+            card.style.transform = `
+                perspective(1200px) 
+                rotateX(${tiltY}deg) 
+                rotateY(${tiltX}deg) 
+                rotateZ(${rotation}deg)
+                scale(1.02)
+            `;
+            
+            const avatar = card.querySelector('.card-avatar');
+            if (avatar) {
+                avatar.style.transform = `translate(${-tiltX * 3}px, ${-tiltY * 3}px)`;
+            }
+            
+            const photo = card.querySelector('.card-photo');
+            if (photo) {
+                photo.style.backgroundPosition = `${tiltX * 2}px ${tiltY * 2}px`;
+            }
+        }
+
+// ПЕРЕКЛЮЧЕНИЕ ДЕТАЛЕЙ ПРОФИЛЯ В ЧАТЕ - ИСПРАВЛЕННАЯ ВЕРСИЯ
+function toggleChatProfileDetails() {
+    if (isModalOpen) return;
+    
+    const card = document.getElementById('chat-profile-card');
+    if (!card) return;
+    
+    const details = document.getElementById('chat-profile-details');
+    const toggle = card.querySelector('.expand-toggle');
+    const icon = card.querySelector('.expand-icon');
+    const text = card.querySelector('.expand-toggle div:last-child');
+    
+    if (!details || !toggle || !icon || !text) return;
+    
+    if (card.classList.contains('expanded')) {
+        card.classList.remove('expanded');
+        details.classList.remove('show');
+        icon.style.transform = 'rotate(0deg)';
+        text.textContent = 'Узнать больше';
+        
+        setTimeout(() => {
+            if (isParallaxActive && !isModalOpen) {
+                initChatProfileParallax();
+            }
+        }, 100);
+    } else {
+        card.classList.add('expanded');
+        details.classList.add('show');
+        icon.style.transform = 'rotate(180deg)';
+        text.textContent = 'Свернуть';
+        
+        // Останавливаем параллакс при раскрытии
+        card.removeEventListener('mousemove', handleChatProfileMouseMove);
+        card.removeEventListener('mouseleave', handleChatProfileMouseLeave);
+        card.removeEventListener('touchmove', handleChatProfileTouchMove);
+        card.removeEventListener('touchend', handleChatProfileMouseLeave);
+        card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
+    }
+}
 
         // ОТОБРАЖЕНИЕ СООБЩЕНИЙ В ЧАТЕ
         function renderChatMessages() {
@@ -2479,6 +2714,7 @@ ${deviceInfo.userAgent}
                 if (foundUnknownWords.length > 0) {
                     unknownWordsPrompt = `\n\nВНИМАНИЕ: Пользователь использовал неизвестные слова: ${foundUnknownWords.join(', ')}. 
                     Если понимаешь их значение, используй в ответе. Если нет, вежливо попроси объяснить значение.`;
+
                 }
 
                 // Более креативный и контекстный промпт
@@ -3170,28 +3406,34 @@ ${deviceInfo.userAgent}
                 <div class="auth-container">
                     <div class="auth-header">
                         <h1>AION</h1>
-                        <p>Место, где знакомства становятся уютными</p>
+                        <p>${isLoginMode ? 'С возвращением!' : 'Место, где знакомства становятся уютными'}</p>
                     </div>
                     
                     <form id="auth-form">
-                        <div class="input-group">
-                            <input type="text" id="name" placeholder="Ваше прекрасное имя" required>
-                        </div>
-                        
-                        <div class="input-group">
-                            <input type="number" id="age" placeholder="Возраст" min="18" required>
-                        </div>
+                        ${isLoginMode ? '' : `
+                            <div class="input-group">
+                                <input type="text" id="name" placeholder="Имя" required>
+                            </div>
+                            
+                            <div class="input-group">
+                                <input type="number" id="age" placeholder="Возраст" min="18" required>
+                            </div>
 
-                        <div class="gender-selection">
-                            <div class="gender-option" onclick="selectGender('male')">
-                                <span class="icon">👨</span>
-                                <div>Мужской</div>
+                            <div class="gender-selection">
+                                <div class="gender-option" onclick="selectGender('male')">
+                                    <span class="icon">👨</span>
+                                    <div>Мужской</div>
+                                </div>
+                                <div class="gender-option" onclick="selectGender('female')">
+                                    <span class="icon">👩</span>
+                                    <div>Женский</div>
+                                </div>
                             </div>
-                            <div class="gender-option" onclick="selectGender('female')">
-                                <span class="icon">👩</span>
-                                <div>Женский</div>
+                            
+                            <div class="input-group">
+                                <textarea id="bio" placeholder="Расскажите о себе... Что делает вас счастливым?" rows="3"></textarea>
                             </div>
-                        </div>
+                        `}
                         
                         <div class="input-group">
                             <input type="email" id="email" placeholder="Email" required>
@@ -3200,13 +3442,16 @@ ${deviceInfo.userAgent}
                         <div class="input-group">
                             <input type="password" id="password" placeholder="Пароль" required>
                         </div>
-
-                        <div class="input-group">
-                            <textarea id="bio" placeholder="Расскажите о себе... Что делает вас счастливым?" rows="3"></textarea>
-                        </div>
                         
-                        <button type="submit" class="btn-primary">Начать знакомиться</button>
+                        <button type="submit" class="btn-primary">${isLoginMode ? 'Войти' : 'Начать знакомиться'}</button>
                     </form>
+                    
+                    <div class="auth-switch">
+                        ${isLoginMode ? 
+                            'Нет аккаунта? <a onclick="toggleAuthMode()">Зарегистрироваться</a>' : 
+                            'Уже есть аккаунт? <a onclick="toggleAuthMode()">Войти</a>'
+                        }
+                    </div>
                     
                     <div class="comfort-text" style="margin-top: 20px; text-align: center; color: rgba(224, 224, 255, 0.7); font-size: 14px;">
                         Здесь не важно количество лайков, а важно качество общения
@@ -3217,7 +3462,15 @@ ${deviceInfo.userAgent}
                 </div>
             `;
             
-            document.getElementById('auth-form').addEventListener('submit', handleRegistration);
+            document.getElementById('auth-form').addEventListener('submit', isLoginMode ? handleLogin : handleRegistration);
+        }
+        
+        // ПЕРЕКЛЮЧЕНИЕ РЕЖИМА АВТОРИЗАЦИИ
+        function toggleAuthMode() {
+            if (isModalOpen) return;
+            
+            isLoginMode = !isLoginMode;
+            showAuthScreen();
         }
         
         // ВЫБОР ПОЛА
@@ -3254,6 +3507,15 @@ ${deviceInfo.userAgent}
                 return;
             }
             
+            // Проверяем, не зарегистрирован ли уже пользователь с таким email
+            const existingUsers = JSON.parse(localStorage.getItem('aion_premium_users') || '[]');
+            const existingUser = existingUsers.find(user => user.email === email);
+            
+            if (existingUser) {
+                alert('Пользователь с таким email уже зарегистрирован. Войдите в аккаунт или используйте другой email.');
+                return;
+            }
+            
             const userData = {
                 name: name,
                 age: parseInt(age),
@@ -3265,7 +3527,13 @@ ${deviceInfo.userAgent}
                 joined: new Date().toISOString()
             };
             
+            // Сохраняем пользователя в общий список пользователей
+            existingUsers.push(userData);
+            localStorage.setItem('aion_premium_users', JSON.stringify(existingUsers));
+            
+            // Сохраняем текущего пользователя
             localStorage.setItem('aion_premium_user', JSON.stringify(userData));
+            
             console.log('💾 Пользователь сохранен:', userData);
             
             document.querySelector('.auth-container').style.opacity = '0';
@@ -3276,10 +3544,46 @@ ${deviceInfo.userAgent}
             }, 500);
         }
         
+        // ОБРАБОТКА ВХОДА
+        function handleLogin(e) {
+            e.preventDefault();
+            if (isModalOpen) return;
+            
+            console.log('🎯 Попытка входа');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+            
+            // Ищем пользователя в списке зарегистрированных
+            const existingUsers = JSON.parse(localStorage.getItem('aion_premium_users') || '[]');
+            const user = existingUsers.find(user => user.email === email && user.password === password);
+            
+            if (user) {
+                console.log('✅ Пользователь найден:', user.name);
+                
+                // Сохраняем текущего пользователя
+                localStorage.setItem('aion_premium_user', JSON.stringify(user));
+                
+                document.querySelector('.auth-container').style.opacity = '0';
+                document.querySelector('.auth-container').style.transform = 'scale(0.9)';
+                
+                setTimeout(() => {
+                    showMainScreen(user);
+                }, 500);
+            } else {
+                alert('Неверный email или пароль. Попробуйте снова или зарегистрируйтесь.');
+            }
+        }
+        
         // ГЛАВНЫЙ ЭКРАН
         function showMainScreen(user) {
             document.getElementById('app').innerHTML = `
-                <div style="color: #e0e0ff; text-align: center; width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
+                <div style="color: #e0e0ff; text-align: center; width: 100%; height: 100%; display: flex; flex-direction: column;">
                     <div style="background: rgba(20, 20, 35, 0.9); padding: 20px; border-radius: 20px; margin-bottom: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(80, 200, 255, 0.2);">
                         <h1 style="margin-bottom: 5px; background: linear-gradient(45deg, #80c8ff, #a0d8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AION</h1>
                         <p>Привет, ${user.name}! Найди своего человека</p>
@@ -3297,7 +3601,7 @@ ${deviceInfo.userAgent}
                         </button>
                     </div>
                     
-                    <div id="content-container" style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative;">
+                    <div id="content-container" style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden;">
                         <!-- Контент будет здесь -->
                     </div>
                     
@@ -3584,6 +3888,7 @@ ${deviceInfo.userAgent}
         window.selectGender = selectGender;
         window.handleSwipe = handleSwipe;
         window.toggleDetails = toggleDetails;
+        window.toggleChatProfileDetails = toggleChatProfileDetails;
         window.toggleParallax = toggleParallax;
         window.toggleSettings = toggleSettings;
         window.toggleSupportSubmenu = toggleSupportSubmenu;
@@ -3604,6 +3909,9 @@ ${deviceInfo.userAgent}
         window.useAISuggestion = useAISuggestion;
         window.openChat = openChat;
         window.renderChatsList = renderChatsList;
+        window.showChatProfile = showChatProfile;
+        window.toggleAuthMode = toggleAuthMode;
+        window.handleLogin = handleLogin;
     </script>
 </body>
 </html>

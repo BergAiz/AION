@@ -94,13 +94,13 @@
             will-change: transform, opacity; /* Улучшение производительности */
         }
         
-        /* Контейнер приложения */
+        /* Контейнер приложения - ИСПРАВЛЕНО: убрано ограничение высоты */
         #app {
             position: relative;
             z-index: 2;
             width: 100%;
             max-width: 400px;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
@@ -480,7 +480,7 @@
             transform: translateY(-1px);
         }
         
-        /* Стили карточек */
+        /* Стили карточек - ИСПРАВЛЕНО: убрано ограничение высоты для раскрытых карточек */
         .card {
             background: rgba(20, 20, 35, 0.95);
             backdrop-filter: blur(20px);
@@ -494,14 +494,15 @@
             overflow: hidden;
             position: relative;
             margin: 0 auto;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
             transform-style: preserve-3d;
         }
         
+        /* ИСПРАВЛЕНИЕ: Карточка растягивается по содержимому при раскрытии */
         .card.expanded {
             height: auto;
             min-height: 520px;
-            max-height: 90vh;
+            max-height: 80vh;
             overflow-y: auto;
         }
         
@@ -1512,6 +1513,18 @@
             box-shadow: 0 0 15px rgba(80, 200, 255, 0.3);
         }
         
+        /* ИСПРАВЛЕНИЕ: Контейнер для контента - убрано ограничение высоты */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+            overflow-y: auto;
+            padding: 20px 0;
+            width: 100%;
+        }
+        
         /* Мобильные стили */
         @media (max-width: 768px) {
             body {
@@ -1520,13 +1533,17 @@
             
             #app {
                 max-width: 100%;
-                height: 100vh;
+                min-height: 100vh;
             }
             
             .card {
                 width: 100%;
                 max-width: 340px;
                 height: 500px;
+            }
+            
+            .card.expanded {
+                max-height: 85vh;
             }
             
             .settings-menu {
@@ -1605,6 +1622,10 @@
                 height: 35px;
                 font-size: 16px;
             }
+            
+            .content-wrapper {
+                padding: 10px 0;
+            }
         }
         
         @media (max-width: 480px) {
@@ -1618,6 +1639,10 @@
             
             .card {
                 height: 480px;
+            }
+            
+            .card.expanded {
+                max-height: 80vh;
             }
             
             .card-info {
@@ -1664,6 +1689,10 @@
                 width: 32px;
                 height: 32px;
                 font-size: 14px;
+            }
+            
+            .content-wrapper {
+                padding: 5px 0;
             }
         }
         
@@ -2050,7 +2079,7 @@
         let isSettingsOpen = false;
         let isModalOpen = false;
         let deviceInfo = {};
-        let isLoginMode = false; // Новый флаг для определения режима (вход/регистрация)
+        let isLoginMode = false;
         
         // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ AI И ЧАТА
         let chatMessages = [];
@@ -3626,10 +3655,10 @@ ${deviceInfo.userAgent}
             }
         }
         
-        // ГЛАВНЫЙ ЭКРАН
+        // ГЛАВНЫЙ ЭКРАН - ИСПРАВЛЕНО: добавлен контейнер с прокруткой
         function showMainScreen(user) {
             document.getElementById('app').innerHTML = `
-                <div style="color: #e0e0ff; text-align: center; width: 100%; height: 100%; display: flex; flex-direction: column;">
+                <div style="color: #e0e0ff; text-align: center; width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
                     <div style="background: rgba(20, 20, 35, 0.9); padding: 20px; border-radius: 20px; margin-bottom: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(80, 200, 255, 0.2);">
                         <h1 style="margin-bottom: 5px; background: linear-gradient(45deg, #80c8ff, #a0d8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AION</h1>
                         <p>Привет, ${user.name}! Найди своего человека</p>
@@ -3647,7 +3676,7 @@ ${deviceInfo.userAgent}
                         </button>
                     </div>
                     
-                    <div id="content-container" style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden;">
+                    <div class="content-wrapper" id="content-container">
                         <!-- Контент будет здесь -->
                     </div>
                     
@@ -3838,7 +3867,7 @@ ${deviceInfo.userAgent}
             showCurrentCard();
         }
         
-        // РАСКРЫТЬ ДЕТАЛИ
+        // РАСКРЫТЬ ДЕТАЛИ - ИСПРАВЛЕННАЯ ВЕРСИЯ
         function toggleDetails() {
             if (isModalOpen) return;
             

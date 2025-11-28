@@ -575,7 +575,7 @@
         
         .card-info {
             padding: 25px;
-            min-height: 45%;
+            height: 45%;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -584,6 +584,9 @@
         
         .card-main-info {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* Важно для правильной работы flex */
         }
         
         .card-main-info h2 {
@@ -604,16 +607,40 @@
             line-height: 1.5;
             margin-top: 10px;
             font-size: 15px;
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 5px;
         }
         
-        /* Стрелочка для раскрытия */
+        /* Стили для скролла описания */
+        .card-main-info .bio::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .card-main-info .bio::-webkit-scrollbar-track {
+            background: rgba(80, 200, 255, 0.1);
+            border-radius: 2px;
+        }
+        
+        .card-main-info .bio::-webkit-scrollbar-thumb {
+            background: rgba(80, 200, 255, 0.3);
+            border-radius: 2px;
+        }
+        
+        /* Контейнер для кнопки "Узнать больше" - ФИКСИРОВАННАЯ ПОЗИЦИЯ */
+        .expand-toggle-container {
+            margin-top: auto;
+            padding-top: 10px;
+            position: relative;
+            z-index: 10;
+        }
+        
         .expand-toggle {
             text-align: center;
             padding: 10px 0 5px;
             cursor: pointer;
             color: rgba(128, 200, 255, 0.8);
             transition: all 0.3s ease;
-            margin-top: 5px;
         }
         
         .expand-toggle:hover {
@@ -755,7 +782,7 @@
             transform: scale(0.95);
         }
         
-        /* Стили для подписок */
+        /* Стили для подписок - ИСПРАВЛЕНО: одинаковый размер для всех карточек */
         .subscription-container {
             display: flex;
             gap: 15px;
@@ -773,7 +800,6 @@
         .subscription-card {
             background: rgba(20, 20, 35, 0.9);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(80, 200, 255, 0.25);
             border-radius: 20px;
             padding: 25px;
             box-shadow: 
@@ -782,11 +808,13 @@
             transition: all 0.3s ease;
             min-width: 280px;
             flex-shrink: 0;
+            height: 420px; /* ФИКСИРОВАННАЯ ВЫСОТА КАК У БЕСПЛАТНОЙ */
+            display: flex;
+            flex-direction: column;
         }
         
         .subscription-card:hover {
             transform: translateY(-5px);
-            border-color: rgba(80, 200, 255, 0.4);
             box-shadow: 
                 0 0 30px rgba(80, 200, 255, 0.2),
                 0 25px 50px rgba(0, 0, 0, 0.3);
@@ -794,47 +822,29 @@
         
         /* Бесплатная версия */
         .subscription-card.free {
-            border-color: rgba(160, 160, 160, 0.4);
-            box-shadow: 
-                0 0 20px rgba(160, 160, 160, 0.1),
-                0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(160, 160, 160, 0.4);
         }
         
         .subscription-card.free:hover {
             border-color: rgba(200, 200, 200, 0.6);
-            box-shadow: 
-                0 0 30px rgba(200, 200, 200, 0.2),
-                0 25px 50px rgba(0, 0, 0, 0.3);
         }
         
         /* Plus+ версия */
         .subscription-card.plus {
-            border-color: rgba(0, 245, 204, 0.6);
-            box-shadow: 
-                0 0 20px rgba(0, 245, 204, 0.2),
-                0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 245, 204, 0.6);
         }
         
         .subscription-card.plus:hover {
             border-color: rgba(0, 245, 204, 0.8);
-            box-shadow: 
-                0 0 30px rgba(0, 245, 204, 0.4),
-                0 25px 50px rgba(0, 0, 0, 0.3);
         }
         
         /* PREMIUM версия */
         .subscription-card.premium {
-            border-color: rgba(255, 0, 127, 0.6);
-            box-shadow: 
-                0 0 20px rgba(255, 0, 127, 0.3),
-                0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 0, 127, 0.6);
         }
         
         .subscription-card.premium:hover {
             border-color: rgba(255, 0, 127, 0.9);
-            box-shadow: 
-                0 0 30px rgba(255, 0, 127, 0.5),
-                0 25px 50px rgba(0, 0, 0, 0.3);
         }
         
         .subscription-header {
@@ -858,9 +868,6 @@
         
         .subscription-card.premium .subscription-title {
             color: #FF007F;
-            background: linear-gradient(45deg, #FF007F, #FF66B2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
         
         .subscription-price {
@@ -889,8 +896,9 @@
         .subscription-features {
             list-style: none;
             margin-bottom: 20px;
-            height: 180px;
+            flex: 1;
             overflow-y: auto;
+            padding-right: 5px;
         }
         
         .subscription-features::-webkit-scrollbar {
@@ -908,18 +916,22 @@
         }
         
         .subscription-features li {
-            padding: 6px 0;
+            padding: 8px 0;
             color: rgba(224, 224, 255, 0.9);
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 8px;
-            font-size: 13px;
+            font-size: 13px; /* УМЕНЬШЕН РАЗМЕР ШРИФТА */
+            line-height: 1.3; /* УМЕНЬШЕН МЕЖСТРОЧНЫЙ ИНТЕРВАЛ */
+            word-wrap: break-word; /* ПЕРЕНОС СЛОВ */
+            overflow-wrap: break-word; /* ПЕРЕНОС ДЛИННЫХ СЛОВ */
         }
         
         .subscription-features li::before {
             content: '✓';
             font-weight: bold;
             flex-shrink: 0;
+            margin-top: 1px;
         }
         
         .subscription-card.free .subscription-features li::before {
@@ -943,6 +955,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-top: auto;
         }
         
         .subscription-card.free .btn-subscribe {
@@ -1571,6 +1584,12 @@
             .subscription-card {
                 min-width: 260px;
                 padding: 20px;
+                height: 400px; /* АДАПТИВНАЯ ВЫСОТА ДЛЯ ПЛАНШЕТОВ */
+            }
+            
+            .subscription-features li {
+                font-size: 12px; /* ЕЩЕ МЕНЬШЕ НА ПЛАНШЕТАХ */
+                line-height: 1.2;
             }
             
             .parallax-indicator {
@@ -1666,6 +1685,13 @@
             .subscription-card {
                 min-width: 240px;
                 padding: 15px;
+                height: 380px; /* АДАПТИВНАЯ ВЫСОТА ДЛЯ СМАРТФОНОВ */
+            }
+
+            .subscription-features li {
+                font-size: 11px; /* МИНИМАЛЬНЫЙ РАЗМЕР ДЛЯ СМАРТФОНОВ */
+                line-height: 1.1;
+                padding: 6px 0;
             }
 
             .chat-container {
@@ -1914,7 +1940,7 @@
                 <li>Исправлять неточную информацию</li>
                 <li>Удалять ваш аккаунт и связанные данные</li>
                 <li>Ограничивать обработку ваших данных</li>
-                <li>Переносить ваши данные в другую службу</li>
+                <li>Переносить ваши данные в другую служку</li>
             </ul>
             
             <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Cookies и отслеживание</h3>
@@ -2088,7 +2114,7 @@
         let activeChatId = null;
         let userChats = [];
         
-        // СЛОВАРЬ СЛЕНГА ДЛЯ AI
+        // СЛОВАРЬ СЛАНГА ДЛЯ AI
         let slangDictionary = {
             'пон': 'понятно',
             'го': 'давай, пойдём, начинай',
@@ -2167,6 +2193,21 @@
                     education: "Студентка художественного факультета\nКурсы по истории искусств",
                     work: "Бариста в кофейне\nФриланс-дизайнер",
                     hobbies: "Акварельная живопись, написание рассказов, танцы\nФотография городских пейзажей\nКоллекционирование винтажных открыток"
+                }
+            },
+            { 
+                id: 'user_4',
+                name: "Александр", 
+                age: 30, 
+                gender: "male",
+                bio: "Предприниматель и путешественник с огромной страстью к жизни. Ищу партнера для совместных приключений и создания чего-то великого вместе. Люблю экстремальные виды спорта, особенно скалолазание и дайвинг. В свободное время изучаю философию и психологию, пишу книгу о своих путешествиях по 50 странам мира. Верю, что настоящая любовь - это когда два человека вдохновляют друг друга становиться лучше каждый день. Ищу женщину с яркой индивидуальностью, чувством юмора и жаждой приключений. Готов поддержать любые начинания и мечты своей спутницы. Важно, чтобы у нас были общие ценности и желание создавать что-то вместе. Не представляю жизнь без путешествий, новых впечатлений и глубоких разговоров до утра.",
+                details: {
+                    interests: "Путешествия, экстремальные виды спорта, философия, психология, литература, фотография, кулинария, языки, искусство, музыка, театр, кино, архитектура, история, наука, технологии, бизнес, инвестиции, благотворительность",
+                    lifestyle: "Активный образ жизни, регулярные тренировки, здоровое питание, медитация, планирование, саморазвитие, работа в режиме номада, частые путешествия, волонтерство",
+                    goals: "Создать успешный международный бизнес\nОбъездить все страны мира\nНаписать и издать книгу о путешествиях\nОсновать благотворительный фонд\nПостроить крепкую семью и воспитать детей\nИзучить 5 иностранных языков в совершенстве\nСоздать образовательную платформу для молодежи\nРазработать экологичный бизнес-проект\nИнвестировать в перспективные стартапы\nСоздать сообщество единомышленников",
+                    education: "Высшее экономическое образование\nMBA в международной бизнес-школе\nКурсы по психологии и коучингу\nСертификаты по скалолазанию и дайвингу\nИзучение 3 иностранных языков",
+                    work: "Основатель IT-компании\nИнвестор в стартапы\nАвтор блога о путешествиях\nКоуч по личностному росту\nКонсультант по бизнес-развитию",
+                    hobbies: "Скалолазание, дайвинг, серфинг, горные лыжи\nФотография дикой природы\nЧтение философской литературы\nИгра на фортепиано\nКулинарные эксперименты\nЙога и медитация\nИзучение новых культур\nВолонтерская работа\nНаписание книги\nКоллекционирование винтажных карт"
                 }
             }
         ];
@@ -2522,9 +2563,11 @@ ${deviceInfo.userAgent}
                             <div class="bio">${user.bio}</div>
                         </div>
                         
-                        <div class="expand-toggle" onclick="toggleChatProfileDetails()">
-                            <div class="expand-icon">⌄</div>
-                            <div style="font-size: 12px; margin-top: 5px;">Узнать больше</div>
+                        <div class="expand-toggle-container">
+                            <div class="expand-toggle" onclick="toggleChatProfileDetails()">
+                                <div class="expand-icon">⌄</div>
+                                <div style="font-size: 12px; margin-top: 5px;">Узнать больше</div>
+                            </div>
                         </div>
                         
                         <div class="card-details" id="chat-profile-details">
@@ -3702,7 +3745,7 @@ ${deviceInfo.userAgent}
             }
         }
         
-        // ЭКРАН ПОДПИСКИ
+        // ЭКРАН ПОДПИСКИ - ИСПРАВЛЕНО: одинаковый размер для всех карточек
         function showSubscriptionScreen() {
             const container = document.getElementById('content-container');
             container.innerHTML = `
@@ -3723,10 +3766,8 @@ ${deviceInfo.userAgent}
                                 <div class="subscription-period">навсегда</div>
                             </div>
                             <ul class="subscription-features">
-                                <li>Базовый поиск партнеров</li>
-                                <li>5 лайков в день</li>
-                                <li>Ограниченный просмотр анкет</li>
-                                <li>Стандартные рекомендации</li>
+                                <li>200 лайков в день</li>
+                                <li>Ai подсказка в 3 чатах 50% от возможности</li>
                             </ul>
                             <button class="btn-subscribe" style="cursor: not-allowed;">
                                 Активна
@@ -3740,10 +3781,13 @@ ${deviceInfo.userAgent}
                                 <div class="subscription-period">в месяц</div>
                             </div>
                             <ul class="subscription-features">
-                                <li>Расширенный поиск партнеров</li>
                                 <li>Неограниченное количество лайков</li>
-                                <li>Просмотр кто проявил к вам интерес</li>
-                                <li>Приоритет в рекомендациях</li>
+                                <li>5 суперлайков в день</li>
+                                <li>Ai подсказка, 70% процентов от возможного потенциала</li>
+                                <li>Функция возвращения к анкете после дизлайка 5 раз</li>
+                                <li>Приоритетная техническая поддержка</li>
+                                <li>Узнать кто лайкнул тебя</li>
+                                <li>1 сеанс внимания в неделю по три часа</li>
                             </ul>
                             <button class="btn-subscribe" onclick="handleSubscription('plus')">
                                 Выбрать Plus+
@@ -3757,12 +3801,16 @@ ${deviceInfo.userAgent}
                                 <div class="subscription-period">в месяц</div>
                             </div>
                             <ul class="subscription-features">
-                                <li>Все возможности Plus+</li>
-                                <li>Персональный подбор партнеров</li>
+                                <li>Все функции Plus версии</li>
+                                <li>10 суперлайков в день</li>
+                                <li>AI подсказка на 100% возможного потенциала</li>
+                                <li>Функция возвращения к анкете после дизлайка безлимитна</li>
                                 <li>Расширенная аналитика совместимости</li>
-                                <li>Эксклюзивные события и встречи</li>
-                                <li>Поддержка 24/7 от персонального консьержа</li>
                                 <li>Приоритетная техническая поддержка</li>
+                                <li>Узнать кто лайкнул тебя</li>
+                                <li>Функция написать не дожидаясь взаимного лайка</li>
+                                <li>Персональный поиск ближайшего партнера по местоположению</li>
+                                <li>3 сеансов внимания в неделю по три часа</li>
                             </ul>
                             <button class="btn-subscribe" onclick="handleSubscription('premium')">
                                 Выбрать PREMIUM
@@ -3817,9 +3865,11 @@ ${deviceInfo.userAgent}
                             <div class="bio">${currentCard.bio}</div>
                         </div>
                         
-                        <div class="expand-toggle" onclick="toggleDetails()">
-                            <div class="expand-icon">⌄</div>
-                            <div style="font-size: 12px; margin-top: 5px;">Узнать больше</div>
+                        <div class="expand-toggle-container">
+                            <div class="expand-toggle" onclick="toggleDetails()">
+                                <div class="expand-icon">⌄</div>
+                                <div style="font-size: 12px; margin-top: 5px;">Узнать больше</div>
+                            </div>
                         </div>
                         
                         <div class="card-details" id="card-details">

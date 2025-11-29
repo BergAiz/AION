@@ -257,12 +257,6 @@
             font-weight: 500;
         }
         
-        .settings-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(80, 200, 255, 0.3), transparent);
-            margin: 20px 0;
-        }
-        
         /* Подменю поддержки */
         .support-submenu {
             background: rgba(25, 25, 45, 0.8);
@@ -574,7 +568,7 @@
         }
         
         .card-info {
-            padding: 25px;
+            padding: 20px 25px 15px 25px;
             height: 45%;
             display: flex;
             flex-direction: column;
@@ -586,14 +580,16 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-height: 0; /* Важно для правильной работы flex */
+            min-height: 0;
         }
         
+        /* ИСПРАВЛЕНИЕ: Поднял имя и возраст выше */
         .card-main-info h2 {
             font-size: 26px;
             color: #80c8ff;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: 600;
+            margin-top: 0;
         }
         
         .card-main-info .age {
@@ -602,14 +598,18 @@
             color: #a0d8ff;
         }
         
+        /* ИСПРАВЛЕНИЕ: Увеличил поле описания до кнопки "Узнать больше" */
         .card-main-info .bio {
             color: rgba(224, 224, 255, 0.9);
             line-height: 1.5;
-            margin-top: 10px;
+            margin-top: 8px;
             font-size: 15px;
-            overflow-y: auto;
             flex: 1;
+            overflow-y: auto;
             padding-right: 5px;
+            margin-bottom: 0;
+            max-height: none;
+            min-height: 120px;
         }
         
         /* Стили для скролла описания */
@@ -627,20 +627,26 @@
             border-radius: 2px;
         }
         
-        /* Контейнер для кнопки "Узнать больше" - ФИКСИРОВАННАЯ ПОЗИЦИЯ */
+        /* ИСПРАВЛЕНИЕ: Контейнер для кнопки "Узнать больше" - только стрелочка - ПРИЖАТА К НИЖНЕЙ ГРАНИЦЕ */
         .expand-toggle-container {
-            margin-top: auto;
-            padding-top: 10px;
-            position: relative;
-            z-index: 10;
-        }
+    margin-top: auto;
+    padding-top: 8px;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    border-top: 1px solid rgba(80, 200, 255, 0.1);
+    display: flex;
+    align-items: flex-end;
+    min-height: 40px;
+}
         
         .expand-toggle {
             text-align: center;
-            padding: 10px 0 5px;
+            padding: 5px 0;
             cursor: pointer;
             color: rgba(128, 200, 255, 0.8);
             transition: all 0.3s ease;
+            width: 100%; /* Добавлено для полного охвата ширины */
         }
         
         .expand-toggle:hover {
@@ -649,7 +655,7 @@
         }
         
         .expand-icon {
-            font-size: 20px;
+            font-size: 24px;
             animation: bounce 2s infinite;
         }
         
@@ -664,7 +670,7 @@
             background: rgba(30, 30, 50, 0.7);
             border-radius: 15px;
             padding: 0;
-            margin-top: 15px;
+            margin-top: 12px;
             display: none;
             overflow: hidden;
             border: 1px solid rgba(80, 200, 255, 0.15);
@@ -681,7 +687,7 @@
         }
         
         .detail-section {
-            padding: 20px;
+            padding: 18px;
             border-bottom: 1px solid rgba(80, 200, 255, 0.1);
         }
         
@@ -693,7 +699,7 @@
             font-size: 16px;
             font-weight: 600;
             color: #80c8ff;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -808,7 +814,7 @@
             transition: all 0.3s ease;
             min-width: 280px;
             flex-shrink: 0;
-            height: 420px; /* ФИКСИРОВАННАЯ ВЫСОТА КАК У БЕСПЛАТНОЙ */
+            height: 420px;
             display: flex;
             flex-direction: column;
         }
@@ -921,10 +927,10 @@
             display: flex;
             align-items: flex-start;
             gap: 8px;
-            font-size: 13px; /* УМЕНЬШЕН РАЗМЕР ШРИФТА */
-            line-height: 1.3; /* УМЕНЬШЕН МЕЖСТРОЧНЫЙ ИНТЕРВАЛ */
-            word-wrap: break-word; /* ПЕРЕНОС СЛОВ */
-            overflow-wrap: break-word; /* ПЕРЕНОС ДЛИННЫХ СЛОВ */
+            font-size: 13px;
+            line-height: 1.3;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         
         .subscription-features li::before {
@@ -1172,14 +1178,14 @@
             visibility: visible;
         }
         
-        /* Стили для вкладки чата - ПОЛНОЭКРАННЫЕ */
+        /* Стили для вкладки чата - ПОЛНОЭКРАННЫЕ - ИСПРАВЛЕНО: теперь занимает почти весь экран */
         .chat-container {
             background: rgba(20, 20, 35, 0.9);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(80, 200, 255, 0.2);
             border-radius: 20px;
             padding: 20px;
-            height: 100%;
+            height: calc(100vh - 200px); /* ЗАНИМАЕТ ПОЧТИ ВЕСЬ ЭКРАН */
             display: flex;
             flex-direction: column;
             margin: 0 auto;
@@ -1399,20 +1405,21 @@
             animation: fadeInOut 3s ease-in-out;
         }
         
-        /* Список чатов - ПОЛНОЭКРАННЫЙ */
+        /* Список чатов - ПОЛНОЭКРАННЫЙ - ИСПРАВЛЕНО: теперь на весь экран */
         .chats-list {
             background: rgba(20, 20, 35, 0.9);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(80, 200, 255, 0.2);
             border-radius: 20px;
             padding: 20px;
-            height: 100%;
+            height: calc(100vh - 200px); /* ЗАНИМАЕТ ПОЧТИ ВЕСЬ ЭКРАН */
             display: flex;
             flex-direction: column;
             margin: 0 auto;
             width: 100%;
             max-width: 100%;
             overflow-y: auto;
+            min-height: 500px; /* Увеличил минимальную высоту */
         }
         
         .chat-item {
@@ -1479,6 +1486,11 @@
             text-align: center;
             color: rgba(224, 224, 255, 0.7);
             padding: 40px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         
         /* Переключатель между регистрацией и входом */
@@ -1536,6 +1548,7 @@
             overflow-y: auto;
             padding: 20px 0;
             width: 100%;
+            min-height: 500px; /* Увеличил минимальную высоту для чатов */
         }
         
         /* Мобильные стили */
@@ -1584,11 +1597,11 @@
             .subscription-card {
                 min-width: 260px;
                 padding: 20px;
-                height: 400px; /* АДАПТИВНАЯ ВЫСОТА ДЛЯ ПЛАНШЕТОВ */
+                height: 400px;
             }
             
             .subscription-features li {
-                font-size: 12px; /* ЕЩЕ МЕНЬШЕ НА ПЛАНШЕТАХ */
+                font-size: 12px;
                 line-height: 1.2;
             }
             
@@ -1620,7 +1633,7 @@
             }
 
             .chat-container {
-                height: 100%;
+                height: calc(100vh - 180px); /* АДАПТИРУЕТСЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА */
                 padding: 15px;
             }
 
@@ -1630,8 +1643,9 @@
             }
             
             .chats-list {
-                height: 100%;
+                height: calc(100vh - 180px); /* АДАПТИРУЕТСЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА */
                 padding: 15px;
+                min-height: 450px;
             }
             
             .back-to-chat-btn {
@@ -1644,6 +1658,7 @@
             
             .content-wrapper {
                 padding: 10px 0;
+                min-height: 450px;
             }
         }
         
@@ -1665,7 +1680,7 @@
             }
             
             .card-info {
-                padding: 20px;
+                padding: 18px 20px 15px 20px;
             }
             
             .card-main-info h2 {
@@ -1685,17 +1700,17 @@
             .subscription-card {
                 min-width: 240px;
                 padding: 15px;
-                height: 380px; /* АДАПТИВНАЯ ВЫСОТА ДЛЯ СМАРТФОНОВ */
+                height: 380px;
             }
 
             .subscription-features li {
-                font-size: 11px; /* МИНИМАЛЬНЫЙ РАЗМЕР ДЛЯ СМАРТФОНОВ */
+                font-size: 11px;
                 line-height: 1.1;
                 padding: 6px 0;
             }
 
             .chat-container {
-                height: 100%;
+                height: calc(100vh - 160px); /* АДАПТИРУЕТСЯ ПОД МАЛЕНЬКИЕ ЭКРАНЫ */
                 padding: 15px;
             }
 
@@ -1705,8 +1720,9 @@
             }
             
             .chats-list {
-                height: 100%;
+                height: calc(100vh - 160px); /* АДАПТИРУЕТСЯ ПОД МАЛЕНЬКИЕ ЭКРАНЫ */
                 padding: 15px;
+                min-height: 400px;
             }
             
             .back-to-chat-btn {
@@ -1719,6 +1735,7 @@
             
             .content-wrapper {
                 padding: 5px 0;
+                min-height: 400px;
             }
         }
         
@@ -2155,7 +2172,7 @@
                 name: "Анна", 
                 age: 25, 
                 gender: "female",
-                bio: "Люблю путешествия и фотографию. Ищу глубокие и осмысленные отношения. В свободное время занимаюсь йогой и изучаю новые кулинарные рецепты.",
+                bio: "Люблю путешествия и фотографию. Ищу глубокие и осмысленные отношения. В свободное время занимаюсь йогой и изучаю новые кулинарные рецепты. Обожаю длинные прогулки по городу и открытие новых мест. Верю, что настоящее счастье - в простых моментах и искренних эмоциях.",
                 details: {
                     interests: "Фотография, йога, кулинария, путешествия, искусство",
                     lifestyle: "Активный образ жизни, здоровое питание, регулярные тренировки, медитация",
@@ -2170,7 +2187,7 @@
                 name: "Максим", 
                 age: 28, 
                 gender: "male",
-                bio: "Программист, увлекаюсь спортом и научной фантастикой. Ценю искренность и честность в отношениях.",
+                bio: "Программист, увлекаюсь спортом и научной фантастикой. Ценю искренность и честность в отношениях. Люблю интеллектуальные беседы и новые вызовы. В свободное время изучаю новые технологии и занимаюсь саморазвитием.",
                 details: {
                     interests: "Программирование, бег, научная фантастика, настольные игры, технологии",
                     lifestyle: "Спортивный образ жизни, работа из дома, регулярные пробежки, правильное питание",
@@ -2185,7 +2202,7 @@
                 name: "София", 
                 age: 23, 
                 gender: "female",
-                bio: "Студентка, обожаю искусство и кофе. Верю, что лучшие отношения строятся на дружбе и взаимопонимании.",
+                bio: "Студентка, обожаю искусство и кофе. Верю, что лучшие отношения строятся на дружбе и взаимопонимании. Люблю посещать выставки и открывать новые кофейни. Мечтаю о путешествии по Италии и изучении итальянского языка.",
                 details: {
                     interests: "Искусство, литература, кофе, театр, мода, дизайн",
                     lifestyle: "Активная учеба, встречи с друзьями, творческие вечера, посещение культурных мероприятий",
@@ -2566,7 +2583,6 @@ ${deviceInfo.userAgent}
                         <div class="expand-toggle-container">
                             <div class="expand-toggle" onclick="toggleChatProfileDetails()">
                                 <div class="expand-icon">⌄</div>
-                                <div style="font-size: 12px; margin-top: 5px;">Узнать больше</div>
                             </div>
                         </div>
                         
@@ -2710,15 +2726,13 @@ ${deviceInfo.userAgent}
             const details = document.getElementById('chat-profile-details');
             const toggle = card.querySelector('.expand-toggle');
             const icon = card.querySelector('.expand-icon');
-            const text = card.querySelector('.expand-toggle div:last-child');
             
-            if (!details || !toggle || !icon || !text) return;
+            if (!details || !toggle || !icon) return;
             
             if (card.classList.contains('expanded')) {
                 card.classList.remove('expanded');
                 details.classList.remove('show');
                 icon.style.transform = 'rotate(0deg)';
-                text.textContent = 'Узнать больше';
                 
                 setTimeout(() => {
                     if (isParallaxActive && !isModalOpen) {
@@ -2729,7 +2743,6 @@ ${deviceInfo.userAgent}
                 card.classList.add('expanded');
                 details.classList.add('show');
                 icon.style.transform = 'rotate(180deg)';
-                text.textContent = 'Свернуть';
                 
                 // Останавливаем параллакс при раскрытии
                 card.removeEventListener('mousemove', handleChatProfileMouseMove);
@@ -2780,7 +2793,7 @@ ${deviceInfo.userAgent}
             }
         }
 
-        // АНАЛИЗ И ПРЕОБРАЗОВАНИЕ СЛЕНГА
+        // АНАЛИЗ И ПРЕОБРАЗОВАНИЕ СЛАНГА
         function analyzeAndTransformSlang(message) {
             const words = message.toLowerCase().split(/\s+/);
             let transformedMessage = message;
@@ -3454,19 +3467,18 @@ ${deviceInfo.userAgent}
                 card.removeEventListener('touchmove', handleCardTouchMove);
                 card.removeEventListener('touchend', handleCardMouseLeave);
             }
-            isParallaxActive = false;
-            updateParallaxIndicator(false);
         }
         
         function toggleParallax() {
             if (isModalOpen) return;
             
+            isParallaxActive = !isParallaxActive;
+            updateParallaxIndicator(isParallaxActive);
+            
             if (isParallaxActive) {
-                stopParallax();
-            } else {
-                isParallaxActive = true;
-                updateParallaxIndicator(true);
                 initParallax();
+            } else {
+                stopParallax();
             }
         }
         
@@ -3868,7 +3880,6 @@ ${deviceInfo.userAgent}
                         <div class="expand-toggle-container">
                             <div class="expand-toggle" onclick="toggleDetails()">
                                 <div class="expand-icon">⌄</div>
-                                <div style="font-size: 12px; margin-top: 5px;">Узнать больше</div>
                             </div>
                         </div>
                         
@@ -3925,13 +3936,11 @@ ${deviceInfo.userAgent}
             const details = document.getElementById('card-details');
             const toggle = document.querySelector('.expand-toggle');
             const icon = toggle.querySelector('.expand-icon');
-            const text = toggle.querySelector('div:last-child');
             
             if (isCardExpanded) {
                 card.classList.remove('expanded');
                 details.classList.remove('show');
                 icon.style.transform = 'rotate(0deg)';
-                text.textContent = 'Узнать больше';
                 isCardExpanded = false;
                 
                 setTimeout(() => {
@@ -3943,7 +3952,6 @@ ${deviceInfo.userAgent}
                 card.classList.add('expanded');
                 details.classList.add('show');
                 icon.style.transform = 'rotate(180deg)';
-                text.textContent = 'Свернуть';
                 isCardExpanded = true;
                 
                 stopParallax();

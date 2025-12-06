@@ -83,7 +83,7 @@
             66% { transform: translateY(10px) scale(0.9); }
         }
         
-        /* Анимация дыхания - ИСПРАВЛЕНА ДЛЯ ПЛАВНОСТИ */
+        /* Анимация дыхания */
         @keyframes gentleBreath {
             0%, 100% { transform: scale(1); opacity: 0.95; }
             50% { transform: scale(1.02); opacity: 1; }
@@ -91,10 +91,10 @@
         
         .auth-container, .card, .subscription-card, .settings-menu, .chat-container {
             animation: gentleBreath 8s ease-in-out infinite;
-            will-change: transform, opacity; /* Улучшение производительности */
+            will-change: transform, opacity;
         }
         
-        /* Контейнер приложения - ИСПРАВЛЕНО: убрано ограничение высоты */
+        /* Контейнер приложения */
         #app {
             position: relative;
             z-index: 2;
@@ -255,6 +255,14 @@
             color: #e0e0ff;
             font-size: 15px;
             font-weight: 500;
+        }
+        
+        /* Разделитель для настроек */
+        .settings-divider {
+            height: 1px;
+            margin: 15px 0;
+            background: radial-gradient(circle, rgba(80, 200, 255, 0.4), transparent);
+            opacity: 0.4;
         }
         
         /* Подменю поддержки */
@@ -474,7 +482,7 @@
             transform: translateY(-1px);
         }
         
-        /* Стили карточек - ИСПРАВЛЕНО: убрано ограничение высоты для раскрытых карточек */
+        /* ИСПРАВЛЕННЫЕ СТИЛИ КАРТОЧЕК */
         .card {
             background: rgba(20, 20, 35, 0.95);
             backdrop-filter: blur(20px);
@@ -492,16 +500,13 @@
             transform-style: preserve-3d;
         }
         
-        /* ИСПРАВЛЕНИЕ: Карточка растягивается по содержимому при раскрытии */
-        .card.expanded {
-            height: auto;
-            min-height: 520px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
+        /* Изображение на всю карточку */
         .card-photo {
-            height: 55%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: 
                 radial-gradient(circle at 30% 30%, rgba(80, 200, 255, 0.2) 0%, transparent 50%),
                 radial-gradient(circle at 70% 70%, rgba(100, 180, 255, 0.2) 0%, transparent 50%),
@@ -512,6 +517,7 @@
             position: relative;
             overflow: hidden;
             transform-style: preserve-3d;
+            z-index: 1;
         }
         
         .card-avatar {
@@ -567,128 +573,74 @@
             100% { transform: rotate(360deg); }
         }
         
+        /* Информация о пользователе - ИСПРАВЛЕНО: добавлен полноценный скролл */
         .card-info {
-            padding: 20px 25px 15px 25px;
-            height: 45%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(20, 20, 35, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
             display: flex;
             flex-direction: column;
-            position: relative;
-            transform-style: preserve-3d;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+            z-index: 2;
+            overflow-y: auto;
+            box-sizing: border-box;
         }
         
-        .card-main-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
+        .card-info.visible {
+            transform: translateY(0);
         }
         
-        /* ИСПРАВЛЕНИЕ: Поднял имя и возраст выше */
-        .card-main-info h2 {
+        /* Имя и возраст вверху информации */
+        .card-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(80, 200, 255, 0.2);
+        }
+        
+        .card-header h2 {
             font-size: 26px;
             color: #80c8ff;
             margin-bottom: 5px;
             font-weight: 600;
-            margin-top: 0;
         }
         
-        .card-main-info .age {
+        .card-header .age {
             opacity: 0.9;
             font-size: 20px;
             color: #a0d8ff;
         }
         
-        /* ИСПРАВЛЕНИЕ: Увеличил поле описания до кнопки "Узнать больше" */
-        .card-main-info .bio {
+        /* Описание пользователя */
+        .card-bio {
             color: rgba(224, 224, 255, 0.9);
             line-height: 1.5;
-            margin-top: 8px;
             font-size: 15px;
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 5px;
-            margin-bottom: 0;
-            max-height: none;
-            min-height: 120px;
+            margin-bottom: 20px;
         }
         
-        /* Стили для скролла описания */
-        .card-main-info .bio::-webkit-scrollbar {
-            width: 4px;
-        }
-        
-        .card-main-info .bio::-webkit-scrollbar-track {
-            background: rgba(80, 200, 255, 0.1);
-            border-radius: 2px;
-        }
-        
-        .card-main-info .bio::-webkit-scrollbar-thumb {
-            background: rgba(80, 200, 255, 0.3);
-            border-radius: 2px;
-        }
-        
-        /* ИСПРАВЛЕНИЕ: Контейнер для кнопки "Узнать больше" - только стрелочка - ПРИЖАТА К НИЖНЕЙ ГРАНИЦЕ */
-        .expand-toggle-container {
-    margin-top: auto;
-    padding-top: 8px;
-    position: relative;
-    z-index: 10;
-    flex-shrink: 0;
-    border-top: 1px solid rgba(80, 200, 255, 0.1);
-    display: flex;
-    align-items: flex-end;
-    min-height: 40px;
-}
-        
-        .expand-toggle {
-            text-align: center;
-            padding: 5px 0;
-            cursor: pointer;
-            color: rgba(128, 200, 255, 0.8);
-            transition: all 0.3s ease;
-            width: 100%; /* Добавлено для полного охвата ширины */
-        }
-        
-        .expand-toggle:hover {
-            color: #80c8ff;
-            transform: translateY(2px);
-        }
-        
-        .expand-icon {
-            font-size: 24px;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-5px); }
-            60% { transform: translateY(-3px); }
-        }
-        
-        /* Дополнительная информация */
+        /* Детальная информация - ИСПРАВЛЕНО: теперь весь контент виден при скролле */
         .card-details {
             background: rgba(30, 30, 50, 0.7);
             border-radius: 15px;
             padding: 0;
-            margin-top: 12px;
-            display: none;
             overflow: hidden;
             border: 1px solid rgba(80, 200, 255, 0.15);
-        }
-        
-        .card-details.show {
-            display: block;
-            animation: slideDown 0.5s ease;
-        }
-        
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            margin-bottom: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
         
         .detail-section {
             padding: 18px;
             border-bottom: 1px solid rgba(80, 200, 255, 0.1);
+            flex-shrink: 0;
         }
         
         .detail-section:last-child {
@@ -715,6 +667,7 @@
             color: rgba(224, 224, 255, 0.9);
             line-height: 1.6;
             font-size: 14px;
+            overflow: visible;
         }
         
         .detail-content p {
@@ -723,6 +676,42 @@
         
         .detail-content p:last-child {
             margin-bottom: 0;
+        }
+        
+        /* Индикатор для показа информации - ИСПРАВЛЕНО: только надпись */
+        .info-toggle {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 35, 0.8);
+            border: 1px solid rgba(80, 200, 255, 0.3);
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: #80c8ff;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            z-index: 3;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+            text-align: center;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+            from { opacity: 0; }
+        }
+        
+        .info-toggle:hover {
+            background: rgba(40, 40, 60, 0.9);
+            border-color: rgba(80, 200, 255, 0.5);
+            transform: translateX(-50%) scale(1.05);
+        }
+        
+        .info-toggle.hidden {
+            display: none;
         }
         
         /* Кнопки действий */
@@ -788,7 +777,7 @@
             transform: scale(0.95);
         }
         
-        /* Стили для подписок - ИСПРАВЛЕНО: одинаковый размер для всех карточек */
+        /* Стили для подписок */
         .subscription-container {
             display: flex;
             gap: 15px;
@@ -803,6 +792,7 @@
             display: none;
         }
         
+        /* ИСПРАВЛЕНО: уменьшил ширину карточек Plus и Premium */
         .subscription-card {
             background: rgba(20, 20, 35, 0.9);
             backdrop-filter: blur(20px);
@@ -812,7 +802,7 @@
                 0 0 20px rgba(80, 200, 255, 0.1),
                 0 25px 50px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
-            min-width: 280px;
+            min-width: 270px; /* Уменьшено с 280px до 260px */
             flex-shrink: 0;
             height: 420px;
             display: flex;
@@ -921,6 +911,7 @@
             border-radius: 2px;
         }
         
+        /* ИСПРАВЛЕНО: обновил стили для переносов строк */
         .subscription-features li {
             padding: 8px 0;
             color: rgba(224, 224, 255, 0.9);
@@ -933,11 +924,19 @@
             overflow-wrap: break-word;
         }
         
+        .subscription-features li span {
+            display: block;
+            width: 100%;
+        }
+        
         .subscription-features li::before {
             content: '✓';
             font-weight: bold;
             flex-shrink: 0;
-            margin-top: 1px;
+            margin-top: 2px;
+            display: inline-block;
+            width: 18px;
+            text-align: center;
         }
         
         .subscription-card.free .subscription-features li::before {
@@ -980,9 +979,14 @@
             color: #0f0f1f;
         }
         
-        .btn-subscribe:hover:not(.subscription-card.free .btn-subscribe) {
+        .btn-subscribe:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subscription-card.free .btn-subscribe:hover {
+            transform: none;
+            box-shadow: none;
         }
         
         .subscription-card.plus .btn-subscribe:hover {
@@ -1178,14 +1182,14 @@
             visibility: visible;
         }
         
-        /* Стили для вкладки чата - ПОЛНОЭКРАННЫЕ - ИСПРАВЛЕНО: теперь занимает почти весь экран */
+        /* Стили для вкладки чата */
         .chat-container {
             background: rgba(20, 20, 35, 0.9);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(80, 200, 255, 0.2);
             border-radius: 20px;
             padding: 20px;
-            height: calc(100vh - 200px); /* ЗАНИМАЕТ ПОЧТИ ВЕСЬ ЭКРАН */
+            height: calc(100vh - 200px);
             display: flex;
             flex-direction: column;
             margin: 0 auto;
@@ -1405,21 +1409,21 @@
             animation: fadeInOut 3s ease-in-out;
         }
         
-        /* Список чатов - ПОЛНОЭКРАННЫЙ - ИСПРАВЛЕНО: теперь на весь экран */
+        /* Список чатов */
         .chats-list {
             background: rgba(20, 20, 35, 0.9);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(80, 200, 255, 0.2);
             border-radius: 20px;
             padding: 20px;
-            height: calc(100vh - 200px); /* ЗАНИМАЕТ ПОЧТИ ВЕСЬ ЭКРАН */
+            height: calc(100vh - 200px);
             display: flex;
             flex-direction: column;
             margin: 0 auto;
             width: 100%;
             max-width: 100%;
             overflow-y: auto;
-            min-height: 500px; /* Увеличил минимальную высоту */
+            min-height: 500px;
         }
         
         .chat-item {
@@ -1538,7 +1542,7 @@
             box-shadow: 0 0 15px rgba(80, 200, 255, 0.3);
         }
         
-        /* ИСПРАВЛЕНИЕ: Контейнер для контента - убрано ограничение высоты */
+        /* Контейнер для контента */
         .content-wrapper {
             flex: 1;
             display: flex;
@@ -1548,7 +1552,7 @@
             overflow-y: auto;
             padding: 20px 0;
             width: 100%;
-            min-height: 500px; /* Увеличил минимальную высоту для чатов */
+            min-height: 500px;
         }
         
         /* Мобильные стили */
@@ -1566,10 +1570,6 @@
                 width: 100%;
                 max-width: 340px;
                 height: 500px;
-            }
-            
-            .card.expanded {
-                max-height: 85vh;
             }
             
             .settings-menu {
@@ -1594,8 +1594,9 @@
                 padding: 5px;
             }
             
+            /* ИСПРАВЛЕНО: уменьшил ширину карточек для мобильных */
             .subscription-card {
-                min-width: 260px;
+                min-width: 250px; /* Уменьшено с 260px до 240px */
                 padding: 20px;
                 height: 400px;
             }
@@ -1633,7 +1634,7 @@
             }
 
             .chat-container {
-                height: calc(100vh - 180px); /* АДАПТИРУЕТСЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА */
+                height: calc(100vh - 180px);
                 padding: 15px;
             }
 
@@ -1643,7 +1644,7 @@
             }
             
             .chats-list {
-                height: calc(100vh - 180px); /* АДАПТИРУЕТСЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА */
+                height: calc(100vh - 180px);
                 padding: 15px;
                 min-height: 450px;
             }
@@ -1675,15 +1676,11 @@
                 height: 480px;
             }
             
-            .card.expanded {
-                max-height: 80vh;
-            }
-            
             .card-info {
                 padding: 18px 20px 15px 20px;
             }
             
-            .card-main-info h2 {
+            .card-header h2 {
                 font-size: 24px;
             }
             
@@ -1697,8 +1694,9 @@
                 font-size: 24px;
             }
             
+            /* ИСПРАВЛЕНО: уменьшил ширину карточек для очень маленьких экранов */
             .subscription-card {
-                min-width: 240px;
+                min-width: 220px; /* Уменьшено с 240px до 220px */
                 padding: 15px;
                 height: 380px;
             }
@@ -1710,7 +1708,7 @@
             }
 
             .chat-container {
-                height: calc(100vh - 160px); /* АДАПТИРУЕТСЯ ПОД МАЛЕНЬКИЕ ЭКРАНЫ */
+                height: calc(100vh - 160px);
                 padding: 15px;
             }
 
@@ -1720,7 +1718,7 @@
             }
             
             .chats-list {
-                height: calc(100vh - 160px); /* АДАПТИРУЕТСЯ ПОД МАЛЕНЬКИЕ ЭКРАНЫ */
+                height: calc(100vh - 160px);
                 padding: 15px;
                 min-height: 400px;
             }
@@ -1917,7 +1915,7 @@
             <div class="modal-title">Политика конфиденциальности</div>
         </div>
         <div class="modal-content">
-            <p><strong>Последнее обновление:</strong> 2024</p>
+            <p><strong>Последнее обновление:</strong> Январь 2026</p>
             
             <p>Ваша конфиденциальность очень важна для нас. В этой политике конфиденциальности описывается, как AION Premium собирает, использует и защищает вашу личную информацию.</p>
             
@@ -1957,7 +1955,7 @@
                 <li>Исправлять неточную информацию</li>
                 <li>Удалять ваш аккаунт и связанные данные</li>
                 <li>Ограничивать обработку ваших данных</li>
-                <li>Переносить ваши данные в другую служку</li>
+                <li>Переносить ваши данные в другую службу</li>
             </ul>
             
             <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Cookies и отслеживание</h3>
@@ -2080,15 +2078,15 @@
             
             <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Версия и обновления</h3>
             <p><strong>Текущая версия:</strong> 2.1.0</p>
-            <p><strong>Дата сборки:</strong> 2024</p>
-            <p><strong>Следующее обновление:</strong> Q1 2024 - Умные уведомления</p>
+            <p><strong>Дата сборки:</strong> Январь 2026</p>
+            <p><strong>Следующее обновление:</strong> Q1 2026 - Умные уведомления</p>
             <p><strong>Разработчик:</strong> AION Technologies</p>
             
             <h3 style="color: #80c8ff; margin: 20px 0 10px 0;">Обратная связь</h3>
             <p>Мы постоянно работаем над улучшением приложения. Ваши отзывы и предложения помогают нам становиться лучше!</p>
             
             <p style="margin-top: 20px; font-size: 14px; color: rgba(224, 224, 255, 0.7);">
-                © 2024 AION Premium. Все права защищены.<br>
+                © 2026 AION Premium. Все права защищены.<br>
                 AION Technologies - создавая будущее знакомств сегодня.
             </p>
         </div>
@@ -2117,7 +2115,8 @@
         let currentCard = null;
         let userGender = '';
         let isParallaxActive = true;
-        let isCardExpanded = false;
+        let isMainCardInfoVisible = false;
+        let isChatProfileInfoVisible = false;
         let currentTab = 'dating';
         let isSettingsOpen = false;
         let isModalOpen = false;
@@ -2158,8 +2157,8 @@
         // НЕИЗВЕСТНЫЕ СЛОВА ДЛЯ ОБУЧЕНИЯ AI
         let unknownWords = new Set();
         
-        const YANDEX_API_KEY = 'AQVN1T7FdGkrMxyulbcXD-e0nndHYbzjbcAKrnv5';
-        const YANDEX_FOLDER_ID = 'b1g5njmid62d8fdbep5i';
+        // API конфигурация (ДЛЯ ПРОДАКШЕНА - ВЫНЕСТИ НА БЭКЕНД)
+        const BACKEND_API_URL = 'https://ваш-бэкенд.ru/api'; // Заменить на реальный URL
         const YANDEX_API_URL = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion';
 
         // Эмодзи для выбора
@@ -2232,14 +2231,14 @@
         // ОПРЕДЕЛЕНИЕ УСТРОЙСТВА
         function detectDevice() {
             const userAgent = navigator.userAgent.toLowerCase();
-            const isMobile = /iphone|ipad|ipod|android|blackberry|windows phone/g.test(userAgent);
-            const isIOS = /iphone|ipad|ipod/g.test(userAgent);
-            const isAndroid = /android/g.test(userAgent);
-            const isiPhone = /iphone/g.test(userAgent);
-            const isiPad = /ipad/g.test(userAgent);
-            const isSafari = /safari/g.test(userAgent) && !/chrome/g.test(userAgent);
-            const isChrome = /chrome/g.test(userAgent);
-            const isFirefox = /firefox/g.test(userAgent);
+            const isMobile = /iphone|ipad|ipod|android|blackberry|windows phone/i.test(userAgent);
+            const isIOS = /iphone|ipad|ipod/i.test(userAgent);
+            const isAndroid = /android/i.test(userAgent);
+            const isiPhone = /iphone/i.test(userAgent);
+            const isiPad = /ipad/i.test(userAgent);
+            const isSafari = /safari/i.test(userAgent) && !/chrome/i.test(userAgent);
+            const isChrome = /chrome/i.test(userAgent);
+            const isFirefox = /firefox/i.test(userAgent);
             
             deviceInfo = {
                 isMobile,
@@ -2254,18 +2253,6 @@
                 screenSize: window.screen.width + 'x' + window.screen.height,
                 viewport: window.innerWidth + 'x' + window.innerHeight
             };
-            
-            console.log('📱 Информация об устройстве:');
-            console.log('Мобильное:', deviceInfo.isMobile);
-            console.log('iOS:', deviceInfo.isIOS);
-            console.log('Android:', deviceInfo.isAndroid);
-            console.log('iPhone:', deviceInfo.isiPhone);
-            console.log('iPad:', deviceInfo.isiPad);
-            console.log('Браузер Safari:', deviceInfo.isSafari);
-            console.log('Браузер Chrome:', deviceInfo.isChrome);
-            console.log('Браузер Firefox:', deviceInfo.isFirefox);
-            console.log('Экран:', deviceInfo.screenSize);
-            console.log('Вьюпорт:', deviceInfo.viewport);
             
             updateDeviceIndicator();
             return deviceInfo;
@@ -2438,7 +2425,7 @@ ${deviceInfo.userAgent}
                     <span style="font-size: 20px;">🎉</span>
                     <div>
                         <div style="font-weight: 700;">Это взаимно!</div>
-                        <div>У вас мэтч с ${userName}</div>
+                        <div>У вас мэтч с ${escapeHtml(userName)}</div>
                     </div>
                 </div>
             `;
@@ -2471,10 +2458,10 @@ ${deviceInfo.userAgent}
                                     ${chat.userGender === 'male' ? '👨' : '👩'}
                                 </div>
                                 <div class="chat-info">
-                                    <div class="chat-name">${chat.userName}, ${chat.userAge}</div>
-                                    <div class="chat-last-message">${chat.lastMessage}</div>
+                                    <div class="chat-name">${escapeHtml(chat.userName)}, ${escapeHtml(chat.userAge)}</div>
+                                    <div class="chat-last-message">${escapeHtml(chat.lastMessage)}</div>
                                 </div>
-                                <div class="chat-time">${chat.lastMessageTime}</div>
+                                <div class="chat-time">${escapeHtml(chat.lastMessageTime)}</div>
                             </div>
                         `).join('') 
                         : 
@@ -2513,7 +2500,7 @@ ${deviceInfo.userAgent}
                             ${chat.userGender === 'male' ? '👨' : '👩'}
                         </div>
                         <div style="flex: 1;">
-                            <div style="color: #80c8ff; font-weight: 600;">${chat.userName}, ${chat.userAge}</div>
+                            <div style="color: #80c8ff; font-weight: 600;">${escapeHtml(chat.userName)}, ${escapeHtml(chat.userAge)}</div>
                             <div style="color: rgba(224, 224, 255, 0.7); font-size: 12px;">в сети</div>
                         </div>
                     </div>
@@ -2558,7 +2545,7 @@ ${deviceInfo.userAgent}
             });
         }
 
-        // ПОКАЗАТЬ ПРОФИЛЬ В ЧАТЕ С ПАРАЛЛАКСОМ
+        // ПОКАЗАТЬ ПРОФИЛЬ В ЧАТЕ
         function showChatProfile(userId) {
             const user = sampleUsers.find(u => u.id === userId);
             if (!user) return;
@@ -2575,43 +2562,40 @@ ${deviceInfo.userAgent}
                         <div class="card-avatar">${genderIcon}</div>
                     </div>
                     <div class="card-info">
-                        <div class="card-main-info">
-                            <h2>${user.name} <span class="age">${user.age}</span></h2>
-                            <div class="bio">${user.bio}</div>
+                        <div class="card-header">
+                            <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
                         </div>
+                        <div class="card-bio">${escapeHtml(user.bio)}</div>
                         
-                        <div class="expand-toggle-container">
-                            <div class="expand-toggle" onclick="toggleChatProfileDetails()">
-                                <div class="expand-icon">⌄</div>
-                            </div>
-                        </div>
-                        
-                        <div class="card-details" id="chat-profile-details">
+                        <div class="card-details">
                             <div class="detail-section">
                                 <div class="detail-section-title">Интересы</div>
-                                <div class="detail-content">${formatMultilineText(user.details.interests)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(user.details.interests))}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Образ жизни</div>
-                                <div class="detail-content">${formatMultilineText(user.details.lifestyle)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(user.details.lifestyle))}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Цели и мечты</div>
-                                <div class="detail-content">${formatMultilineText(user.details.goals)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(user.details.goals))}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Образование</div>
-                                <div class="detail-content">${formatMultilineText(user.details.education)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(user.details.education))}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Работа</div>
-                                <div class="detail-content">${formatMultilineText(user.details.work)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(user.details.work))}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Хобби и увлечения</div>
-                                <div class="detail-content">${formatMultilineText(user.details.hobbies)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(user.details.hobbies))}</div>
                             </div>
                         </div>
+                    </div>
+                    <div class="info-toggle" onclick="toggleChatCardInfo()">
+                        Узнать больше
                     </div>
                 </div>
             `;
@@ -2638,7 +2622,7 @@ ${deviceInfo.userAgent}
         }
 
         function handleChatProfileMouseMove(event) {
-            if (!isParallaxActive || isModalOpen) return;
+            if (!isParallaxActive || isModalOpen || isChatProfileInfoVisible) return;
             
             const card = event.currentTarget;
             const cardRect = card.getBoundingClientRect();
@@ -2656,7 +2640,7 @@ ${deviceInfo.userAgent}
         }
 
         function handleChatProfileTouchMove(event) {
-            if (!isParallaxActive || isModalOpen) return;
+            if (!isParallaxActive || isModalOpen || isChatProfileInfoVisible) return;
             
             const card = event.currentTarget;
             const cardRect = card.getBoundingClientRect();
@@ -2675,7 +2659,7 @@ ${deviceInfo.userAgent}
         }
 
         function handleChatProfileMouseLeave() {
-            if (!isParallaxActive || isModalOpen) return;
+            if (!isParallaxActive || isModalOpen || isChatProfileInfoVisible) return;
             
             const card = document.getElementById('chat-profile-card');
             if (card) {
@@ -2716,40 +2700,38 @@ ${deviceInfo.userAgent}
             }
         }
 
-        // ПЕРЕКЛЮЧЕНИЕ ДЕТАЛЕЙ ПРОФИЛЯ В ЧАТЕ - ИСПРАВЛЕННАЯ ВЕРСИЯ
-        function toggleChatProfileDetails() {
-            if (isModalOpen) return;
-            
+        // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ В ЧАТЕ
+        function toggleChatCardInfo() {
             const card = document.getElementById('chat-profile-card');
-            if (!card) return;
+            const info = card.querySelector('.card-info');
+            const indicator = card.querySelector('.info-toggle');
             
-            const details = document.getElementById('chat-profile-details');
-            const toggle = card.querySelector('.expand-toggle');
-            const icon = card.querySelector('.expand-icon');
-            
-            if (!details || !toggle || !icon) return;
-            
-            if (card.classList.contains('expanded')) {
-                card.classList.remove('expanded');
-                details.classList.remove('show');
-                icon.style.transform = 'rotate(0deg)';
-                
-                setTimeout(() => {
+            if (info) {
+                isChatProfileInfoVisible = !isChatProfileInfoVisible;
+                if (isChatProfileInfoVisible) {
+                    info.classList.add('visible');
+                    indicator.classList.add('hidden');
+                    stopChatProfileParallax();
+                } else {
+                    info.classList.remove('visible');
+                    indicator.classList.remove('hidden');
                     if (isParallaxActive && !isModalOpen) {
                         initChatProfileParallax();
                     }
-                }, 100);
-            } else {
-                card.classList.add('expanded');
-                details.classList.add('show');
-                icon.style.transform = 'rotate(180deg)';
+                }
+            }
+        }
+
+        // ОСТАНОВИТЬ ПАРАЛЛАКС ДЛЯ ПРОФИЛЯ В ЧАТЕ
+        function stopChatProfileParallax() {
+            const card = document.getElementById('chat-profile-card');
+            if (card) {
+                card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
                 
-                // Останавливаем параллакс при раскрытии
                 card.removeEventListener('mousemove', handleChatProfileMouseMove);
                 card.removeEventListener('mouseleave', handleChatProfileMouseLeave);
                 card.removeEventListener('touchmove', handleChatProfileTouchMove);
                 card.removeEventListener('touchend', handleChatProfileMouseLeave);
-                card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
             }
         }
 
@@ -2764,8 +2746,8 @@ ${deviceInfo.userAgent}
                 const messageElement = document.createElement('div');
                 messageElement.className = `message ${message.sender}`;
                 messageElement.innerHTML = `
-                    ${message.text}
-                    <div class="message-time">${message.time}</div>
+                    ${escapeHtml(message.text)}
+                    <div class="message-time">${escapeHtml(message.time)}</div>
                 `;
                 messagesContainer.appendChild(messageElement);
             });
@@ -2886,84 +2868,22 @@ ${deviceInfo.userAgent}
                     contextInfo += `\nПоследние сообщения в чате:\n${lastMessages}`;
                 }
 
-                const requestBody = {
-                    modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt-lite`,
-                    completionOptions: {
-                        stream: false,
-                        temperature: 0.8,
-                        maxTokens: 600
-                    },
-                    messages: [
-                        {
-                            role: "system",
-                            text: systemPrompt
-                        },
-                        {
-                            role: "user", 
-                            text: `Сообщение для улучшения: "${transformedMessage}"${contextInfo}\n\nПожалуйста, предложи 3 креативных варианта этого сообщения:`
-                        }
-                    ]
-                };
-
-                console.log('Отправка улучшенного запроса к Yandex GPT...');
+                // Для демо показываем локальные улучшения
+                const messageType = analyzeMessageType(transformedMessage);
+                return generateCreativeSuggestions(transformedMessage, messageType);
                 
-                const response = await fetch(YANDEX_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Api-Key ${YANDEX_API_KEY}`,
-                        'x-folder-id': YANDEX_FOLDER_ID
-                    },
-                    body: JSON.stringify(requestBody)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('Получен ответ от Yandex GPT:', data);
-                
-                if (data.result && data.result.alternatives && data.result.alternatives[0]) {
-                    let improvedText = data.result.alternatives[0].message.text;
-                    
-                    // Улучшенная обработка ответа
-                    const suggestions = improvedText.split('\n')
-                        .filter(line => {
-                            const trimmed = line.trim();
-                            return trimmed && 
-                                   !trimmed.startsWith('Вариант') && 
-                                   !trimmed.startsWith('---') &&
-                                   trimmed.length > 10;
-                        })
-                        .slice(0, 3)
-                        .map(line => {
-                            return line.replace(/^[0-9]\.\s*/, '')
-                                      .replace(/^[-•*]\s*/, '')
-                                      .replace(/^"|"$/g, '')
-                                      .trim();
-                        });
-                    
-                    // Если получили меньше 3 вариантов, добавляем креативные
-                    if (suggestions.length < 3) {
-                        const creativeSuggestions = generateCreativeSuggestions(originalMessage);
-                        return [...suggestions, ...creativeSuggestions.slice(0, 3 - suggestions.length)];
-                    }
-                    
-                    return suggestions;
-                } else {
-                    throw new Error('Некорректный формат ответа от API');
-                }
             } catch (error) {
-                console.error('Ошибка при обращении к Yandex GPT:', error);
-                return generateCreativeSuggestions(originalMessage);
+                console.error('Ошибка при обращении к AI:', error);
+                const messageType = analyzeMessageType(originalMessage);
+                return generateCreativeSuggestions(originalMessage, messageType);
             }
         }
 
         // ГЕНЕРАЦИЯ КРЕАТИВНЫХ ПРЕДЛОЖЕНИЙ ПРИ ОШИБКАХ
-        function generateCreativeSuggestions(originalMessage) {
-            const messageLower = originalMessage.toLowerCase();
-            const messageType = analyzeMessageType(originalMessage);
+        function generateCreativeSuggestions(originalMessage, messageType = null) {
+            if (!messageType) {
+                messageType = analyzeMessageType(originalMessage);
+            }
             
             let suggestions = [];
             
@@ -2986,7 +2906,7 @@ ${deviceInfo.userAgent}
                     
                 case 'compliment':
                     suggestions = [
-                        `Ты тоже произвел(а) впечатление! Мне особенно понравилось [упомяни что-то из профиля]`,
+                        `Ты тоже произвел(а) впечатление! Мне особенно понравилось твоё чувство юмора 😊`,
                         `Приятно это слышать! Чувствуется, что у нас может быть хорошее взаимопонимание`,
                         `Спасибо! Ты тоже кажешься очень интересным человеком. Хочется пообщаться поближе`
                     ];
@@ -2995,16 +2915,16 @@ ${deviceInfo.userAgent}
                 case 'invitation':
                     suggestions = [
                         `Отличная идея! Я бы с радостью встретился(ась). Когда тебе удобно?`,
-                        `С удовольствием! Предлагаю [день/место] - как тебе такой вариант?`,
+                        `С удовольствием! Предлагаю в эти выходные - как тебе такой вариант?`,
                         `Здорово! Давай обсудим детали - что тебе больше нравится?`
                     ];
                     break;
                     
                 default:
                     suggestions = [
-                        `Мне нравится твой подход! ${originalMessage} - это действительно важно в общении`,
-                        `Интересная мысль! ${originalMessage} - полностью разделяю твою точку зрения`,
-                        `Обожаю таких искренних людей! ${originalMessage} - это так по-настоящему`
+                        `Мне нравится твой подход! "${originalMessage}" - это действительно важно в общении`,
+                        `Интересная мысль! "${originalMessage}" - полностью разделяю твою точку зрения`,
+                        `Обожаю таких искренних людей! "${originalMessage}" - это так по-настоящему`
                     ];
             }
             
@@ -3016,9 +2936,9 @@ ${deviceInfo.userAgent}
             const msg = message.toLowerCase();
             
             if (msg.includes('?')) return 'question';
-            if (msg.includes('нравишься') || msg.includes('симпатия') || msg.includes('красив')) return 'compliment';
-            if (msg.includes('встреч') || msg.includes('кофе') || msg.includes('гулят')) return 'invitation';
-            if (msg.includes('привет') || msg.includes('здравств')) return 'greeting';
+            if (msg.includes('нравишься') || msg.includes('симпатия') || msg.includes('красив') || msg.includes('хорош')) return 'compliment';
+            if (msg.includes('встреч') || msg.includes('кофе') || msg.includes('гулят') || msg.includes('кино')) return 'invitation';
+            if (msg.includes('привет') || msg.includes('здравств') || msg.includes('добр')) return 'greeting';
             
             return 'general';
         }
@@ -3035,7 +2955,8 @@ ${deviceInfo.userAgent}
                 renderAISuggestions();
             } catch (error) {
                 console.error('Ошибка AI предложений:', error);
-                aiSuggestions = generateCreativeSuggestions(originalMessage);
+                const messageType = analyzeMessageType(originalMessage);
+                aiSuggestions = generateCreativeSuggestions(originalMessage, messageType);
                 renderAISuggestions();
             }
         }
@@ -3060,7 +2981,7 @@ ${deviceInfo.userAgent}
                 <div class="ai-suggestions">
                     ${aiSuggestions.map((suggestion, index) => `
                         <button class="ai-suggestion-btn" onclick="useAISuggestion(${index})">
-                            ${suggestion}
+                            ${escapeHtml(suggestion)}
                         </button>
                     `).join('')}
                 </div>
@@ -3366,7 +3287,13 @@ ${deviceInfo.userAgent}
         }
         
         // ПАРАЛЛАКС ДЛЯ КАРТОЧЕК
+        let isParallaxInitialized = false;
+        
         function initParallax() {
+            if (isParallaxInitialized) {
+                stopParallax();
+            }
+            
             console.log('🎮 Инициализация параллакса');
             const card = document.getElementById('current-card');
             if (card) {
@@ -3375,11 +3302,12 @@ ${deviceInfo.userAgent}
                 
                 card.addEventListener('touchmove', handleCardTouchMove, { passive: true });
                 card.addEventListener('touchend', handleCardMouseLeave);
+                isParallaxInitialized = true;
             }
         }
 
         function handleCardMouseMove(event) {
-            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating' || isModalOpen) return;
+            if (!isParallaxActive || isMainCardInfoVisible || currentTab !== 'dating' || isModalOpen) return;
             
             const card = event.currentTarget;
             const cardRect = card.getBoundingClientRect();
@@ -3397,7 +3325,7 @@ ${deviceInfo.userAgent}
         }
 
         function handleCardTouchMove(event) {
-            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating' || isModalOpen) return;
+            if (!isParallaxActive || isMainCardInfoVisible || currentTab !== 'dating' || isModalOpen) return;
             
             const card = event.currentTarget;
             const cardRect = card.getBoundingClientRect();
@@ -3416,7 +3344,7 @@ ${deviceInfo.userAgent}
         }
 
         function handleCardMouseLeave() {
-            if (!isParallaxActive || isCardExpanded || currentTab !== 'dating' || isModalOpen) return;
+            if (!isParallaxActive || isMainCardInfoVisible || currentTab !== 'dating' || isModalOpen) return;
             
             const card = document.getElementById('current-card');
             if (card) {
@@ -3466,6 +3394,7 @@ ${deviceInfo.userAgent}
                 card.removeEventListener('mouseleave', handleCardMouseLeave);
                 card.removeEventListener('touchmove', handleCardTouchMove);
                 card.removeEventListener('touchend', handleCardMouseLeave);
+                isParallaxInitialized = false;
             }
         }
         
@@ -3512,7 +3441,6 @@ ${deviceInfo.userAgent}
             
             detectDevice();
             initChats();
-            initEmojiPicker();
             
             if (!('localStorage' in window)) {
                 alert('Ваш браузер не поддерживает необходимое для работы приложения. Пожалуйста, обновите браузер.');
@@ -3542,26 +3470,26 @@ ${deviceInfo.userAgent}
                     <form id="auth-form">
                         ${isLoginMode ? '' : `
                             <div class="input-group">
-                                <input type="text" id="name" placeholder="Имя" required>
+                                <input type="text" id="name" placeholder="Имя" required maxlength="50">
                             </div>
                             
                             <div class="input-group">
-                                <input type="number" id="age" placeholder="Возраст" min="18" required>
+                                <input type="number" id="age" placeholder="Возраст" min="18" max="100" required>
                             </div>
 
                             <div class="gender-selection">
-                                <div class="gender-option" onclick="selectGender('male')">
+                                <div class="gender-option" onclick="selectGender(event, 'male')">
                                     <span class="icon">👨</span>
                                     <div>Мужской</div>
                                 </div>
-                                <div class="gender-option" onclick="selectGender('female')">
+                                <div class="gender-option" onclick="selectGender(event, 'female')">
                                     <span class="icon">👩</span>
                                     <div>Женский</div>
                                 </div>
                             </div>
                             
                             <div class="input-group">
-                                <textarea id="bio" placeholder="Расскажите о себе... Что делает вас счастливым?" rows="3"></textarea>
+                                <textarea id="bio" placeholder="Расскажите о себе... Что делает вас счастливым?" rows="3" maxlength="500"></textarea>
                             </div>
                         `}
                         
@@ -3570,7 +3498,7 @@ ${deviceInfo.userAgent}
                         </div>
                         
                         <div class="input-group">
-                            <input type="password" id="password" placeholder="Пароль" required>
+                            <input type="password" id="password" placeholder="Пароль" required minlength="6">
                         </div>
                         
                         <button type="submit" class="btn-primary">${isLoginMode ? 'Войти' : 'Начать знакомиться'}</button>
@@ -3604,14 +3532,14 @@ ${deviceInfo.userAgent}
         }
         
         // ВЫБОР ПОЛА
-        function selectGender(gender) {
+        function selectGender(event, gender) {
             if (isModalOpen) return;
             
             userGender = gender;
             document.querySelectorAll('.gender-option').forEach(option => {
                 option.classList.remove('selected');
             });
-            event.target.closest('.gender-option').classList.add('selected');
+            event.currentTarget.classList.add('selected');
         }
         
         // ОБРАБОТКА РЕГИСТРАЦИИ
@@ -3621,19 +3549,31 @@ ${deviceInfo.userAgent}
             
             console.log('🎯 Начало регистрации');
             
-            const name = document.getElementById('name').value;
-            const age = document.getElementById('age').value;
-            const email = document.getElementById('email').value;
+            const name = escapeHtml(document.getElementById('name').value.trim());
+            const age = parseInt(document.getElementById('age').value);
+            const email = escapeHtml(document.getElementById('email').value.trim());
             const password = document.getElementById('password').value;
-            const bio = document.getElementById('bio').value;
+            const bio = escapeHtml(document.getElementById('bio').value.trim());
             
             if (!name || !age || !email || !password || !userGender) {
                 alert('Пожалуйста, заполните все поля');
                 return;
             }
             
-            if (age < 18) {
-                alert('Для использования приложения вам должно быть не менее 18 лет');
+            if (age < 18 || age > 100) {
+                alert('Для использования приложения вам должно быть от 18 до 100 лет');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Пароль должен содержать минимум 6 символов');
+                return;
+            }
+            
+            // Проверяем email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Пожалуйста, введите корректный email');
                 return;
             }
             
@@ -3646,9 +3586,10 @@ ${deviceInfo.userAgent}
                 return;
             }
             
+            // ВНИМАНИЕ: В ПРОДАКШЕНЕ пароли нужно хэшировать на бэкенде!
             const userData = {
                 name: name,
-                age: parseInt(age),
+                age: age,
                 gender: userGender,
                 email: email,
                 password: password,
@@ -3681,11 +3622,18 @@ ${deviceInfo.userAgent}
             
             console.log('🎯 Попытка входа');
             
-            const email = document.getElementById('email').value;
+            const email = escapeHtml(document.getElementById('email').value.trim());
             const password = document.getElementById('password').value;
             
             if (!email || !password) {
                 alert('Пожалуйста, заполните все поля');
+                return;
+            }
+            
+            // Проверяем email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Пожалуйста, введите корректный email');
                 return;
             }
             
@@ -3710,13 +3658,13 @@ ${deviceInfo.userAgent}
             }
         }
         
-        // ГЛАВНЫЙ ЭКРАН - ИСПРАВЛЕНО: добавлен контейнер с прокруткой
+        // ГЛАВНЫЙ ЭКРАН
         function showMainScreen(user) {
             document.getElementById('app').innerHTML = `
                 <div style="color: #e0e0ff; text-align: center; width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
                     <div style="background: rgba(20, 20, 35, 0.9); padding: 20px; border-radius: 20px; margin-bottom: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(80, 200, 255, 0.2);">
                         <h1 style="margin-bottom: 5px; background: linear-gradient(45deg, #80c8ff, #a0d8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AION</h1>
-                        <p>Привет, ${user.name}! Найди своего человека</p>
+                        <p>Привет, ${escapeHtml(user.name)}! Найди своего человека</p>
                     </div>
                     
                     <div class="nav-tabs">
@@ -3757,7 +3705,7 @@ ${deviceInfo.userAgent}
             }
         }
         
-        // ЭКРАН ПОДПИСКИ - ИСПРАВЛЕНО: одинаковый размер для всех карточек
+        // ЭКРАН ПОДПИСКИ (ИСПРАВЛЕНО - добавлены правильные переносы строк)
         function showSubscriptionScreen() {
             const container = document.getElementById('content-container');
             container.innerHTML = `
@@ -3778,8 +3726,8 @@ ${deviceInfo.userAgent}
                                 <div class="subscription-period">навсегда</div>
                             </div>
                             <ul class="subscription-features">
-                                <li>200 лайков в день</li>
-                                <li>Ai подсказка в 3 чатах 50% от возможности</li>
+                                <li><span>200 лайков в день</span></li>
+                                <li><span>Ai подсказка в 3 чатах 50% от возможности</span></li>
                             </ul>
                             <button class="btn-subscribe" style="cursor: not-allowed;">
                                 Активна
@@ -3793,13 +3741,13 @@ ${deviceInfo.userAgent}
                                 <div class="subscription-period">в месяц</div>
                             </div>
                             <ul class="subscription-features">
-                                <li>Неограниченное количество лайков</li>
-                                <li>5 суперлайков в день</li>
-                                <li>Ai подсказка, 70% процентов от возможного потенциала</li>
-                                <li>Функция возвращения к анкете после дизлайка 5 раз</li>
-                                <li>Приоритетная техническая поддержка</li>
-                                <li>Узнать кто лайкнул тебя</li>
-                                <li>1 сеанс внимания в неделю по три часа</li>
+                                <li><span>Неограниченное количество<br>лайков</span></li>
+                                <li><span>5 суперлайков в день</span></li>
+                                <li><span>Ai подсказка, 70% процентов от<br>возможного потенциала</span></li>
+                                <li><span>Функция возвращения к<br>анкете после дизлайка 5 раз</span></li>
+                                <li><span>Приоритетная техническая<br>поддержка</span></li>
+                                <li><span>Узнать кто лайкнул тебя</span></li>
+                                <li><span>1 сеанс внимания в неделю по<br>три часа (ваша анкета в топе<br>поиска)</span></li>
                             </ul>
                             <button class="btn-subscribe" onclick="handleSubscription('plus')">
                                 Выбрать Plus+
@@ -3813,16 +3761,16 @@ ${deviceInfo.userAgent}
                                 <div class="subscription-period">в месяц</div>
                             </div>
                             <ul class="subscription-features">
-                                <li>Все функции Plus версии</li>
-                                <li>10 суперлайков в день</li>
-                                <li>AI подсказка на 100% возможного потенциала</li>
-                                <li>Функция возвращения к анкете после дизлайка безлимитна</li>
-                                <li>Расширенная аналитика совместимости</li>
-                                <li>Приоритетная техническая поддержка</li>
-                                <li>Узнать кто лайкнул тебя</li>
-                                <li>Функция написать не дожидаясь взаимного лайка</li>
-                                <li>Персональный поиск ближайшего партнера по местоположению</li>
-                                <li>3 сеансов внимания в неделю по три часа</li>
+                                <li><span>Все функции Plus версии</span></li>
+                                <li><span>10 суперлайков в день</span></li>
+                                <li><span>AI подсказка на 100%<br>возможного потенциала</span></li>
+                                <li><span>Функция возвращения к<br>анкете после дизлайка<br>беслимитна</span></li>
+                                <li><span>Расширенная аналитика<br>совместимости</span></li>
+                                <li><span>Приоритетная техническая<br>поддержка</span></li>
+                                <li><span>Узнать кто лайкнул тебя</span></li>
+                                <li><span>Функция написать не<br>дожидаясь взаимного лайка</span></li>
+                                <li><span>Персональный поиск<br>ближайшего партнера по<br>местоположению</span></li>
+                                <li><span>3 сеанса внимания в неделю<br>по три часа (ваша анкета в<br>топе поиска)</span></li>
                             </ul>
                             <button class="btn-subscribe" onclick="handleSubscription('premium')">
                                 Выбрать PREMIUM
@@ -3872,43 +3820,40 @@ ${deviceInfo.userAgent}
                         <div class="card-avatar">${genderIcon}</div>
                     </div>
                     <div class="card-info">
-                        <div class="card-main-info">
-                            <h2>${currentCard.name} <span class="age">${currentCard.age}</span></h2>
-                            <div class="bio">${currentCard.bio}</div>
+                        <div class="card-header">
+                            <h2>${escapeHtml(currentCard.name)} <span class="age">${escapeHtml(currentCard.age)}</span></h2>
                         </div>
+                        <div class="card-bio">${escapeHtml(currentCard.bio)}</div>
                         
-                        <div class="expand-toggle-container">
-                            <div class="expand-toggle" onclick="toggleDetails()">
-                                <div class="expand-icon">⌄</div>
-                            </div>
-                        </div>
-                        
-                        <div class="card-details" id="card-details">
+                        <div class="card-details">
                             <div class="detail-section">
                                 <div class="detail-section-title">Интересы</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.interests)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.interests))}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Образ жизни</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.lifestyle)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.lifestyle))}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Цели и мечты</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.goals)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.goals))}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Образование</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.education)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.education))}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Работа</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.work)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.work))}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Хобби и увлечения</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.hobbies)}</div>
+                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.hobbies))}</div>
                             </div>
                         </div>
+                    </div>
+                    <div class="info-toggle" onclick="toggleCardInfo()">
+                        Узнать больше
                     </div>
                 </div>
             `;
@@ -3920,45 +3865,38 @@ ${deviceInfo.userAgent}
             }, 100);
         }
         
+        // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ
+        function toggleCardInfo() {
+            const card = document.getElementById('current-card');
+            const info = card.querySelector('.card-info');
+            const indicator = card.querySelector('.info-toggle');
+            
+            if (info) {
+                isMainCardInfoVisible = !isMainCardInfoVisible;
+                if (isMainCardInfoVisible) {
+                    info.classList.add('visible');
+                    indicator.classList.add('hidden');
+                    stopParallax();
+                } else {
+                    info.classList.remove('visible');
+                    indicator.classList.remove('hidden');
+                    if (isParallaxActive && !isModalOpen) {
+                        initParallax();
+                    }
+                }
+            }
+        }
+        
         // СБРОС КАРТОЧЕК
         function resetCards() {
             if (isModalOpen) return;
             
             currentCardIndex = 0;
+            isMainCardInfoVisible = false;
             showCurrentCard();
         }
         
-        // РАСКРЫТЬ ДЕТАЛИ - ИСПРАВЛЕННАЯ ВЕРСИЯ
-        function toggleDetails() {
-            if (isModalOpen) return;
-            
-            const card = document.getElementById('current-card');
-            const details = document.getElementById('card-details');
-            const toggle = document.querySelector('.expand-toggle');
-            const icon = toggle.querySelector('.expand-icon');
-            
-            if (isCardExpanded) {
-                card.classList.remove('expanded');
-                details.classList.remove('show');
-                icon.style.transform = 'rotate(0deg)';
-                isCardExpanded = false;
-                
-                setTimeout(() => {
-                    if (isParallaxActive && !isModalOpen) {
-                        initParallax();
-                    }
-                }, 100);
-            } else {
-                card.classList.add('expanded');
-                details.classList.add('show');
-                icon.style.transform = 'rotate(180deg)';
-                isCardExpanded = true;
-                
-                stopParallax();
-            }
-        }
-        
-        // ОБРАБОТКА СВАЙПОВ (С ВЗАИМНЫМИ ЛАЙКАМИ)
+        // ОБРАБОТКА СВАЙПОВ
         function handleSwipe(direction) {
             if (isModalOpen) return;
             
@@ -3988,14 +3926,14 @@ ${deviceInfo.userAgent}
                 
                 setTimeout(() => {
                     currentCardIndex++;
-                    isCardExpanded = false;
+                    isMainCardInfoVisible = false;
                     showCurrentCard();
                 }, 800);
             } else {
                 card.classList.add('swipe-left');
                 setTimeout(() => {
                     currentCardIndex++;
-                    isCardExpanded = false;
+                    isMainCardInfoVisible = false;
                     showCurrentCard();
                 }, 800);
             }
@@ -4010,8 +3948,18 @@ ${deviceInfo.userAgent}
             setTimeout(() => {
                 localStorage.removeItem('aion_premium_user');
                 currentCardIndex = 0;
+                isMainCardInfoVisible = false;
+                isChatProfileInfoVisible = false;
                 showAuthScreen();
             }, 1000);
+        }
+        
+        // ФУНКЦИЯ ЭКРАНИРОВАНИЯ HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         // ЗАПУСК ПРИЛОЖЕНИЯ
@@ -4020,8 +3968,8 @@ ${deviceInfo.userAgent}
         // ДЕЛАЕМ ФУНКЦИИ ГЛОБАЛЬНЫМИ
         window.selectGender = selectGender;
         window.handleSwipe = handleSwipe;
-        window.toggleDetails = toggleDetails;
-        window.toggleChatProfileDetails = toggleChatProfileDetails;
+        window.toggleCardInfo = toggleCardInfo;
+        window.toggleChatCardInfo = toggleChatCardInfo;
         window.toggleParallax = toggleParallax;
         window.toggleSettings = toggleSettings;
         window.toggleSupportSubmenu = toggleSupportSubmenu;

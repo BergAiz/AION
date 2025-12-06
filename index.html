@@ -792,7 +792,7 @@
             display: none;
         }
         
-        /* ИСПРАВЛЕНО: уменьшил ширину карточек Plus и Premium */
+        /* ИСПРАВЛЕНО: бесплатная карточка теперь такой же ширины как остальные */
         .subscription-card {
             background: rgba(20, 20, 35, 0.9);
             backdrop-filter: blur(20px);
@@ -802,7 +802,7 @@
                 0 0 20px rgba(80, 200, 255, 0.1),
                 0 25px 50px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
-            min-width: 280px; /* Уменьшено с 280px до 260px */
+            min-width: 240px; /* Установлена одинаковая ширина для всех карточек */
             flex-shrink: 0;
             height: 420px;
             display: flex;
@@ -1594,9 +1594,9 @@
                 padding: 5px;
             }
             
-            /* ИСПРАВЛЕНО: уменьшил ширину карточек для мобильных */
+            /* ИСПРАВЛЕНО: установлена одинаковая ширина для всех карточек на мобильных */
             .subscription-card {
-                min-width: 260px; /* Уменьшено с 260px до 240px */
+                min-width: 220px; /* Одинаковая ширина для всех карточек */
                 padding: 20px;
                 height: 400px;
             }
@@ -1694,9 +1694,9 @@
                 font-size: 24px;
             }
             
-            /* ИСПРАВЛЕНО: уменьшил ширину карточек для очень маленьких экранов */
+            /* ИСПРАВЛЕНО: установлена одинаковая ширина для всех карточек на очень маленьких экранах */
             .subscription-card {
-                min-width: 240px; /* Уменьшено с 240px до 220px */
+                min-width: 200px; /* Одинаковая ширина для всех карточек */
                 padding: 15px;
                 height: 380px;
             }
@@ -3705,7 +3705,7 @@ ${deviceInfo.userAgent}
             }
         }
         
-        // ЭКРАН ПОДПИСКИ (ИСПРАВЛЕНО - добавлены правильные переносы строк)
+        // ЭКРАН ПОДПИСКИ (ИСПРАВЛЕНО - добавлены правильные переносы строк для бесплатной версии)
         function showSubscriptionScreen() {
             const container = document.getElementById('content-container');
             container.innerHTML = `
@@ -3727,7 +3727,7 @@ ${deviceInfo.userAgent}
                             </div>
                             <ul class="subscription-features">
                                 <li><span>200 лайков в день</span></li>
-                                <li><span>Ai подсказка в 3 чатах 50% от возможности</span></li>
+                                <li><span>Ai подсказка в 3 чатах<br>50% от возможности</span></li>
                             </ul>
                             <button class="btn-subscribe" style="cursor: not-allowed;">
                                 Активна

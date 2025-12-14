@@ -2,7 +2,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a1a">
     <title>AION Premium - Liquid Dating</title>
     <style>
         /* RESET */
@@ -10,12 +13,16 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
         }
         
         html, body {
             width: 100%;
             height: 100%;
             overflow-x: hidden;
+            position: fixed;
+            overscroll-behavior: none;
         }
         
         body {
@@ -25,11 +32,18 @@
                 radial-gradient(circle at 80% 20%, rgba(120, 80, 220, 0.2) 0%, transparent 50%),
                 linear-gradient(135deg, #0a0a1a 0%, #15152a 50%, #10102a 100%);
             min-height: 100vh;
+            min-height: -webkit-fill-available;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            position: relative;
+            padding: 0;
+            margin: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
         }
         
         /* Жидкий эффект фона */
@@ -155,7 +169,7 @@
         }
         
         /* Основные контейнеры с анимацией */
-        .auth-container, .card, .subscription-card, .settings-menu, .chat-container, .chats-list {
+        .auth-container, .card, .subscription-card, .settings-menu, .chat-container, .chats-list, .search-card {
             animation: liquidPulse 10s ease-in-out infinite;
         }
         
@@ -165,19 +179,120 @@
             z-index: 2;
             width: 100%;
             max-width: 400px;
-            min-height: 100vh;
+            height: 100vh;
+            height: -webkit-fill-available;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            margin: 0 auto;
+            background: transparent;
+        }
+        
+        /* Кнопка уведомлений */
+        .notifications-button {
+            position: fixed;
+            top: env(safe-area-inset-top, 20px);
+            right: env(safe-area-inset-right, 80px);
+            width: 50px;
+            height: 50px;
+            background: rgba(10, 10, 25, 0.9);
+            border: 1px solid rgba(255, 200, 64, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 
+                0 0 20px rgba(255, 200, 64, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+        
+        .notifications-button:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 200, 64, 0.6);
+            box-shadow: 
+                0 0 30px rgba(255, 200, 64, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .bell-container {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            transform: rotate(-15deg);
+            transition: transform 0.3s ease;
+        }
+        
+        .bell-top {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 4px;
+            background: #ffc840;
+            border-radius: 2px;
+        }
+        
+        .bell-body {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 16px;
+            background: #ffc840;
+            border-radius: 10px 10px 2px 2px;
+            overflow: hidden;
+        }
+        
+        .bell-clapper {
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 6px;
+            background: #ff9d00;
+            border-radius: 2px;
+            transition: transform 0.2s ease;
+        }
+        
+        .notifications-button.active .bell-container {
+            animation: bellRing 0.5s ease;
+        }
+        
+        .notifications-button.active .bell-clapper {
+            animation: clapperHit 0.5s ease;
+        }
+        
+        @keyframes bellRing {
+            0% { transform: rotate(-15deg); }
+            25% { transform: rotate(15deg); }
+            50% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+            100% { transform: rotate(-15deg); }
+        }
+        
+        @keyframes clapperHit {
+            0%, 100% { transform: translateX(-50%); }
+            25% { transform: translateX(-50%) translateX(2px); }
+            50% { transform: translateX(-50%) translateX(-2px); }
+            75% { transform: translateX(-50%) translateX(1px); }
         }
         
         /* Кнопка настроек */
         .settings-button {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: env(safe-area-inset-top, 20px);
+            right: env(safe-area-inset-right, 20px);
             width: 50px;
             height: 50px;
-            background: rgba(10, 10, 25, 0.8);
+            background: rgba(10, 10, 25, 0.9);
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 50%;
             display: flex;
@@ -209,51 +324,18 @@
             z-index: 2;
         }
         
-        /* Индикатор устройства */
-        .device-indicator {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(10, 10, 25, 0.8);
-            padding: 10px 15px;
-            border-radius: 20px;
-            color: #80c0ff;
-            font-size: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(64, 128, 255, 0.3);
-            z-index: 1000;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            box-shadow: 
-                0 0 15px rgba(64, 128, 255, 0.1),
-                inset 0 1px 1px rgba(255, 255, 255, 0.1);
-            max-width: 140px;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .device-indicator:hover {
-            border-color: rgba(64, 128, 255, 0.6);
-            box-shadow: 
-                0 0 20px rgba(64, 128, 255, 0.3),
-                inset 0 1px 1px rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-        
         /* Меню настроек */
         .settings-menu {
             position: fixed;
-            top: 80px;
-            right: 20px;
-            background: rgba(10, 10, 25, 0.95);
+            top: env(safe-area-inset-top, 80px);
+            right: env(safe-area-inset-right, 20px);
+            background: rgba(10, 10, 25, 0.98);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 20px;
             padding: 20px;
             width: 280px;
-            max-height: calc(100vh - 100px);
+            max-height: calc(100vh - 100px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
             overflow-y: auto;
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.4),
@@ -383,10 +465,120 @@
             font-size: 13px;
         }
         
+        /* Меню уведомлений */
+        .notifications-menu {
+            position: fixed;
+            top: env(safe-area-inset-top, 80px);
+            right: env(safe-area-inset-right, 80px);
+            background: rgba(10, 10, 25, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 200, 64, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            width: 300px;
+            max-height: calc(100vh - 100px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+            overflow-y: auto;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(255, 200, 64, 0.2);
+            z-index: 999;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            visibility: hidden;
+        }
+        
+        .notifications-menu.active {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .notifications-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .notifications-title {
+            font-size: 22px;
+            color: #ffc840;
+            margin-bottom: 8px;
+            font-weight: 600;
+            background: linear-gradient(45deg, #ffc840, #ffd880);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .notifications-subtitle {
+            color: rgba(255, 220, 128, 0.7);
+            font-size: 13px;
+        }
+        
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .notification-item {
+            padding: 12px 15px;
+            background: rgba(20, 20, 40, 0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 200, 64, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .notification-item:hover {
+            background: rgba(30, 30, 60, 0.8);
+            border-color: rgba(255, 200, 64, 0.4);
+            transform: translateX(3px);
+        }
+        
+        .notification-item.unread {
+            background: rgba(255, 200, 64, 0.1);
+            border-color: rgba(255, 200, 64, 0.3);
+        }
+        
+        .notification-title {
+            color: #ffc840;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .notification-text {
+            color: rgba(255, 220, 192, 0.8);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .notification-time {
+            color: rgba(255, 220, 192, 0.5);
+            font-size: 11px;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .no-notifications {
+            text-align: center;
+            padding: 30px 20px;
+            color: rgba(255, 220, 192, 0.5);
+        }
+        
+        .no-notifications-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+        
         /* Навигационные вкладки */
         .nav-tabs {
             display: flex;
-            background: rgba(10, 10, 25, 0.9);
+            background: rgba(10, 10, 25, 0.95);
             border-radius: 15px;
             padding: 4px;
             margin-bottom: 15px;
@@ -395,11 +587,12 @@
             box-shadow: 
                 0 5px 15px rgba(0, 0, 0, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            margin: 10px;
         }
         
         .nav-tab {
             flex: 1;
-            padding: 10px 16px;
+            padding: 12px 16px;
             text-align: center;
             background: transparent;
             border: none;
@@ -409,6 +602,10 @@
             transition: all 0.4s ease;
             font-weight: 500;
             font-size: 14px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .nav-tab.active {
@@ -426,7 +623,7 @@
         
         /* Стили аутентификации */
         .auth-container {
-            background: rgba(10, 10, 25, 0.9);
+            background: rgba(10, 10, 25, 0.95);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(64, 128, 255, 0.2);
             border-radius: 20px;
@@ -435,7 +632,7 @@
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.2);
             color: #c0c8ff;
-            width: 100%;
+            width: calc(100% - 40px);
             max-width: 380px;
             margin: 0 auto;
         }
@@ -476,18 +673,25 @@
         
         .input-group input, .input-group textarea, .input-group select {
             width: 100%;
-            padding: 14px 16px;
+            padding: 16px;
             background: rgba(20, 20, 40, 0.8);
             border: 1px solid rgba(64, 128, 255, 0.2);
             border-radius: 12px;
             color: #c0c8ff;
-            font-size: 15px;
+            font-size: 16px;
             transition: all 0.4s ease;
             backdrop-filter: blur(10px);
             box-shadow: 
                 inset 0 1px 3px rgba(0, 0, 0, 0.3),
                 0 1px 1px rgba(255, 255, 255, 0.1);
             font-family: inherit;
+            -webkit-appearance: none;
+            min-height: 44px;
+        }
+        
+        .input-group textarea {
+            min-height: 100px;
+            line-height: 1.4;
         }
         
         .input-group input::placeholder, .input-group textarea::placeholder {
@@ -515,7 +719,7 @@
         .gender-option {
             flex: 1;
             text-align: center;
-            padding: 12px;
+            padding: 16px;
             background: rgba(20, 20, 40, 0.8);
             border: 1px solid rgba(64, 128, 255, 0.2);
             border-radius: 12px;
@@ -523,6 +727,11 @@
             transition: all 0.4s ease;
             backdrop-filter: blur(10px);
             color: #a0a8ff;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
         .gender-option:hover {
@@ -544,15 +753,15 @@
         }
         
         .gender-option .icon {
-            font-size: 22px;
-            margin-bottom: 4px;
+            font-size: 28px;
+            margin-bottom: 8px;
             display: block;
         }
         
         /* Кнопка */
         .btn-primary {
             width: 100%;
-            padding: 16px;
+            padding: 18px;
             background: linear-gradient(45deg, #80c0ff, #a0d0ff);
             color: #0a0a1a;
             border: none;
@@ -569,6 +778,10 @@
                 0 10px 20px rgba(64, 128, 255, 0.3),
                 inset 0 1px 1px rgba(255, 255, 255, 0.2);
             font-family: inherit;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .btn-primary:hover {
@@ -588,9 +801,11 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(64, 128, 255, 0.25);
             border-radius: 20px;
-            width: 100%;
+            width: calc(100% - 40px);
             max-width: 340px;
-            height: 480px;
+            height: calc(100vh - 280px);
+            min-height: 480px;
+            max-height: 600px;
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.2);
@@ -598,7 +813,10 @@
             position: relative;
             margin: 0 auto;
             transition: all 0.4s ease;
-            transform-style: preserve-3d;
+            margin-bottom: 100px;
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         /* Изображение на всю карточку */
@@ -617,7 +835,6 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-            transform-style: preserve-3d;
             z-index: 1;
         }
         
@@ -642,12 +859,7 @@
             z-index: 2;
         }
         
-        @keyframes liquidRotate {
-            0% { transform: rotate(0deg) scale(1); }
-            100% { transform: rotate(360deg) scale(1); }
-        }
-        
-        /* Информация о пользователе */
+        /* Информация о пользователе - ИСПРАВЛЕНА ВЕРСТКА */
         .card-info {
             position: absolute;
             top: 0;
@@ -661,13 +873,46 @@
             flex-direction: column;
             transform: translateY(100%);
             transition: transform 0.6s ease;
-            z-index: 2;
+            z-index: 3;
             overflow-y: auto;
             box-sizing: border-box;
+            -webkit-overflow-scrolling: touch;
+            pointer-events: auto;
         }
         
         .card-info.visible {
             transform: translateY(0);
+        }
+        
+        /* Кнопка свернуть в карточке - ИСПРАВЛЕН Z-INDEX */
+        .card-collapse-btn {
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, rgba(64, 128, 255, 0.2), rgba(100, 150, 255, 0.3));
+            border: 1px solid rgba(64, 128, 255, 0.4);
+            border-radius: 12px;
+            color: #80c0ff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-align: center;
+            margin-top: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 5px 15px rgba(64, 128, 255, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+        
+        .card-collapse-btn:hover {
+            background: linear-gradient(45deg, rgba(64, 128, 255, 0.3), rgba(100, 150, 255, 0.4));
+            transform: translateY(-2px);
+            box-shadow: 
+                0 10px 20px rgba(64, 128, 255, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
         }
         
         /* Имя и возраст вверху информации */
@@ -675,6 +920,7 @@
             margin-bottom: 15px;
             padding-bottom: 12px;
             border-bottom: 1px solid rgba(64, 128, 255, 0.2);
+            flex-shrink: 0;
         }
         
         .card-header h2 {
@@ -699,6 +945,7 @@
             line-height: 1.5;
             font-size: 14px;
             margin-bottom: 15px;
+            flex-shrink: 0;
         }
         
         /* Детальная информация */
@@ -715,6 +962,9 @@
             box-shadow: 
                 inset 0 1px 3px rgba(0, 0, 0, 0.3),
                 0 1px 1px rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            min-height: 0;
         }
         
         .detail-section {
@@ -748,6 +998,7 @@
             line-height: 1.5;
             font-size: 13px;
             overflow: visible;
+            white-space: pre-line;
         }
         
         .detail-content p {
@@ -758,20 +1009,20 @@
             margin-bottom: 0;
         }
         
-        /* Индикатор для показа информации */
+        /* Индикатор для показа информации - ИСПРАВЛЕН ПОЗИЦИОНИРОВАНИЕ */
         .info-toggle {
             position: absolute;
-            bottom: 15px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(10, 10, 25, 0.8);
+            background: rgba(10, 10, 25, 0.9);
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 20px;
-            padding: 10px 20px;
+            padding: 12px 24px;
             color: #80c0ff;
-            font-size: 13px;
+            font-size: 14px;
             backdrop-filter: blur(10px);
-            z-index: 3;
+            z-index: 4;
             cursor: pointer;
             transition: all 0.4s ease;
             opacity: 0;
@@ -780,6 +1031,12 @@
             box-shadow: 
                 0 5px 15px rgba(64, 128, 255, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            min-height: 44px;
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
         }
         
         @keyframes fadeIn {
@@ -799,7 +1056,7 @@
             display: none;
         }
         
-        /* Кнопки действий */
+        /* Кнопки действий - ИСПРАВЛЕН ПОРЯДОК Z-INDEX */
         .action-buttons {
             display: flex;
             justify-content: center;
@@ -808,14 +1065,19 @@
             width: 100%;
             max-width: 400px;
             margin: 0 auto;
+            position: fixed;
+            bottom: env(safe-area-inset-bottom, 20px);
+            left: 0;
+            right: 0;
+            z-index: 20;
         }
         
         .action-btn {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border: none;
             border-radius: 50%;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             transition: all 0.4s ease;
             display: flex;
@@ -827,6 +1089,9 @@
             box-shadow: 
                 0 10px 20px rgba(0, 0, 0, 0.3),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            min-width: 70px;
+            min-height: 70px;
+            z-index: 20;
         }
         
         .btn-dislike {
@@ -858,17 +1123,20 @@
             gap: 12px;
             margin-top: 10px;
             overflow-x: auto;
-            padding: 10px 5px;
+            padding: 10px 20px;
             scrollbar-width: none;
             -ms-overflow-style: none;
             width: 100%;
+            -webkit-overflow-scrolling: touch;
+            padding-left: max(20px, env(safe-area-inset-left, 20px));
+            padding-right: max(20px, env(safe-area-inset-right, 20px));
         }
         
         .subscription-container::-webkit-scrollbar {
             display: none;
         }
         
-        /* КАРТОЧКИ ПОДПИСОК */
+        /* КАРТОЧКИ ПОДПИСОК - ИСПРАВЛЕНО РАСПОЛОЖЕНИЕ БЕЙДЖА "ТЕКУЩАЯ" */
         .subscription-card {
             background: rgba(10, 10, 25, 0.9);
             backdrop-filter: blur(20px);
@@ -878,9 +1146,11 @@
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.2);
             transition: all 0.4s ease;
-            min-width: 260px;
+            min-width: 280px;
             flex-shrink: 0;
-            height: 460px;
+            height: calc(100vh - 200px);
+            max-height: 500px;
+            min-height: 460px;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -917,6 +1187,32 @@
             margin-bottom: 20px;
             position: relative;
             z-index: 2;
+        }
+        
+        /* Бейдж текущей подписки - исправлен стиль */
+        .subscription-current-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(64, 128, 255, 0.3);
+            color: #80c0ff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subscription-card.plus .subscription-current-badge {
+            background: rgba(0, 200, 255, 0.3);
+            color: #00c8ff;
+        }
+        
+        .subscription-card.premium .subscription-current-badge {
+            background: rgba(180, 80, 255, 0.3);
+            color: #b450ff;
         }
         
         .subscription-title {
@@ -974,6 +1270,7 @@
             padding-right: 5px;
             position: relative;
             z-index: 2;
+            -webkit-overflow-scrolling: touch;
         }
         
         .subscription-features::-webkit-scrollbar {
@@ -1016,7 +1313,7 @@
         
         .btn-subscribe {
             width: 100%;
-            padding: 12px;
+            padding: 16px;
             border: none;
             border-radius: 12px;
             font-size: 15px;
@@ -1030,6 +1327,10 @@
                 0 5px 15px rgba(0, 0, 0, 0.3),
                 inset 0 1px 1px rgba(255, 255, 255, 0.2);
             font-family: inherit;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .subscription-card.free .btn-subscribe {
@@ -1088,38 +1389,6 @@
             animation: liquidLike 0.6s ease-in-out;
         }
         
-        /* Индикатор параллакса */
-        .parallax-indicator {
-            position: fixed;
-            bottom: 15px;
-            left: 15px;
-            background: rgba(10, 10, 25, 0.9);
-            padding: 10px 15px;
-            border-radius: 20px;
-            color: #80c0ff;
-            font-size: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(64, 128, 255, 0.4);
-            z-index: 1000;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            box-shadow: 
-                0 5px 15px rgba(64, 128, 255, 0.2),
-                inset 0 1px 1px rgba(255, 255, 255, 0.1);
-        }
-        
-        .parallax-indicator.active {
-            border-color: rgba(64, 128, 255, 0.6);
-            box-shadow: 
-                0 10px 20px rgba(64, 128, 255, 0.3),
-                inset 0 1px 1px rgba(255, 255, 255, 0.2);
-            color: #80c0ff;
-        }
-        
-        .parallax-indicator:hover {
-            transform: scale(1.05);
-        }
-        
         /* Оверлей для меню настроек */
         .settings-overlay {
             position: fixed;
@@ -1151,9 +1420,9 @@
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 20px;
             padding: 25px;
-            width: 90%;
+            width: calc(100% - 40px);
             max-width: 450px;
-            max-height: 80vh;
+            max-height: calc(80vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
             overflow-y: auto;
             z-index: 1001;
             opacity: 0;
@@ -1162,6 +1431,7 @@
             box-shadow: 
                 0 30px 60px rgba(0, 0, 0, 0.5),
                 0 0 40px rgba(64, 128, 255, 0.3);
+            -webkit-overflow-scrolling: touch;
         }
         
         .modal.active {
@@ -1208,15 +1478,15 @@
         
         .modal-close {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: env(safe-area-inset-top, 20px);
+            right: env(safe-area-inset-right, 20px);
             background: rgba(20, 20, 40, 0.9);
             border: 1px solid rgba(64, 128, 255, 0.3);
             color: #80c0ff;
             font-size: 18px;
             cursor: pointer;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1228,6 +1498,8 @@
             box-shadow: 
                 0 5px 15px rgba(64, 128, 255, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            min-width: 40px;
+            min-height: 40px;
         }
         
         .modal-close.active {
@@ -1270,10 +1542,11 @@
             border: 1px solid rgba(64, 128, 255, 0.2);
             border-radius: 20px;
             padding: 15px;
-            height: calc(100vh - 180px);
+            height: calc(100vh - 180px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+            min-height: 400px;
             display: flex;
             flex-direction: column;
-            width: 100%;
+            width: calc(100% - 20px);
             max-width: 400px;
             margin: 0 auto;
             box-shadow: 
@@ -1289,11 +1562,12 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            -webkit-overflow-scrolling: touch;
         }
         
         .message {
             max-width: 80%;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border-radius: 18px;
             position: relative;
             line-height: 1.4;
@@ -1302,7 +1576,8 @@
             box-shadow: 
                 0 5px 15px rgba(0, 0, 0, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
-            font-size: 14px;
+            font-size: 15px;
+            min-width: 60px;
         }
         
         .message.user {
@@ -1322,7 +1597,7 @@
         }
         
         .message-time {
-            font-size: 10px;
+            font-size: 11px;
             opacity: 0.6;
             margin-top: 4px;
             text-align: right;
@@ -1333,24 +1608,26 @@
             gap: 8px;
             align-items: flex-end;
             position: relative;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         
         .chat-input {
             flex: 1;
-            padding: 10px 14px;
+            padding: 12px 16px;
             background: rgba(20, 20, 40, 0.8);
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 20px;
             color: #c0c8ff;
-            font-size: 14px;
+            font-size: 15px;
             resize: none;
-            min-height: 45px;
-            max-height: 100px;
+            min-height: 50px;
+            max-height: 120px;
             backdrop-filter: blur(10px);
             box-shadow: 
                 inset 0 1px 3px rgba(0, 0, 0, 0.3),
                 0 1px 1px rgba(255, 255, 255, 0.1);
             font-family: inherit;
+            line-height: 1.4;
         }
         
         .chat-input:focus {
@@ -1363,15 +1640,15 @@
         }
         
         .chat-send-button {
-            padding: 10px 14px;
+            padding: 12px 16px;
             background: linear-gradient(45deg, #80c0ff, #a0d0ff);
             border: none;
             border-radius: 50%;
             color: #0a0a1a;
             cursor: pointer;
             font-weight: 600;
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1379,6 +1656,8 @@
             box-shadow: 
                 0 5px 15px rgba(64, 128, 255, 0.3),
                 inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            min-width: 50px;
+            min-height: 50px;
         }
         
         .chat-send-button:hover {
@@ -1389,14 +1668,14 @@
         }
         
         .emoji-button {
-            padding: 10px 14px;
+            padding: 12px 16px;
             background: rgba(20, 20, 40, 0.8);
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 50%;
             color: #80c0ff;
             cursor: pointer;
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1405,6 +1684,8 @@
             box-shadow: 
                 0 5px 15px rgba(0, 0, 0, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            min-width: 50px;
+            min-height: 50px;
         }
         
         .emoji-button:hover {
@@ -1417,17 +1698,17 @@
         
         .emoji-picker {
             position: absolute;
-            bottom: 60px;
+            bottom: 70px;
             background: rgba(10, 10, 25, 0.98);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 15px;
             padding: 12px;
             display: none;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(8, 1fr);
             gap: 6px;
             z-index: 100;
-            max-width: 280px;
+            max-width: 320px;
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.3);
@@ -1444,15 +1725,20 @@
         }
         
         .emoji-option {
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
-            padding: 6px;
+            padding: 8px;
             border-radius: 8px;
             text-align: center;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             background: rgba(20, 20, 40, 0.6);
             border: 1px solid transparent;
+            min-width: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .emoji-option:hover {
@@ -1494,16 +1780,17 @@
             background: linear-gradient(45deg, rgba(64, 200, 255, 0.1), rgba(100, 220, 255, 0.2));
             border: 1px solid rgba(64, 200, 255, 0.3);
             border-radius: 12px;
-            padding: 8px 10px;
+            padding: 10px 12px;
             color: #c0c8ff;
             cursor: pointer;
             transition: all 0.4s ease;
             text-align: left;
-            font-size: 13px;
+            font-size: 14px;
             backdrop-filter: blur(10px);
             box-shadow: 
                 inset 0 1px 3px rgba(0, 0, 0, 0.3),
                 0 1px 1px rgba(255, 255, 255, 0.1);
+            min-height: 44px;
         }
         
         .ai-suggestion-btn:hover {
@@ -1524,10 +1811,10 @@
             margin-bottom: 6px;
         }
         
-        /* Индикатор модерации */
+        /* Индикатор модерации - ИСПРАВЛЕН */
         .moderation-warning {
             position: fixed;
-            top: 20px;
+            top: env(safe-area-inset-top, 20px);
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(45deg, rgba(255, 68, 68, 0.9), rgba(255, 100, 100, 0.9));
@@ -1545,7 +1832,10 @@
                 inset 0 1px 1px rgba(255, 255, 255, 0.2);
             font-size: 14px;
             text-align: center;
-            max-width: 90%;
+            max-width: calc(100% - 40px);
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
         }
         
         @keyframes fadeInOut {
@@ -1560,17 +1850,18 @@
             border: 1px solid rgba(64, 128, 255, 0.2);
             border-radius: 20px;
             padding: 15px;
-            height: calc(100vh - 180px);
+            height: calc(100vh - 180px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+            min-height: 400px;
             display: flex;
             flex-direction: column;
-            width: 100%;
+            width: calc(100% - 20px);
             max-width: 400px;
             margin: 0 auto;
             overflow-y: auto;
-            min-height: 400px;
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.2);
+            -webkit-overflow-scrolling: touch;
         }
         
         .chat-item {
@@ -1588,6 +1879,7 @@
             box-shadow: 
                 0 5px 15px rgba(0, 0, 0, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            min-height: 70px;
         }
         
         .chat-item:hover {
@@ -1608,19 +1900,21 @@
         }
         
         .chat-avatar {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
             background: linear-gradient(45deg, rgba(64, 128, 255, 0.3), rgba(100, 150, 255, 0.4));
             border: 2px solid rgba(64, 128, 255, 0.5);
             backdrop-filter: blur(10px);
             box-shadow: 
                 0 5px 15px rgba(64, 128, 255, 0.3),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            min-width: 50px;
+            min-height: 50px;
         }
         
         .chat-info {
@@ -1632,7 +1926,7 @@
             color: #80c0ff;
             font-weight: 600;
             margin-bottom: 3px;
-            font-size: 14px;
+            font-size: 15px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1640,7 +1934,7 @@
         
         .chat-last-message {
             color: rgba(192, 200, 255, 0.7);
-            font-size: 12px;
+            font-size: 13px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1648,7 +1942,7 @@
         
         .chat-time {
             color: rgba(192, 200, 255, 0.5);
-            font-size: 11px;
+            font-size: 12px;
             white-space: nowrap;
         }
         
@@ -1682,6 +1976,10 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.4s ease;
+            padding: 5px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
         }
         
         .auth-switch a:hover {
@@ -1692,13 +1990,13 @@
         /* Кнопка возврата в чат */
         .back-to-chat-btn {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: env(safe-area-inset-top, 15px);
+            left: env(safe-area-inset-left, 15px);
             background: rgba(10, 10, 25, 0.9);
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1711,6 +2009,8 @@
             box-shadow: 
                 0 5px 15px rgba(64, 128, 255, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            min-width: 40px;
+            min-height: 40px;
         }
         
         .back-to-chat-btn:hover {
@@ -1732,12 +2032,15 @@
             padding: 15px 0;
             width: 100%;
             min-height: 400px;
+            -webkit-overflow-scrolling: touch;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         
         /* Уведомление о мэтче */
         .match-notification {
             position: fixed;
-            top: 20px;
+            top: env(safe-area-inset-top, 20px);
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(45deg, #80c0ff, #a0d0ff);
@@ -1752,7 +2055,11 @@
             animation: slideInDown 0.5s ease;
             backdrop-filter: blur(10px);
             text-align: center;
-            max-width: 90%;
+            max-width: calc(100% - 40px);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         @keyframes slideInDown {
@@ -1784,7 +2091,7 @@
             border: 1px solid rgba(64, 128, 255, 0.2);
             border-radius: 20px;
             padding: 25px;
-            width: 100%;
+            width: calc(100% - 40px);
             max-width: 380px;
             margin: 0 auto;
             color: #c0c8ff;
@@ -1848,13 +2155,16 @@
         }
         
         .test-option {
-            padding: 10px 12px;
+            padding: 12px 14px;
             background: rgba(30, 30, 60, 0.6);
             border: 1px solid rgba(64, 128, 255, 0.2);
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 14px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
         }
         
         .test-option:hover {
@@ -1890,45 +2200,508 @@
             transition: width 0.4s ease;
         }
         
-        /* Мобильные стили */
-        @media (max-width: 768px) {
+        /* Стили для вкладки поиска */
+        .search-container {
+            width: 100%;
+            padding: 0 20px;
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        .filter-button {
+            position: fixed;
+            top: env(safe-area-inset-top, 90px);
+            right: 20px;
+            background: rgba(10, 10, 25, 0.9);
+            border: 1px solid rgba(64, 128, 255, 0.3);
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            color: #80c0ff;
+            box-shadow: 
+                0 5px 15px rgba(64, 128, 255, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            min-width: 40px;
+            min-height: 40px;
+            gap: 3px;
+        }
+        
+        .filter-button:hover {
+            transform: scale(1.1);
+            border-color: rgba(64, 128, 255, 0.6);
+            box-shadow: 
+                0 10px 20px rgba(64, 128, 255, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .filter-line {
+            width: 18px;
+            height: 2px;
+            background: #80c0ff;
+            border-radius: 1px;
+            transition: all 0.4s ease;
+        }
+        
+        .filter-button:hover .filter-line:nth-child(1) {
+            transform: translateY(2px);
+        }
+        
+        .filter-button:hover .filter-line:nth-child(2) {
+            width: 22px;
+        }
+        
+        .filter-button:hover .filter-line:nth-child(3) {
+            transform: translateY(-2px);
+        }
+        
+        .search-filters {
+            background: rgba(10, 10, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(64, 128, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(64, 128, 255, 0.2);
+            display: none;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .search-filters.active {
+            display: block;
+            animation: fadeInUp 0.4s ease;
+        }
+        
+        .filter-group {
+            margin-bottom: 15px;
+        }
+        
+        .filter-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #80c0ff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .filter-value {
+            color: #a0d0ff;
+            font-size: 13px;
+        }
+        
+        .range-slider {
+            width: 100%;
+            height: 40px;
+            position: relative;
+        }
+        
+        .range-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(64, 128, 255, 0.2);
+            border-radius: 2px;
+            transform: translateY(-50%);
+        }
+        
+        .range-progress {
+            position: absolute;
+            height: 4px;
+            background: linear-gradient(45deg, #80c0ff, #a0d0ff);
+            border-radius: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .range-thumb {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #80c0ff;
+            border-radius: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            box-shadow: 
+                0 0 10px rgba(64, 128, 255, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(10, 10, 25, 0.8);
+        }
+        
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+        
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1px solid rgba(64, 128, 255, 0.4);
+            background: rgba(20, 20, 40, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox.checked {
+            background: linear-gradient(45deg, #80c0ff, #a0d0ff);
+            border-color: rgba(64, 128, 255, 0.8);
+        }
+        
+        .checkbox.checked::after {
+            content: '✓';
+            color: #0a0a1a;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .filter-checkbox-text {
+            color: #c0c8ff;
+            font-size: 13px;
+        }
+        
+        /* Сетка для карточек поиска - НОВЫЕ СТИЛИ ДЛЯ СПИСКА */
+        .search-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            padding: 15px 0;
+            padding-bottom: 80px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .search-grid-card {
+            background: rgba(10, 10, 25, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(64, 128, 255, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 
+                0 10px 20px rgba(0, 0, 0, 0.3),
+                0 0 15px rgba(64, 128, 255, 0.15);
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        .search-grid-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(64, 128, 255, 0.4);
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.4),
+                0 0 25px rgba(64, 128, 255, 0.25);
+        }
+        
+        .search-grid-photo {
+            height: 120px;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(64, 128, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(100, 150, 255, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #1a1a3a 0%, #2a2a4a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .search-grid-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            border: 2px solid rgba(64, 128, 255, 0.6);
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 0 15px rgba(64, 128, 255, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+            z-index: 2;
+        }
+        
+        .search-grid-info {
+            padding: 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .search-grid-header {
+            margin-bottom: 8px;
+        }
+        
+        .search-grid-name {
+            font-size: 16px;
+            color: #80c0ff;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .search-grid-age {
+            color: #a0d0ff;
+            font-size: 14px;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        .search-grid-details {
+            font-size: 11px;
+            color: rgba(192, 200, 255, 0.7);
+            line-height: 1.3;
+        }
+        
+        .search-grid-online {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00ff88;
+        }
+        
+        .search-grid-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .search-grid-btn {
+            flex: 1;
+            padding: 6px 0;
+            border-radius: 8px;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            min-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .search-grid-dislike {
+            background: rgba(255, 100, 100, 0.15);
+            color: #ffaaaa;
+            border: 1px solid rgba(255, 100, 100, 0.3);
+        }
+        
+        .search-grid-like {
+            background: rgba(100, 255, 100, 0.15);
+            color: #aaffaa;
+            border: 1px solid rgba(100, 255, 100, 0.3);
+        }
+        
+        .search-grid-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .no-results {
+            text-align: center;
+            color: rgba(192, 200, 255, 0.7);
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+        }
+        
+        /* Большие экраны (ноутбуки, ПК) */
+        @media (min-width: 1024px) {
+            #app {
+                max-width: 420px;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+                height: 90vh;
+                margin-top: 5vh;
+                margin-bottom: 5vh;
+            }
+            
             body {
-                padding: 10px;
+                padding: 20px;
+                background: #0a0a1a;
+                overflow: auto;
+            }
+            
+            .card {
+                max-width: 380px;
+                height: 520px;
+                margin-bottom: 100px;
+            }
+            
+            .search-results-grid {
+                grid-template-columns: repeat(2, minmax(160px, 1fr));
+                gap: 15px;
+            }
+            
+            .search-grid-card {
+                height: 240px;
+            }
+            
+            .settings-menu {
+                max-width: 320px;
+            }
+            
+            .notifications-menu {
+                max-width: 320px;
+            }
+            
+            .subscription-card {
+                min-width: 300px;
+                height: 520px;
+            }
+        }
+        
+        /* Планшеты */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            #app {
+                max-width: 450px;
+                height: 90vh;
+                margin-top: 5vh;
+                margin-bottom: 5vh;
+            }
+            
+            body {
+                padding: 20px;
+                overflow: auto;
+            }
+            
+            .card {
+                max-width: 400px;
+                height: 500px;
+                margin-bottom: 100px;
+            }
+            
+            .search-results-grid {
+                grid-template-columns: repeat(2, minmax(150px, 1fr));
+            }
+            
+            .subscription-card {
+                min-width: 280px;
+                height: 480px;
+            }
+        }
+        
+        /* Мобильные телефоны */
+        @media (max-width: 767px) {
+            body {
+                padding: 0;
             }
             
             #app {
                 max-width: 100%;
-                min-height: calc(100vh - 20px);
+                height: 100vh;
+                height: -webkit-fill-available;
+                margin: 0;
             }
             
             .card {
+                width: calc(100% - 30px);
                 max-width: 100%;
-                height: 450px;
+                height: calc(100vh - 280px);
+                min-height: 450px;
+                margin: 0 auto;
+                margin-bottom: 100px;
+            }
+            
+            .search-results-grid {
+                grid-template-columns: repeat(2, minmax(140px, 1fr));
+                gap: 10px;
+                padding: 10px 0;
+                padding-bottom: 80px;
+            }
+            
+            .search-grid-card {
+                height: 200px;
+            }
+            
+            .search-grid-photo {
+                height: 100px;
+            }
+            
+            .search-grid-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .search-grid-name {
+                font-size: 15px;
+            }
+            
+            .search-grid-details {
+                font-size: 10px;
             }
             
             .settings-menu {
                 width: calc(100% - 40px);
                 right: 20px;
                 left: 20px;
-                top: 70px;
+                top: env(safe-area-inset-top, 70px);
                 padding: 15px;
+                max-width: none;
+            }
+            
+            .notifications-menu {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+                top: env(safe-area-inset-top, 70px);
+                padding: 15px;
+                max-width: none;
             }
             
             .action-buttons {
                 gap: 25px;
-                padding: 15px 10px;
+                padding: 20px 15px;
+                bottom: env(safe-area-inset-bottom, 10px);
             }
             
             .action-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 22px;
+                width: 65px;
+                height: 65px;
+                font-size: 24px;
             }
             
             .subscription-card {
-                min-width: 240px;
+                min-width: 260px;
                 padding: 18px;
-                height: 420px;
+                height: calc(100vh - 220px);
+                min-height: 420px;
             }
             
             .subscription-features li {
@@ -1936,56 +2709,43 @@
                 line-height: 1.3;
             }
             
-            .parallax-indicator {
-                bottom: 10px;
-                left: 10px;
-                font-size: 11px;
-                padding: 8px 12px;
-            }
-
-            .device-indicator {
-                top: 10px;
-                left: 10px;
-                font-size: 11px;
-                padding: 8px 12px;
-                max-width: 120px;
-            }
-            
             .modal {
-                width: 95%;
+                width: calc(100% - 30px);
                 padding: 20px;
-                max-width: 95%;
+                max-width: none;
             }
             
             .modal-close {
-                top: 15px;
-                right: 15px;
-                width: 32px;
-                height: 32px;
+                top: env(safe-area-inset-top, 15px);
+                right: env(safe-area-inset-right, 15px);
+                width: 36px;
+                height: 36px;
                 font-size: 16px;
             }
 
             .chat-container {
-                height: calc(100vh - 160px);
+                height: calc(100vh - 160px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
                 padding: 12px;
+                width: calc(100% - 20px);
             }
 
             .emoji-picker {
-                max-width: 260px;
-                grid-template-columns: repeat(5, 1fr);
+                max-width: 280px;
+                grid-template-columns: repeat(6, 1fr);
             }
             
             .chats-list {
-                height: calc(100vh - 160px);
+                height: calc(100vh - 160px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
                 padding: 12px;
                 min-height: 350px;
+                width: calc(100% - 20px);
             }
             
             .back-to-chat-btn {
-                top: 12px;
-                left: 12px;
-                width: 32px;
-                height: 32px;
+                top: env(safe-area-inset-top, 12px);
+                left: env(safe-area-inset-left, 12px);
+                width: 36px;
+                height: 36px;
                 font-size: 14px;
             }
             
@@ -1996,6 +2756,7 @@
             
             .auth-container {
                 padding: 25px 20px;
+                width: calc(100% - 30px);
             }
             
             .auth-header h1 {
@@ -2004,10 +2765,29 @@
             
             .profile-container {
                 padding: 20px;
+                width: calc(100% - 30px);
+            }
+            
+            .nav-tabs {
+                margin: 10px;
+            }
+            
+            .subscription-container {
+                padding-left: max(15px, env(safe-area-inset-left, 15px));
+                padding-right: max(15px, env(safe-area-inset-right, 15px));
+            }
+            
+            .notifications-button {
+                right: env(safe-area-inset-right, 70px);
+            }
+            
+            .filter-button {
+                top: env(safe-area-inset-top, 80px);
             }
         }
         
-        @media (max-width: 480px) {
+        /* Очень маленькие телефоны */
+        @media (max-width: 374px) {
             .auth-container {
                 padding: 20px 15px;
             }
@@ -2017,7 +2797,45 @@
             }
             
             .card {
-                height: 420px;
+                height: calc(100vh - 240px);
+                min-height: 420px;
+                margin-bottom: 90px;
+            }
+            
+            .search-results-grid {
+                grid-template-columns: repeat(2, minmax(120px, 1fr));
+                gap: 8px;
+            }
+            
+            .search-grid-card {
+                height: 180px;
+            }
+            
+            .search-grid-photo {
+                height: 90px;
+            }
+            
+            .search-grid-avatar {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+            
+            .search-grid-info {
+                padding: 10px;
+            }
+            
+            .search-grid-name {
+                font-size: 14px;
+            }
+            
+            .search-grid-actions {
+                margin-top: 6px;
+            }
+            
+            .search-grid-btn {
+                min-height: 28px;
+                font-size: 11px;
             }
             
             .card-info {
@@ -2033,15 +2851,16 @@
             }
             
             .action-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 22px;
             }
             
             .subscription-card {
-                min-width: 220px;
+                min-width: 240px;
                 padding: 15px;
-                height: 400px;
+                height: calc(100vh - 200px);
+                min-height: 400px;
             }
 
             .subscription-features li {
@@ -2051,28 +2870,28 @@
             }
 
             .chat-container {
-                height: calc(100vh - 140px);
+                height: calc(100vh - 150px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
                 padding: 10px;
             }
 
             .emoji-picker {
                 max-width: 240px;
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(5, 1fr);
                 padding: 10px;
                 gap: 5px;
             }
             
             .chats-list {
-                height: calc(100vh - 140px);
+                height: calc(100vh - 150px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
                 padding: 10px;
                 min-height: 300px;
             }
             
             .back-to-chat-btn {
-                top: 10px;
-                left: 10px;
-                width: 30px;
-                height: 30px;
+                top: env(safe-area-inset-top, 10px);
+                left: env(safe-area-inset-left, 10px);
+                width: 34px;
+                height: 34px;
                 font-size: 13px;
             }
             
@@ -2080,11 +2899,74 @@
                 padding: 5px 0;
                 min-height: 300px;
             }
+            
+            .nav-tab {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+            
+            .gender-option .icon {
+                font-size: 24px;
+            }
+            
+            .notifications-button {
+                right: env(safe-area-inset-right, 65px);
+                width: 45px;
+                height: 45px;
+            }
+            
+            .settings-button {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .bell-container {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .filter-button {
+                top: env(safe-area-inset-top, 75px);
+                width: 36px;
+                height: 36px;
+            }
         }
         
+        /* Высокие экраны (iPhone X и подобные) */
+        @media (min-height: 812px) {
+            .card {
+                height: calc(100vh - 320px);
+                max-height: 550px;
+                margin-bottom: 120px;
+            }
+            
+            .search-grid-card {
+                height: 240px;
+            }
+            
+            .action-buttons {
+                bottom: env(safe-area-inset-bottom, 30px);
+            }
+            
+            .info-toggle {
+                bottom: 120px;
+            }
+        }
+        
+        /* Низкие экраны */
         @media (max-height: 700px) {
             .card {
-                height: 380px;
+                height: calc(100vh - 250px);
+                min-height: 380px;
+                margin-bottom: 90px;
+            }
+            
+            .search-grid-card {
+                height: 200px;
+            }
+            
+            .search-grid-photo {
+                height: 100px;
             }
             
             .card-avatar {
@@ -2094,11 +2976,70 @@
             }
             
             .chat-container {
-                height: calc(100vh - 140px);
+                height: calc(100vh - 160px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
             }
             
             .chats-list {
-                height: calc(100vh - 140px);
+                height: calc(100vh - 160px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+            }
+            
+            .action-buttons {
+                bottom: env(safe-area-inset-bottom, 10px);
+            }
+            
+            .info-toggle {
+                bottom: 90px;
+            }
+        }
+        
+        /* Горизонтальная ориентация на мобильных */
+        @media (max-height: 500px) and (orientation: landscape) {
+            #app {
+                max-width: 100%;
+                flex-direction: row;
+                padding: 10px;
+            }
+            
+            .content-wrapper {
+                height: calc(100vh - 120px);
+            }
+            
+            .card {
+                width: 300px;
+                height: calc(100vh - 120px);
+                min-height: auto;
+                margin: 0;
+                margin-bottom: 80px;
+            }
+            
+            .search-results-grid {
+                grid-template-columns: repeat(3, minmax(140px, 1fr));
+            }
+            
+            .action-buttons {
+                position: relative;
+                bottom: auto;
+                margin-top: 10px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+                width: 100px;
+                margin: 10px;
+            }
+            
+            .chat-container {
+                height: calc(100vh - 120px);
+                width: 100%;
+            }
+            
+            .chats-list {
+                height: calc(100vh - 120px);
+                width: 100%;
+            }
+            
+            .info-toggle {
+                bottom: 60px;
             }
         }
         
@@ -2154,27 +3095,70 @@
                 transform: translateX(-50%) scale(1);
             }
             
-            .device-indicator:hover {
+            .card-collapse-btn:hover {
                 transform: none;
             }
             
-            .parallax-indicator:hover {
+            .search-grid-card:hover {
+                transform: none;
+                border-color: rgba(64, 128, 255, 0.2);
+            }
+            
+            .search-grid-btn:hover {
+                transform: none;
+            }
+            
+            .notification-item:hover {
+                transform: none;
+            }
+            
+            .support-option:hover {
                 transform: none;
             }
         }
         
-        /* Улучшенная поддержка iOS */
+        /* Поддержка iOS и безопасных областей */
         @supports (-webkit-touch-callout: none) {
             body {
                 min-height: -webkit-fill-available;
+                padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             }
             
             #app {
                 min-height: -webkit-fill-available;
+                height: -webkit-fill-available;
             }
             
             .content-wrapper {
                 min-height: auto;
+                padding-top: max(15px, env(safe-area-inset-top, 0px));
+                padding-bottom: max(15px, env(safe-area-inset-bottom, 0px));
+            }
+            
+            .action-buttons {
+                padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+            }
+            
+            .chat-input-container {
+                padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));
+            }
+            
+            .search-results-grid {
+                padding-bottom: max(80px, env(safe-area-inset-bottom, 80px));
+            }
+        }
+        
+        /* Поддержка PWA (Progressive Web App) */
+        @media (display-mode: standalone) {
+            body {
+                background: #0a0a1a;
+            }
+            
+            #app {
+                border-radius: 0;
+                max-width: 100%;
+                height: 100vh;
+                height: -webkit-fill-available;
             }
         }
     </style>
@@ -2188,14 +3172,30 @@
     <div class="liquid-glow glow-2"></div>
     <div class="liquid-glow glow-3"></div>
     
-    <!-- Индикатор устройства -->
-    <div class="device-indicator" id="device-indicator" onclick="showDeviceInfo()">
-        📱 Устройство
+    <!-- Кнопка уведомлений -->
+    <div class="notifications-button" id="notifications-button" onclick="toggleNotifications()">
+        <div class="bell-container">
+            <div class="bell-top"></div>
+            <div class="bell-body"></div>
+            <div class="bell-clapper"></div>
+        </div>
     </div>
     
     <!-- Кнопка настроек -->
     <div class="settings-button" id="settings-button" onclick="toggleSettings()">
         <div class="settings-icon">⚙️</div>
+    </div>
+    
+    <!-- Меню уведомлений -->
+    <div class="notifications-menu" id="notifications-menu">
+        <div class="notifications-header">
+            <div class="notifications-title">Уведомления</div>
+            <div class="notifications-subtitle">Важные события и обновления</div>
+        </div>
+        
+        <div class="notifications-list" id="notifications-list">
+            <!-- Уведомления будут здесь -->
+        </div>
     </div>
     
     <!-- Меню настроек -->
@@ -2206,20 +3206,6 @@
         </div>
         
         <div class="settings-section">
-            <div class="settings-item" onclick="handleSettingsAction('parallax')">
-                <div class="settings-item-content">
-                    <div class="settings-icon-small">🎮</div>
-                    <div class="settings-text">Управление параллаксом</div>
-                </div>
-            </div>
-            
-            <div class="settings-item" onclick="handleSettingsAction('notifications')">
-                <div class="settings-item-content">
-                    <div class="settings-icon-small">🔔</div>
-                    <div class="settings-text">Уведомления</div>
-                </div>
-            </div>
-            
             <div class="settings-item" onclick="handleSettingsAction('theme')">
                 <div class="settings-item-content">
                     <div class="settings-icon-small">🎨</div>
@@ -2288,7 +3274,7 @@
     </div>
     
     <!-- Оверлей для меню настроек -->
-    <div class="settings-overlay" id="settings-overlay" onclick="toggleSettings()"></div>
+    <div class="settings-overlay" id="settings-overlay" onclick="closeAllMenus()"></div>
     
     <!-- Оверлей для модальных окон -->
     <div class="modal-overlay" id="modal-overlay" onclick="closeAllModals()"></div>
@@ -2428,13 +3414,12 @@
             <h3 style="color: #80c0ff; margin: 20px 0 10px 0;">Ключевые особенности</h3>
             <ul>
                 <li><strong>Умный алгоритм подбора</strong> на основе психологической совместимости и общих интересов</li>
-                <li><strong>3D параллакс-эффекты</strong> для immersive опыта взаимодействия</li>
                 <li><strong>Жидкий дизайн</strong> с плавными переходами и анимациями</li>
                 <li><strong>Многоуровневая система подписок</strong> для разных потребностей пользователей</li>
                 <li><strong>Расширенная аналитика совместимости</strong> с детальными метриками</li>
                 <li><strong>Приватность и безопасность</strong> как основной приоритет</li>
                 <li><strong>Адаптивный интерфейс</strong> для всех типов устройств</li>
-                <li><strong>AI-помощник</strong> на базе Яндекс GPT для помощи в общении</li>
+                <li><strong>AI-помощник</strong> для помощи в общении</li>
             </ul>
             
             <h3 style="color: #80c0ff; margin: 20px 0 10px 0;">Технологический стек</h3>
@@ -2446,8 +3431,6 @@
                 <li>Adaptive design с mobile-first подходом</li>
                 <li>Local Storage для оффлайн-работы и быстрого доступа</li>
                 <li>Service Workers для кэширования ресурсов</li>
-                <li>WebGL для продвинутой графики (в разработке)</li>
-                <li>Yandex GPT API для AI-помощника</li>
             </ul>
             
             <h3 style="color: #80c0ff; margin: 20px 0 10px 0;">Архитектура приложения</h3>
@@ -2479,13 +3462,8 @@
     <!-- Кнопка закрытия для модальных окон -->
     <button class="modal-close" id="modal-close" onclick="closeAllModals()">×</button>
     
-    <!-- Индикатор параллакса -->
-    <div class="parallax-indicator" id="parallax-indicator" onclick="toggleParallax()">
-        🎮 Параллакс: ВКЛ
-    </div>
-    
     <!-- Предупреждение модерации -->
-    <div class="moderation-warning" id="moderation-warning">
+    <div class="moderation-warning" id="moderation-warning" style="display: none;">
         ⚠️ Сообщение содержит неподходящий контент
     </div>
     
@@ -2498,14 +3476,14 @@
         let currentCardIndex = 0;
         let currentCard = null;
         let userGender = '';
-        let isParallaxActive = true;
         let isMainCardInfoVisible = false;
         let isChatProfileInfoVisible = false;
         let currentTab = 'dating';
         let isSettingsOpen = false;
+        let isNotificationsOpen = false;
         let isModalOpen = false;
-        let deviceInfo = {};
         let isLoginMode = false;
+        let filteredUsers = [];
         
         // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ AI И ЧАТА
         let chatMessages = [];
@@ -2519,9 +3497,63 @@
         let testAnswers = {};
         let currentQuestionIndex = 0;
         
+        // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ ПОИСКА И ФИЛЬТРОВ
+        let isFiltersOpen = false;
+        let searchFilters = {
+            ageMin: 18,
+            ageMax: 100,
+            city: '',
+            distance: 50,
+            onlineOnly: false,
+            education: '',
+            religion: '',
+            smoking: '',
+            alcohol: '',
+            heightMin: 150,
+            heightMax: 200,
+            zodiac: ''
+        };
+        
+        // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ УВЕДОМЛЕНИЙ
+        let userNotifications = [];
+        
+        // Переменные для свайпа
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        let isSwiping = false;
+        
+        // Знаки зодиака
+        const zodiacSigns = [
+            "Овен", "Телец", "Близнецы", "Рак", "Лев", "Дева",
+            "Весы", "Скорпион", "Стрелец", "Козерог", "Водолей", "Рыбы"
+        ];
+        
+        // Образование
+        const educationOptions = [
+            "Основное общее образование (9 классов)",
+            "Среднее общее образование (11 классов)",
+            "Среднее специальное образование",
+            "Среднее профессиональное образование",
+            "Высшее образование"
+        ];
+        
+        // Религия
+        const religionOptions = [
+            "Православие",
+            "Католицизм",
+            "Ислам",
+            "Буддизм",
+            "Даосизм",
+            "Конфуцианство",
+            "Атеист",
+            "Не религиозен",
+            "Не религиозна"
+        ];
+        
         // ПСИХОЛОГИЧЕСКИЙ ТЕСТ (20 вопросов, включая 5 про интимную близость)
         const psychologicalTest = [
-            // Вопросы про отношения и личность (1-5)
             {
                 id: 1,
                 question: "Как вы обычно реагируете на конфликтные ситуации в отношениях?",
@@ -2572,8 +3604,6 @@
                     "Сразу начинаю защищаться"
                 ]
             },
-            
-            // Вопросы про ценности и образ жизни (6-10)
             {
                 id: 6,
                 question: "Какую роль в вашей жизни играют друзья и общение с ними?",
@@ -2624,8 +3654,6 @@
                     "Предпочитаю партнеров своего возраста"
                 ]
             },
-            
-            // Вопросы про интимную близость (11-15)
             {
                 id: 11,
                 question: "Насколько важна для вас интимная близость в отношениях?",
@@ -2676,8 +3704,6 @@
                     "Романтическая атмосфера и нежность"
                 ]
             },
-            
-            // Вопросы про будущее и планы (16-20)
             {
                 id: 16,
                 question: "Ваше отношение к браку и созданию семьи?",
@@ -2730,40 +3756,21 @@
             }
         ];
         
-        // СЛОВАРЬ СЛАНГА ДЛЯ AI
-        let slangDictionary = {
-            'пон': 'понятно',
-            'го': 'давай, пойдём, начинай',
-            'щас': 'сейчас',
-            'норм': 'нормально, хорошо',
-            'ок': 'хорошо, согласен',
-            'спс': 'спасибо',
-            'пж': 'пожалуйста',
-            'плз': 'пожалуйста',
-            'окей': 'хорошо',
-            'агонь': 'отлично, круто',
-            'рофл': 'шутка',
-            'краш': 'симпатия, человек который нравится',
-            'хейт': 'ненависть',
-            'имхо': 'по моему скромному мнению',
-            'лол': 'смешно',
-            'кринж': 'стыд, неловкость',
-            'чилить': 'расслабляться',
-            'зашквар': 'позор',
-            'сасный': 'привлекательный',
-            'вайб': 'атмосфера, настроение'
-        };
-        
-        // Эмодзи для выбора
-        const emojis = ['😊', '😂', '🥰', '😍', '🤔', '😎', '👍', '❤️', '🔥', '✨', '🌟', '💫', '💕', '💖', '💯', '🎉', '🙏', '😘', '🤗', '😇', '🥳', '😜', '🤩', '😋', '💝'];
-
-        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ
+        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ (6 мужчин и 6 женщин)
         const sampleUsers = [
             { 
                 id: 'user_1',
                 name: "Анна", 
                 age: 25, 
                 gender: "female",
+                city: "Москва",
+                zodiac: "Весы",
+                height: 168,
+                education: "Высшее образование",
+                religion: "Не религиозна",
+                smoking: "Нет",
+                alcohol: "Редко",
+                online: true,
                 bio: "Люблю путешествия и фотографию. Ищу глубокие и осмысленные отношения. В свободное время занимаюсь йогой и изучаю новые кулинарные рецепты. Обожаю длинные прогулки по городу и открытие новых мест. Верю, что настоящее счастье - в простых моментах и искренних эмоциях.",
                 details: {
                     interests: "Фотография, йога, кулинария, путешествия, искусство",
@@ -2775,25 +3782,18 @@
                 }
             },
             { 
-                id: 'user_2',
-                name: "Максим", 
-                age: 28, 
-                gender: "male",
-                bio: "Программист, увлекаюсь спортом и научной фантастикой. Ценю искренность и честность в отношениях. Люблю интеллектуальные беседы и новые вызовы. В свободное время изучаю новые технологии и занимаюсь саморазвитием.",
-                details: {
-                    interests: "Программирование, бег, научная фантастика, настольные игры, технологии",
-                    lifestyle: "Спортивный образ жизни, работа из дома, регулярные пробежки, правильное питание",
-                    goals: "Создать семью и развивать собственный проект\nПробежать марафон\nИзучить искусственный интеллект",
-                    education: "Магистр компьютерных наук\nСертификаты по машинному обучению",
-                    work: "Senior разработчик в IT-компании\nКонсультант по технологиям",
-                    hobbies: "Шахматы, походы в горы, коллекционирование комиксов\nЧтение научной литературы\nИгра на гитаре"
-                }
-            },
-            { 
                 id: 'user_3',
                 name: "София", 
                 age: 23, 
                 gender: "female",
+                city: "Казань",
+                zodiac: "Рак",
+                height: 172,
+                education: "Среднее специальное образование",
+                religion: "Православие",
+                smoking: "Нет",
+                alcohol: "Иногда",
+                online: false,
                 bio: "Студентка, обожаю искусство и кофе. Верю, что лучшие отношения строятся на дружбе и взаимопонимании. Люблю посещать выставки и открывать новые кофейни. Мечтаю о путешествии по Италии и изучении итальянского языка.",
                 details: {
                     interests: "Искусство, литература, кофе, театр, мода, дизайн",
@@ -2805,11 +3805,134 @@
                 }
             },
             { 
+                id: 'user_5',
+                name: "Мария", 
+                age: 27, 
+                gender: "female",
+                city: "Екатеринбург",
+                zodiac: "Дева",
+                height: 165,
+                education: "Высшее образование",
+                religion: "Атеист",
+                smoking: "Нет",
+                alcohol: "Нет",
+                online: true,
+                bio: "Врач-терапевт, ценю стабильность и надежность в отношениях. Люблю природу, походы и активный отдых. Ищу партнера, с которым можно разделить не только радости, но и трудности жизни.",
+                details: {
+                    interests: "Медицина, природа, походы, психология, чтение",
+                    lifestyle: "Активный образ жизни, правильное питание, ранние подъемы, регулярные прогулки",
+                    goals: "Помогать людям и развиваться в медицине\nСоздать крепкую семью\nИзучить психологию отношений",
+                    education: "Высшее медицинское образование\nКурсы по психологии",
+                    work: "Врач-терапевт в городской больнице",
+                    hobbies: "Походы в горы, чтение медицинской литературы, фотография природы"
+                }
+            },
+            { 
+                id: 'user_6',
+                name: "Екатерина", 
+                age: 29, 
+                gender: "female",
+                city: "Краснодар",
+                zodiac: "Скорпион",
+                height: 170,
+                education: "Высшее образование",
+                religion: "Православие",
+                smoking: "Иногда",
+                alcohol: "Иногда",
+                online: false,
+                bio: "Бизнес-аналитик с любовью к точным наукам. Ценю интеллект и чувство юмора. Люблю настольные игры и научные дискуссии. Ищу партнера для совместного роста и развития.",
+                details: {
+                    interests: "Аналитика, программирование, настольные игры, наука",
+                    lifestyle: "Работа в офисе, спортзал по вечерам, чтение перед сном",
+                    goals: "Развивать карьеру в IT\nСоздать собственную аналитическую компанию\nПутешествовать по миру",
+                    education: "Высшее экономическое образование\nMBA",
+                    work: "Бизнес-аналитик в IT-компании",
+                    hobbies: "Шахматы, настольные игры, программирование, путешествия"
+                }
+            },
+            { 
+                id: 'user_7',
+                name: "Алиса", 
+                age: 24, 
+                gender: "female",
+                city: "Санкт-Петербург",
+                zodiac: "Близнецы",
+                height: 175,
+                education: "Высшее образование",
+                religion: "Не религиозна",
+                smoking: "Нет",
+                alcohol: "Социально",
+                online: true,
+                bio: "Маркетолог и блогер. Обожаю общаться с людьми, узнавать новое и делиться впечатлениями. Ищу энергичного и позитивного партнера для совместных приключений.",
+                details: {
+                    interests: "Маркетинг, блогинг, путешествия, фотография, социальные сети",
+                    lifestyle: "Динамичный график, встречи с друзьями, спонтанные поездки",
+                    goals: "Развивать личный бренд\nПопутешествовать по Азии\nНаписать книгу о маркетинге",
+                    education: "Высшее маркетинговое образование\nКурсы по SMM",
+                    work: "Маркетолог в digital-агентстве\nБлогер",
+                    hobbies: "Фотография, ведение блога, танцы, изучение языков"
+                }
+            },
+            { 
+                id: 'user_8',
+                name: "Виктория", 
+                age: 26, 
+                gender: "female",
+                city: "Нижний Новгород",
+                zodiac: "Лев",
+                height: 160,
+                education: "Высшее образование",
+                religion: "Православие",
+                smoking: "Нет",
+                alcohol: "Нет",
+                online: false,
+                bio: "Юрист с творческой натурой. Люблю искусство, музыку и хорошую литературу. Ценю честность и открытость в отношениях. Ищу партнера для создания семьи и совместных достижений.",
+                details: {
+                    interests: "Юриспруденция, искусство, музыка, литература, театр",
+                    lifestyle: "Баланс работы и творчества, регулярные занятия спортом, культурный досуг",
+                    goals: "Стать успешным юристом\nОткрыть арт-галерею\nСоздать крепкую семью",
+                    education: "Высшее юридическое образование\nКурсы по искусствоведению",
+                    work: "Юрист в юридической фирме",
+                    hobbies: "Посещение театров и выставок, игра на фортепиано, коллекционирование книг"
+                }
+            },
+            { 
+                id: 'user_2',
+                name: "Максим", 
+                age: 28, 
+                gender: "male",
+                city: "Санкт-Петербург",
+                zodiac: "Стрелец",
+                height: 185,
+                education: "Высшее образование",
+                religion: "Атеист",
+                smoking: "Нет",
+                alcohol: "Социально",
+                online: true,
+                bio: "Программист, увлекаюсь спортом и научной фантастикой. Ценю искренность и честность в отношениях. Люблю интеллектуальные беседы и новые вызовы. В свободное время изучаю новые технологии и занимаюсь саморазвитием.",
+                details: {
+                    interests: "Программирование, бег, научная фантастика, настольные игры, технологии",
+                    lifestyle: "Спортивный образ жизни, работа из дома, регулярные пробежки, правильное питание",
+                    goals: "Создать семью и развивать собственный проект\nПробежать марафон\nИзучить искусственный интеллект",
+                    education: "Магистр компьютерных наук\nСертификаты по машинному обучению",
+                    work: "Senior разработчик в IT-компании\nКонсультант по технологиям",
+                    hobbies: "Шахматы, походы в горы, коллекционирование комиксов\nЧтение научной литературы\nИгра на гитаре"
+                }
+            },
+            { 
                 id: 'user_4',
                 name: "Александр", 
                 age: 30, 
                 gender: "male",
-                bio: "Предприниматель и путешественник с огромной страстью к жизни. Ищу партнера для совместных приключений и создания чего-то великого вместе. Люблю экстремальные виды спорта, особенно скалолазание и дайвинг. В свободное время изучаю философию и психологию, пишу книгу о своих путешествиях по 50 странам мира. Верю, что настоящая любовь - это когда два человека вдохновляют друг друга становиться лучше каждый день. Ищу женщину с яркой индивидуальностью, чувством юмора и жаждой приключений. Готов поддержать любые начинания и мечты своей спутницы. Важно, чтобы у нас были общие ценности и желание создавать что-то вместе. Не представляю жизнь без путешествий, новых впечатлений и глубоких разговоров до утра.",
+                city: "Новосибирск",
+                zodiac: "Овен",
+                height: 180,
+                education: "Высшее образование",
+                religion: "Не религиозен",
+                smoking: "Иногда",
+                alcohol: "Социально",
+                online: false,
+                bio: "Предприниматель и путешественник с огромной страстью к жизни. Ищу партнера для совместных приключений и создания чего-то великого вместе. Люблю экстремальные виды спорта, особенно скалолазание и дайвинг.",
                 details: {
                     interests: "Путешествия, экстремальные виды спорта, философия, психология, литература, фотография, кулинария, языки, искусство, музыка, театр, кино, архитектура, история, наука, технологии, бизнес, инвестиции, благотворительность",
                     lifestyle: "Активный образ жизни, регулярные тренировки, здоровое питание, медитация, планирование, саморазвитие, работа в режиме номада, частые путешествия, волонтерство",
@@ -2818,73 +3941,214 @@
                     work: "Основатель IT-компании\nИнвестор в стартапы\nАвтор блога о путешествиях\nКоуч по личностному росту\nКонсультант по бизнес-развитию",
                     hobbies: "Скалолазание, дайвинг, серфинг, горные лыжи\nФотография дикой природы\nЧтение философской литературы\nИгра на фортепиано\nКулинарные эксперименты\nЙога и медитация\nИзучение новых культур\nВолонтерская работа\nНаписание книги\nКоллекционирование винтажных карт"
                 }
+            },
+            { 
+                id: 'user_9',
+                name: "Дмитрий", 
+                age: 32, 
+                gender: "male",
+                city: "Ростов-на-Дону",
+                zodiac: "Телец",
+                height: 178,
+                education: "Высшее образование",
+                religion: "Православие",
+                smoking: "Нет",
+                alcohol: "Редко",
+                online: true,
+                bio: "Архитектор и дизайнер. Ценю красоту во всем - в искусстве, природе, отношениях. Люблю создавать что-то новое и полезное. Ищу партнера для совместного творчества и построения уютного дома.",
+                details: {
+                    interests: "Архитектура, дизайн, искусство, фотография, музыка",
+                    lifestyle: "Творческая работа, регулярные путешествия для вдохновения, здоровый образ жизни",
+                    goals: "Создать архитектурное бюро\nПостроить дом своей мечты\nРазработать экологичный дизайн-проект",
+                    education: "Высшее архитектурное образование\nКурсы по дизайну интерьеров",
+                    work: "Архитектор в проектной компании\nФриланс-дизайнер",
+                    hobbies: "Фотография архитектуры, рисование, игра на саксофоне, садоводство"
+                }
+            },
+            { 
+                id: 'user_10',
+                name: "Иван", 
+                age: 26, 
+                gender: "male",
+                city: "Воронеж",
+                zodiac: "Водолей",
+                height: 182,
+                education: "Высшее образование",
+                religion: "Атеист",
+                smoking: "Нет",
+                alcohol: "Нет",
+                online: false,
+                bio: "Учитель истории и обществознания. Люблю делиться знаниями и узнавать новое. Ценю умных и образованных людей. Ищу партнера для интеллектуальных бесед и совместного развития.",
+                details: {
+                    interests: "История, философия, педагогика, литература, политика",
+                    lifestyle: "Преподавание, научная работа, чтение, общение с коллегами",
+                    goals: "Стать лучшим учителем года\nНаписать учебник по истории\nСоздать образовательный YouTube-канал",
+                    education: "Высшее педагогическое образование\nКандидат исторических наук",
+                    work: "Учитель истории в школе\nНаучный сотрудник",
+                    hobbies: "Чтение исторической литературы, написание статей, ведение блога, шахматы"
+                }
+            },
+            { 
+                id: 'user_11',
+                name: "Андрей", 
+                age: 29, 
+                gender: "male",
+                city: "Уфа",
+                zodiac: "Рыбы",
+                height: 175,
+                education: "Высшее образование",
+                religion: "Православие",
+                smoking: "Иногда",
+                alcohol: "Социально",
+                online: true,
+                bio: "Музыкант и композитор. Живу эмоциями и чувствами. Ценю искренность и душевность в отношениях. Ищу партнера, который разделит мою любовь к музыке и творчеству.",
+                details: {
+                    interests: "Музыка, композиция, поэзия, искусство, психология",
+                    lifestyle: "Творческая работа, выступления, запись музыки, медитация",
+                    goals: "Выпустить сольный альбом\nСоздать музыкальную школу\nНаписать саундтрек к фильму",
+                    education: "Консерватория по классу фортепиано\nКурсы по звукорежиссуре",
+                    work: "Музыкант в оркестре\nКомпозитор-фрилансер",
+                    hobbies: "Игра на фортепиано и гитаре, сочинение музыки, написание стихов, йога"
+                }
+            },
+            { 
+                id: 'user_12',
+                name: "Сергей", 
+                age: 31, 
+                gender: "male",
+                city: "Красноярск",
+                zodiac: "Козерог",
+                height: 190,
+                education: "Высшее образование",
+                religion: "Не религиозен",
+                smoking: "Нет",
+                alcohol: "Редко",
+                online: false,
+                bio: "Спортивный тренер и предприниматель. Верю в силу дисциплины и постоянного развития. Ценю здоровый образ жизни и активную позицию. Ищу партнера для совместных спортивных достижений и построения бизнеса.",
+                details: {
+                    interests: "Спорт, фитнес, бизнес, психология, здоровое питание",
+                    lifestyle: "Регулярные тренировки, правильное питание, планирование, саморазвитие",
+                    goals: "Открыть сеть фитнес-клубов\nСтать профессиональным тренером\nСоздать семью и воспитать детей",
+                    education: "Высшее спортивное образование\nКурсы по нутрициологии",
+                    work: "Спортивный тренер\nВладелец фитнес-студии",
+                    hobbies: "Тренировки, чтение бизнес-литературы, приготовление здоровой пищи, горные лыжи"
+                }
             }
         ];
 
-        // ОПРЕДЕЛЕНИЕ УСТРОЙСТВА
-        function detectDevice() {
-            const userAgent = navigator.userAgent.toLowerCase();
-            const isMobile = /iphone|ipad|ipod|android|blackberry|windows phone/i.test(userAgent);
-            const isIOS = /iphone|ipad|ipod/i.test(userAgent);
-            const isAndroid = /android/i.test(userAgent);
-            const isiPhone = /iphone/i.test(userAgent);
-            const isiPad = /ipad/i.test(userAgent);
-            const isSafari = /safari/i.test(userAgent) && !/chrome/i.test(userAgent);
-            const isChrome = /chrome/i.test(userAgent);
-            const isFirefox = /firefox/i.test(userAgent);
+        // ТЕСТОВЫЕ УВЕДОМЛЕНИЯ
+        const sampleNotifications = [
+            {
+                id: 'notif_1',
+                title: '🎉 Новый мэтч!',
+                text: 'У вас взаимная симпатия с Анной',
+                time: 'Только что',
+                unread: true,
+                icon: '💞'
+            },
+            {
+                id: 'notif_2',
+                title: '📱 Новое сообщение',
+                text: 'Максим: Привет! Как твои дела?',
+                time: '2 мин назад',
+                unread: true,
+                icon: '💬'
+            },
+            {
+                id: 'notif_3',
+                title: '⭐ Уведомление системы',
+                text: 'Обновите профиль для лучшего подбора партнеров',
+                time: '1 час назад',
+                unread: false,
+                icon: '⚡'
+            },
+            {
+                id: 'notif_4',
+                title: '🎯 Совместимость +15%',
+                text: 'Ваш профиль стал привлекательнее для других пользователей',
+                time: '3 часа назад',
+                unread: false,
+                icon: '📈'
+            }
+        ];
+        
+        // ФИЛЬТРАЦИЯ ПОЛЬЗОВАТЕЛЕЙ ПО ПОЛУ
+        function filterUsersByGender() {
+            if (!currentUser) return sampleUsers;
             
-            deviceInfo = {
-                isMobile,
-                isIOS, 
-                isAndroid,
-                isiPhone,
-                isiPad,
-                isSafari,
-                isChrome,
-                isFirefox,
-                userAgent: navigator.userAgent,
-                screenSize: window.screen.width + 'x' + window.screen.height,
-                viewport: window.innerWidth + 'x' + window.innerHeight
-            };
+            const currentUserGender = currentUser.gender;
             
-            updateDeviceIndicator();
-            return deviceInfo;
+            // Если пользователь мужчина - показываем женщин, если женщина - мужчин
+            if (currentUserGender === 'male') {
+                return sampleUsers.filter(user => user.gender === 'female');
+            } else if (currentUserGender === 'female') {
+                return sampleUsers.filter(user => user.gender === 'male');
+            }
+            
+            return sampleUsers;
         }
 
-        function updateDeviceIndicator() {
-            const indicator = document.getElementById('device-indicator');
-            if (indicator) {
-                let deviceText = '📱 ';
-                if (deviceInfo.isMobile) {
-                    if (deviceInfo.isiPhone) deviceText += 'iPhone';
-                    else if (deviceInfo.isiPad) deviceText += 'iPad';
-                    else if (deviceInfo.isAndroid) deviceText += 'Android';
-                    else deviceText += 'Mobile';
-                } else {
-                    deviceText += 'Desktop';
+        // ФИЛЬТРАЦИЯ ПОЛЬЗОВАТЕЛЕЙ ПО КРИТЕРИЯМ ПОИСКА
+        function filterUsersBySearchCriteria() {
+            let filtered = filterUsersByGender();
+            
+            // Применяем фильтры поиска
+            filtered = filtered.filter(user => {
+                // Возраст
+                if (user.age < searchFilters.ageMin || user.age > searchFilters.ageMax) {
+                    return false;
                 }
                 
-                indicator.textContent = deviceText;
-            }
-        }
-
-        function showDeviceInfo() {
-            const info = `
-📊 Информация об устройстве:
-
-📱 Устройство: ${deviceInfo.isMobile ? 'Мобильное' : 'Десктоп'}
-${deviceInfo.isiPhone ? '📱 iPhone' : deviceInfo.isiPad ? '📱 iPad' : deviceInfo.isAndroid ? '🤖 Android' : '💻 Браузер'}
-
-🖥️ Экран: ${deviceInfo.screenSize}
-👀 Вьюпорт: ${deviceInfo.viewport}
-
-🌐 Браузер: ${deviceInfo.isSafari ? 'Safari' : deviceInfo.isChrome ? 'Chrome' : deviceInfo.isFirefox ? 'Firefox' : 'Другой'}
-
-📋 User Agent:
-${deviceInfo.userAgent}
-            `.trim();
+                // Город
+                if (searchFilters.city && !user.city.toLowerCase().includes(searchFilters.city.toLowerCase())) {
+                    return false;
+                }
+                
+                // Онлайн статус
+                if (searchFilters.onlineOnly && !user.online) {
+                    return false;
+                }
+                
+                // Образование
+                if (searchFilters.education && user.education !== searchFilters.education) {
+                    return false;
+                }
+                
+                // Религия (адаптируем текст в зависимости от пола пользователя)
+                if (searchFilters.religion) {
+                    if (searchFilters.religion === "Не религиозен" && currentUser.gender === "male") {
+                        if (user.religion !== "Не религиозен" && user.religion !== "Атеист") return false;
+                    } else if (searchFilters.religion === "Не религиозна" && currentUser.gender === "female") {
+                        if (user.religion !== "Не религиозна" && user.religion !== "Атеист") return false;
+                    } else if (user.religion !== searchFilters.religion) {
+                        return false;
+                    }
+                }
+                
+                // Курение
+                if (searchFilters.smoking && user.smoking !== searchFilters.smoking) {
+                    return false;
+                }
+                
+                // Алкоголь
+                if (searchFilters.alcohol && user.alcohol !== searchFilters.alcohol) {
+                    return false;
+                }
+                
+                // Рост
+                if (user.height < searchFilters.heightMin || user.height > searchFilters.heightMax) {
+                    return false;
+                }
+                
+                // Знак зодиака
+                if (searchFilters.zodiac && user.zodiac !== searchFilters.zodiac) {
+                    return false;
+                }
+                
+                return true;
+            });
             
-            alert(info);
+            return filtered;
         }
 
         // ИНИЦИАЛИЗАЦИЯ ЧАТОВ
@@ -2903,6 +4167,8 @@ ${deviceInfo.userAgent}
                         userName: 'Анна',
                         userAge: 25,
                         userGender: 'female',
+                        userCity: 'Москва',
+                        userZodiac: 'Весы',
                         lastMessage: 'Привет! Как твои дела? 😊',
                         lastMessageTime: new Date(Date.now() - 3600000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                         messages: [
@@ -2927,6 +4193,8 @@ ${deviceInfo.userAgent}
                         userName: 'Максим',
                         userAge: 28,
                         userGender: 'male',
+                        userCity: 'Санкт-Петербург',
+                        userZodiac: 'Стрелец',
                         lastMessage: 'Тоже хорошо! Хотел спросить - не хочешь сходить на кофе в эти выходные? ☕',
                         lastMessageTime: new Date(Date.now() - 7200000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                         messages: [
@@ -2955,6 +4223,92 @@ ${deviceInfo.userAgent}
                 saveChats();
             }
         }
+        
+        // ИНИЦИАЛИЗАЦИЯ УВЕДОМЛЕНИЙ
+        function initNotifications() {
+            const savedNotifications = localStorage.getItem('aion_premium_notifications');
+            if (savedNotifications) {
+                userNotifications = JSON.parse(savedNotifications);
+            }
+            
+            // Добавляем демо-уведомления если их нет
+            if (userNotifications.length === 0) {
+                userNotifications = sampleNotifications;
+                saveNotifications();
+            }
+        }
+        
+        // СОХРАНЕНИЕ УВЕДОМЛЕНИЙ
+        function saveNotifications() {
+            localStorage.setItem('aion_premium_notifications', JSON.stringify(userNotifications));
+        }
+        
+        // ОБНОВЛЕНИЕ БЕЙДЖА УВЕДОМЛЕНИЙ
+        function updateNotificationBadge() {
+            const unreadCount = userNotifications.filter(n => n.unread).length;
+            const button = document.getElementById('notifications-button');
+            
+            if (unreadCount > 0) {
+                // Удаляем старый бейдж если есть
+                const oldBadge = button.querySelector('.notification-badge');
+                if (oldBadge) oldBadge.remove();
+                
+                // Создаем новый бейдж
+                const badge = document.createElement('div');
+                badge.className = 'notification-badge';
+                badge.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    background: linear-gradient(45deg, #ff4444, #ff8888);
+                    color: white;
+                    font-size: 10px;
+                    font-weight: bold;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1001;
+                    box-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
+                `;
+                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                button.appendChild(badge);
+            } else {
+                // Удаляем бейдж если нет непрочитанных
+                const badge = button.querySelector('.notification-badge');
+                if (badge) badge.remove();
+            }
+        }
+        
+        // РЕНДЕРИНГ УВЕДОМЛЕНИЙ
+        function renderNotifications() {
+            const list = document.getElementById('notifications-list');
+            if (!list) return;
+            
+            if (userNotifications.length === 0) {
+                list.innerHTML = `
+                    <div class="no-notifications">
+                        <div class="no-notifications-icon">🔔</div>
+                        <div style="margin-bottom: 5px; color: #ffc840; font-weight: 600;">Нет уведомлений</div>
+                        <div style="font-size: 13px;">Здесь появятся важные события и обновления</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = userNotifications.map(notification => `
+                <div class="notification-item ${notification.unread ? 'unread' : ''}" onclick="handleNotificationClick('${notification.id}')">
+                    <div class="notification-title">
+                        <span>${notification.icon}</span>
+                        <span>${escapeHtml(notification.title)}</span>
+                    </div>
+                    <div class="notification-text">${escapeHtml(notification.text)}</div>
+                    <div class="notification-time">${escapeHtml(notification.time)}</div>
+                </div>
+            `).join('');
+        }
 
         // СОХРАНЕНИЕ ЧАТОВ
         function saveChats() {
@@ -2977,6 +4331,8 @@ ${deviceInfo.userAgent}
                     userName: user.name,
                     userAge: user.age,
                     userGender: user.gender,
+                    userCity: user.city,
+                    userZodiac: user.zodiac,
                     lastMessage: 'Начните общение! 👋',
                     lastMessageTime: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                     messages: [],
@@ -2986,8 +4342,56 @@ ${deviceInfo.userAgent}
                 userChats.unshift(newChat);
                 saveChats();
                 
+                // Добавляем уведомление
+                addNotification({
+                    title: '🎉 Новый мэтч!',
+                    text: `У вас взаимная симпатия с ${user.name}`,
+                    icon: '💞'
+                });
+                
                 // Показываем уведомление
                 showMatchNotification(user.name);
+            }
+        }
+        
+        // ДОБАВЛЕНИЕ УВЕДОМЛЕНИЯ
+        function addNotification(notification) {
+            const newNotification = {
+                id: 'notif_' + Date.now(),
+                title: notification.title,
+                text: notification.text,
+                time: 'Только что',
+                unread: true,
+                icon: notification.icon || '🔔'
+            };
+            
+            userNotifications.unshift(newNotification);
+            saveNotifications();
+            updateNotificationBadge();
+            
+            if (isNotificationsOpen) {
+                renderNotifications();
+            }
+        }
+        
+        // ОБРАБОТКА КЛИКА ПО УВЕДОМЛЕНИЮ
+        function handleNotificationClick(notificationId) {
+            const notification = userNotifications.find(n => n.id === notificationId);
+            if (!notification) return;
+            
+            // Помечаем как прочитанное
+            notification.unread = false;
+            saveNotifications();
+            updateNotificationBadge();
+            renderNotifications();
+            
+            // В зависимости от типа уведомления выполняем действия
+            if (notification.title.includes('мэтч')) {
+                // Переходим в чаты
+                toggleNotifications();
+                setTimeout(() => {
+                    switchTab('chat');
+                }, 300);
             }
         }
 
@@ -3073,8 +4477,8 @@ ${deviceInfo.userAgent}
             container.innerHTML = `
                 <div class="chat-container">
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(64, 128, 255, 0.2); cursor: pointer;" onclick="showChatProfile('${chat.userId}')">
-                        <button onclick="event.stopPropagation(); renderChatsList()" style="background: none; border: none; color: #80c0ff; font-size: 16px; cursor: pointer; padding: 0;">←</button>
-                        <div class="chat-avatar" style="width: 36px; height: 36px; font-size: 15px;">
+                        <button onclick="event.stopPropagation(); renderChatsList()" style="background: none; border: none; color: #80c0ff; font-size: 16px; cursor: pointer; padding: 0; min-height: 44px; min-width: 44px; display: flex; align-items: center; justify-content: center;">←</button>
+                        <div class="chat-avatar" style="width: 40px; height: 40px; font-size: 16px;">
                             ${chat.userGender === 'male' ? '👨' : '👩'}
                         </div>
                         <div style="flex: 1;">
@@ -3107,7 +4511,6 @@ ${deviceInfo.userAgent}
             renderChatMessages();
             initEmojiPicker();
             
-            // Добавляем обработчик Enter для отправки сообщения
             const chatInput = document.getElementById('chat-input');
             chatInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -3116,7 +4519,6 @@ ${deviceInfo.userAgent}
                 }
             });
             
-            // Автоматическое изменение высоты текстового поля
             chatInput.addEventListener('input', function() {
                 this.style.height = 'auto';
                 this.style.height = (this.scrollHeight) + 'px';
@@ -3135,13 +4537,16 @@ ${deviceInfo.userAgent}
                 <div class="back-to-chat-btn" onclick="renderActiveChat()">
                     ←
                 </div>
-                <div class="card" id="chat-profile-card" style="transform: perspective(1200px) rotateX(0) rotateY(0) rotateZ(0); transition: transform 0.4s ease; width: 100%; max-width: 340px; margin: 0 auto;">
+                <div class="card" id="chat-profile-card" style="width: calc(100% - 40px); max-width: 340px; margin: 0 auto; margin-bottom: 100px;">
                     <div class="card-photo">
                         <div class="card-avatar">${genderIcon}</div>
                     </div>
                     <div class="card-info">
                         <div class="card-header">
                             <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
+                            <div style="color: rgba(192, 200, 255, 0.7); font-size: 14px; margin-top: 5px;">
+                                ${escapeHtml(user.city)} • ${escapeHtml(user.zodiac)}
+                            </div>
                         </div>
                         <div class="card-bio">${escapeHtml(user.bio)}</div>
                         
@@ -3171,110 +4576,18 @@ ${deviceInfo.userAgent}
                                 <div class="detail-content">${formatMultilineText(escapeHtml(user.details.hobbies))}</div>
                             </div>
                         </div>
+                        <div class="card-collapse-btn" onclick="toggleChatCardInfo()">
+                            Свернуть
+                        </div>
                     </div>
                     <div class="info-toggle" onclick="toggleChatCardInfo()">
                         Узнать больше
                     </div>
                 </div>
             `;
-
-            // Инициализируем параллакс для профиля в чате
-            setTimeout(() => {
-                if (isParallaxActive && !isModalOpen) {
-                    initChatProfileParallax();
-                }
-            }, 100);
-        }
-
-        // ИНИЦИАЛИЗАЦИЯ ПАРАЛЛАКСА ДЛЯ ПРОФИЛЯ В ЧАТЕ
-        function initChatProfileParallax() {
-            const card = document.getElementById('chat-profile-card');
-            if (card) {
-                card.addEventListener('mousemove', handleChatProfileMouseMove);
-                card.addEventListener('mouseleave', handleChatProfileMouseLeave);
-                
-                card.addEventListener('touchmove', handleChatProfileTouchMove, { passive: true });
-                card.addEventListener('touchend', handleChatProfileMouseLeave);
-            }
-        }
-
-        function handleChatProfileMouseMove(event) {
-            if (!isParallaxActive || isModalOpen || isChatProfileInfoVisible) return;
             
-            const card = event.currentTarget;
-            const cardRect = card.getBoundingClientRect();
-            
-            const mouseX = event.clientX - cardRect.left;
-            const mouseY = event.clientY - cardRect.top;
-            
-            const centerX = cardRect.width / 2;
-            const centerY = cardRect.height / 2;
-            
-            const tiltX = ((mouseX - centerX) / centerX) * 10;
-            const tiltY = ((mouseY - centerY) / centerY) * 8;
-            
-            applyChatProfileTilt(tiltX, tiltY, 0);
-        }
-
-        function handleChatProfileTouchMove(event) {
-            if (!isParallaxActive || isModalOpen || isChatProfileInfoVisible) return;
-            
-            const card = event.currentTarget;
-            const cardRect = card.getBoundingClientRect();
-            const touch = event.touches[0];
-            
-            const touchX = touch.clientX - cardRect.left;
-            const touchY = touch.clientY - cardRect.top;
-            
-            const centerX = cardRect.width / 2;
-            const centerY = cardRect.height / 2;
-            
-            const tiltX = ((touchX - centerX) / centerX) * 10;
-            const tiltY = ((touchY - centerY) / centerY) * 8;
-            
-            applyChatProfileTilt(tiltX, tiltY, 0);
-        }
-
-        function handleChatProfileMouseLeave() {
-            if (!isParallaxActive || isModalOpen || isChatProfileInfoVisible) return;
-            
-            const card = document.getElementById('chat-profile-card');
-            if (card) {
-                card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
-                
-                const avatar = card.querySelector('.card-avatar');
-                if (avatar) {
-                    avatar.style.transform = 'translate(0px, 0px)';
-                }
-                
-                const photo = card.querySelector('.card-photo');
-                if (photo) {
-                    photo.style.backgroundPosition = '0px 0px';
-                }
-            }
-        }
-
-        function applyChatProfileTilt(tiltX, tiltY, rotation) {
-            const card = document.getElementById('chat-profile-card');
-            if (!card) return;
-            
-            card.style.transform = `
-                perspective(1200px) 
-                rotateX(${tiltY}deg) 
-                rotateY(${tiltX}deg) 
-                rotateZ(${rotation}deg)
-                scale(1.02)
-            `;
-            
-            const avatar = card.querySelector('.card-avatar');
-            if (avatar) {
-                avatar.style.transform = `translate(${-tiltX * 3}px, ${-tiltY * 3}px)`;
-            }
-            
-            const photo = card.querySelector('.card-photo');
-            if (photo) {
-                photo.style.backgroundPosition = `${tiltX * 2}px ${tiltY * 2}px`;
-            }
+            // Инициализация свайпов для карточки
+            initSwipeForCard('chat-profile-card');
         }
 
         // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ В ЧАТЕ
@@ -3288,27 +4601,10 @@ ${deviceInfo.userAgent}
                 if (isChatProfileInfoVisible) {
                     info.classList.add('visible');
                     indicator.classList.add('hidden');
-                    stopChatProfileParallax();
                 } else {
                     info.classList.remove('visible');
                     indicator.classList.remove('hidden');
-                    if (isParallaxActive && !isModalOpen) {
-                        initChatProfileParallax();
-                    }
                 }
-            }
-        }
-
-        // ОСТАНОВИТЬ ПАРАЛЛАКС ДЛЯ ПРОФИЛЯ В ЧАТЕ
-        function stopChatProfileParallax() {
-            const card = document.getElementById('chat-profile-card');
-            if (card) {
-                card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
-                
-                card.removeEventListener('mousemove', handleChatProfileMouseMove);
-                card.removeEventListener('mouseleave', handleChatProfileMouseLeave);
-                card.removeEventListener('touchmove', handleChatProfileTouchMove);
-                card.removeEventListener('touchend', handleChatProfileMouseLeave);
             }
         }
 
@@ -3329,7 +4625,6 @@ ${deviceInfo.userAgent}
                 messagesContainer.appendChild(messageElement);
             });
 
-            // Прокручиваем вниз
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
@@ -3339,10 +4634,8 @@ ${deviceInfo.userAgent}
             const input = document.getElementById('chat-input');
             const messageText = input.value.trim();
 
-            // Очищаем предыдущий таймер
             clearTimeout(inputTimeout);
             
-            // Если сообщение достаточно длинное, показываем AI-помощника
             if (messageText.length > 3) {
                 inputTimeout = setTimeout(() => {
                     showAISuggestions(messageText);
@@ -3479,16 +4772,13 @@ ${deviceInfo.userAgent}
 
             if (!messageText) return;
 
-            // Скрываем AI-помощника перед отправкой
             hideAISuggestions();
 
-            // Проверка на неприемлемый контент
             if (await moderateContent(messageText)) {
                 showModerationWarning();
                 return;
             }
 
-            // Добавляем сообщение пользователя
             const userMessage = {
                 id: Date.now(),
                 text: messageText,
@@ -3498,7 +4788,6 @@ ${deviceInfo.userAgent}
 
             chatMessages.push(userMessage);
             
-            // Обновляем активный чат
             const activeChat = getActiveChat();
             if (activeChat) {
                 activeChat.messages = chatMessages;
@@ -3511,7 +4800,6 @@ ${deviceInfo.userAgent}
             input.value = '';
             input.style.height = 'auto';
 
-            // Имитируем ответ через 1-3 секунды
             setTimeout(() => {
                 const responses = [
                     "Звучит интересно! Расскажи подробнее 😊",
@@ -3532,7 +4820,6 @@ ${deviceInfo.userAgent}
 
                 chatMessages.push(botMessage);
                 
-                // Обновляем активный чат
                 if (activeChat) {
                     activeChat.messages = chatMessages;
                     activeChat.lastMessage = randomResponse;
@@ -3546,6 +4833,8 @@ ${deviceInfo.userAgent}
 
         // МОДЕРАЦИЯ КОНТЕНТА
         async function moderateContent(text) {
+            return false;
+            
             const badWords = [
                 'хуй', 'пизда', 'ебал', 'ебать', 'блядь', 'гандон', 'мудак', 'сука', 'шлюха',
                 'fuck', 'shit', 'bitch', 'asshole', 'dick', 'pussy', 'cock', 'whore'
@@ -3576,11 +4865,13 @@ ${deviceInfo.userAgent}
         // ПОКАЗАТЬ ПРЕДУПРЕЖДЕНИЕ МОДЕРАЦИИ
         function showModerationWarning() {
             const warning = document.getElementById('moderation-warning');
-            warning.style.display = 'block';
-            
-            setTimeout(() => {
-                warning.style.display = 'none';
-            }, 3000);
+            if (warning) {
+                warning.style.display = 'flex';
+                
+                setTimeout(() => {
+                    warning.style.display = 'none';
+                }, 3000);
+            }
         }
 
         // УПРАВЛЕНИЕ EMOJI PICKER
@@ -3628,6 +4919,41 @@ ${deviceInfo.userAgent}
             }
         });
 
+        // УПРАВЛЕНИЕ УВЕДОМЛЕНИЯМИ
+        function toggleNotifications() {
+            if (isModalOpen) return;
+            
+            const menu = document.getElementById('notifications-menu');
+            const overlay = document.getElementById('settings-overlay');
+            const button = document.getElementById('notifications-button');
+            
+            // Закрываем другие меню если открыты
+            if (isSettingsOpen) {
+                toggleSettings();
+            }
+            
+            isNotificationsOpen = !isNotificationsOpen;
+            
+            if (isNotificationsOpen) {
+                document.body.classList.add('menu-open');
+                menu.classList.add('active');
+                overlay.classList.add('active');
+                button.classList.add('active');
+                
+                // Анимация колокольчика
+                setTimeout(() => {
+                    button.classList.remove('active');
+                }, 500);
+                
+                renderNotifications();
+                menu.style.overflowY = 'auto';
+            } else {
+                document.body.classList.remove('menu-open');
+                menu.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        }
+
         // УПРАВЛЕНИЕ НАСТРОЙКАМИ
         function toggleSettings() {
             if (isModalOpen) return;
@@ -3635,6 +4961,11 @@ ${deviceInfo.userAgent}
             const menu = document.getElementById('settings-menu');
             const overlay = document.getElementById('settings-overlay');
             const button = document.getElementById('settings-button');
+            
+            // Закрываем другие меню если открыты
+            if (isNotificationsOpen) {
+                toggleNotifications();
+            }
             
             isSettingsOpen = !isSettingsOpen;
             
@@ -3662,6 +4993,16 @@ ${deviceInfo.userAgent}
                 if (supportSubmenu) {
                     supportSubmenu.style.display = 'none';
                 }
+            }
+        }
+        
+        // ЗАКРЫТИЕ ВСЕХ МЕНЮ
+        function closeAllMenus() {
+            if (isSettingsOpen) {
+                toggleSettings();
+            }
+            if (isNotificationsOpen) {
+                toggleNotifications();
             }
         }
 
@@ -3703,6 +5044,9 @@ ${deviceInfo.userAgent}
                 if (isSettingsOpen) {
                     toggleSettings();
                 }
+                if (isNotificationsOpen) {
+                    toggleNotifications();
+                }
                 
                 modal.classList.add('active');
                 overlay.classList.add('active');
@@ -3743,154 +5087,11 @@ ${deviceInfo.userAgent}
         
         function handleSettingsAction(action) {
             switch(action) {
-                case 'parallax':
-                    toggleParallax();
-                    break;
-                case 'notifications':
-                    alert('Настройки уведомлений будут доступны в следующем обновлении');
-                    break;
                 case 'theme':
                     alert('Смена темы будет доступна в следующем обновлении');
                     break;
             }
             toggleSettings();
-        }
-        
-        // ПАРАЛЛАКС ДЛЯ КАРТОЧЕК
-        let isParallaxInitialized = false;
-        
-        function initParallax() {
-            if (isParallaxInitialized) {
-                stopParallax();
-            }
-            
-            const card = document.getElementById('current-card');
-            if (card) {
-                card.addEventListener('mousemove', handleCardMouseMove);
-                card.addEventListener('mouseleave', handleCardMouseLeave);
-                
-                card.addEventListener('touchmove', handleCardTouchMove, { passive: true });
-                card.addEventListener('touchend', handleCardMouseLeave);
-                isParallaxInitialized = true;
-            }
-        }
-
-        function handleCardMouseMove(event) {
-            if (!isParallaxActive || isMainCardInfoVisible || currentTab !== 'dating' || isModalOpen) return;
-            
-            const card = event.currentTarget;
-            const cardRect = card.getBoundingClientRect();
-            
-            const mouseX = event.clientX - cardRect.left;
-            const mouseY = event.clientY - cardRect.top;
-            
-            const centerX = cardRect.width / 2;
-            const centerY = cardRect.height / 2;
-            
-            const tiltX = ((mouseX - centerX) / centerX) * 10;
-            const tiltY = ((mouseY - centerY) / centerY) * 8;
-            
-            applyCardTilt(tiltX, tiltY, 0);
-        }
-
-        function handleCardTouchMove(event) {
-            if (!isParallaxActive || isMainCardInfoVisible || currentTab !== 'dating' || isModalOpen) return;
-            
-            const card = event.currentTarget;
-            const cardRect = card.getBoundingClientRect();
-            const touch = event.touches[0];
-            
-            const touchX = touch.clientX - cardRect.left;
-            const touchY = touch.clientY - cardRect.top;
-            
-            const centerX = cardRect.width / 2;
-            const centerY = cardRect.height / 2;
-            
-            const tiltX = ((touchX - centerX) / centerX) * 10;
-            const tiltY = ((touchY - centerY) / centerY) * 8;
-            
-            applyCardTilt(tiltX, tiltY, 0);
-        }
-
-        function handleCardMouseLeave() {
-            if (!isParallaxActive || isMainCardInfoVisible || currentTab !== 'dating' || isModalOpen) return;
-            
-            const card = document.getElementById('current-card');
-            if (card) {
-                card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
-                
-                const avatar = document.querySelector('.card-avatar');
-                if (avatar) {
-                    avatar.style.transform = 'translate(0px, 0px)';
-                }
-                
-                const photo = document.querySelector('.card-photo');
-                if (photo) {
-                    photo.style.backgroundPosition = '0px 0px';
-                }
-            }
-        }
-
-        function applyCardTilt(tiltX, tiltY, rotation) {
-            const card = document.getElementById('current-card');
-            if (!card) return;
-            
-            card.style.transform = `
-                perspective(1200px) 
-                rotateX(${tiltY}deg) 
-                rotateY(${tiltX}deg) 
-                rotateZ(${rotation}deg)
-                scale(1.02)
-            `;
-            
-            const avatar = document.querySelector('.card-avatar');
-            if (avatar) {
-                avatar.style.transform = `translate(${-tiltX * 3}px, ${-tiltY * 3}px)`;
-            }
-            
-            const photo = document.querySelector('.card-photo');
-            if (photo) {
-                photo.style.backgroundPosition = `${tiltX * 2}px ${tiltY * 2}px`;
-            }
-        }
-
-        function stopParallax() {
-            const card = document.getElementById('current-card');
-            if (card) {
-                card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) rotateZ(0)';
-                
-                card.removeEventListener('mousemove', handleCardMouseMove);
-                card.removeEventListener('mouseleave', handleCardMouseLeave);
-                card.removeEventListener('touchmove', handleCardTouchMove);
-                card.removeEventListener('touchend', handleCardMouseLeave);
-                isParallaxInitialized = false;
-            }
-        }
-        
-        function toggleParallax() {
-            if (isModalOpen) return;
-            
-            isParallaxActive = !isParallaxActive;
-            updateParallaxIndicator(isParallaxActive);
-            
-            if (isParallaxActive) {
-                initParallax();
-            } else {
-                stopParallax();
-            }
-        }
-        
-        function updateParallaxIndicator(active) {
-            const indicator = document.getElementById('parallax-indicator');
-            if (indicator) {
-                if (active) {
-                    indicator.innerHTML = `🎮 Параллакс: ВКЛ`;
-                    indicator.classList.add('active');
-                } else {
-                    indicator.innerHTML = `🎮 Параллакс: ВЫКЛ`;
-                    indicator.classList.remove('active');
-                }
-            }
         }
         
         // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
@@ -3906,8 +5107,8 @@ ${deviceInfo.userAgent}
         
         // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
         function initApp() {
-            detectDevice();
             initChats();
+            initNotifications();
             
             if (!('localStorage' in window)) {
                 alert('Ваш браузер не поддерживает необходимое для работы приложения. Пожалуйста, обновите браузер.');
@@ -3922,6 +5123,9 @@ ${deviceInfo.userAgent}
             } else {
                 showAuthScreen();
             }
+            
+            // Обновляем бейдж уведомлений
+            updateNotificationBadge();
         }
         
         // ЭКРАН АВТОРИЗАЦИИ
@@ -3941,6 +5145,17 @@ ${deviceInfo.userAgent}
                             
                             <div class="input-group">
                                 <input type="number" id="age" placeholder="Возраст" min="18" max="100" required>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="text" id="city" placeholder="Город" required maxlength="50">
+                            </div>
+
+                            <div class="input-group">
+                                <select id="zodiac" required style="appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2380c0ff"><path d="M7 10l5 5 5-5z"/></svg>'); background-repeat: no-repeat; background-position: right 16px center; background-size: 16px;">
+                                    <option value="" disabled selected>Выберите знак зодиака</option>
+                                    ${zodiacSigns.map(sign => `<option value="${sign}">${sign}</option>`).join('')}
+                                </select>
                             </div>
 
                             <div class="gender-selection">
@@ -4008,11 +5223,13 @@ ${deviceInfo.userAgent}
             
             const name = escapeHtml(document.getElementById('name').value.trim());
             const age = parseInt(document.getElementById('age').value);
+            const city = escapeHtml(document.getElementById('city').value.trim());
+            const zodiac = escapeHtml(document.getElementById('zodiac').value);
             const email = escapeHtml(document.getElementById('email').value.trim());
             const password = document.getElementById('password').value;
             const bio = escapeHtml(document.getElementById('bio').value.trim());
             
-            if (!name || !age || !email || !password || !userGender) {
+            if (!name || !age || !email || !password || !userGender || !city || !zodiac) {
                 alert('Пожалуйста, заполните все поля');
                 return;
             }
@@ -4027,14 +5244,12 @@ ${deviceInfo.userAgent}
                 return;
             }
             
-            // Проверяем email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 alert('Пожалуйста, введите корректный email');
                 return;
             }
             
-            // Проверяем, не зарегистрирован ли уже пользователь с таким email
             const existingUsers = JSON.parse(localStorage.getItem('aion_premium_users') || '[]');
             const existingUser = existingUsers.find(user => user.email === email);
             
@@ -4047,6 +5262,8 @@ ${deviceInfo.userAgent}
                 name: name,
                 age: age,
                 gender: userGender,
+                city: city,
+                zodiac: zodiac,
                 email: email,
                 password: password,
                 bio: bio,
@@ -4054,14 +5271,13 @@ ${deviceInfo.userAgent}
                 joined: new Date().toISOString(),
                 testCompleted: false,
                 testAnswers: {},
-                profileComplete: false
+                profileComplete: false,
+                subscription: 'free'
             };
             
-            // Сохраняем пользователя в общий список пользователей
             existingUsers.push(userData);
             localStorage.setItem('aion_premium_users', JSON.stringify(existingUsers));
             
-            // Сохраняем текущего пользователя
             localStorage.setItem('aion_premium_user', JSON.stringify(userData));
             
             currentUser = userData;
@@ -4087,19 +5303,16 @@ ${deviceInfo.userAgent}
                 return;
             }
             
-            // Проверяем email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 alert('Пожалуйста, введите корректный email');
                 return;
             }
             
-            // Ищем пользователя в списке зарегистрированных
             const existingUsers = JSON.parse(localStorage.getItem('aion_premium_users') || '[]');
             const user = existingUsers.find(user => user.email === email && user.password === password);
             
             if (user) {
-                // Сохраняем текущего пользователя
                 localStorage.setItem('aion_premium_user', JSON.stringify(user));
                 currentUser = user;
                 
@@ -4117,15 +5330,17 @@ ${deviceInfo.userAgent}
         // ГЛАВНЫЙ ЭКРАН
         function showMainScreen(user) {
             document.getElementById('app').innerHTML = `
-                <div style="color: #c0c8ff; text-align: center; width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
-                    <div style="background: rgba(10, 10, 25, 0.9); padding: 15px; border-radius: 15px; margin-bottom: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(64, 128, 255, 0.2); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);">
-                        <h1 style="margin-bottom: 5px; background: linear-gradient(45deg, #80c0ff, #a0d0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 24px;">AION</h1>
-                        <p style="font-size: 14px;">Привет, ${escapeHtml(user.name)}! Найди своего человека</p>
+                <div style="color: #c0c8ff; text-align: center; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden;">
+                    <div style="background: rgba(10, 10, 25, 0.9); padding: 20px; border-radius: 20px; margin: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(64, 128, 255, 0.2); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);">
+                        <h1 style="margin-bottom: 0px; background: linear-gradient(45deg, #80c0ff, #a0d0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 36px; font-weight: 700; letter-spacing: 1px;">AION</h1>
                     </div>
                     
                     <div class="nav-tabs">
                         <button class="nav-tab ${currentTab === 'dating' ? 'active' : ''}" onclick="switchTab('dating')">
                             Знакомства
+                        </button>
+                        <button class="nav-tab ${currentTab === 'search' ? 'active' : ''}" onclick="switchTab('search')">
+                            Поиск
                         </button>
                         <button class="nav-tab ${currentTab === 'profile' ? 'active' : ''}" onclick="switchTab('profile')">
                             Профиль
@@ -4153,6 +5368,8 @@ ${deviceInfo.userAgent}
             
             if (currentTab === 'dating') {
                 showCurrentCard();
+            } else if (currentTab === 'search') {
+                showSearchScreen();
             } else if (currentTab === 'profile') {
                 showProfileScreen();
             } else if (currentTab === 'chat') {
@@ -4166,11 +5383,437 @@ ${deviceInfo.userAgent}
             }
         }
         
+        // ЭКРАН ПОИСКА - ОБНОВЛЕНО ДЛЯ ИСПОЛЬЗОВАНИЯ СЕТКИ КАРТОЧЕК
+        function showSearchScreen() {
+            filteredUsers = filterUsersBySearchCriteria();
+            
+            const container = document.getElementById('content-container');
+            
+            container.innerHTML = `
+                <div class="search-container">
+                    <div class="filter-button" onclick="toggleFilters()">
+                        <div class="filter-line"></div>
+                        <div class="filter-line"></div>
+                        <div class="filter-line"></div>
+                    </div>
+                    
+                    <div class="search-filters ${isFiltersOpen ? 'active' : ''}" id="search-filters">
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Возраст</span>
+                                <span class="filter-value">${searchFilters.ageMin} - ${searchFilters.ageMax}</span>
+                            </div>
+                            <div class="range-slider" id="age-slider">
+                                <div class="range-track"></div>
+                                <div class="range-progress" id="age-progress"></div>
+                                <div class="range-thumb" id="age-thumb-min"></div>
+                                <div class="range-thumb" id="age-thumb-max"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Город</span>
+                            </div>
+                            <input type="text" class="chat-input" id="filter-city" placeholder="Введите город" value="${searchFilters.city}" style="width: 100%; margin-top: 5px;">
+                        </div>
+                        
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Расстояние</span>
+                                <span class="filter-value">до ${searchFilters.distance} км</span>
+                            </div>
+                            <div class="range-slider" id="distance-slider">
+                                <div class="range-track"></div>
+                                <div class="range-progress" id="distance-progress"></div>
+                                <div class="range-thumb" id="distance-thumb"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <div class="filter-checkbox" onclick="toggleCheckbox('online')">
+                                <div class="checkbox ${searchFilters.onlineOnly ? 'checked' : ''}" id="online-checkbox"></div>
+                                <div class="filter-checkbox-text">Только онлайн</div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Образование</span>
+                            </div>
+                            <select class="chat-input" id="filter-education" style="width: 100%; margin-top: 5px;">
+                                <option value="">Любое</option>
+                                ${educationOptions.map(edu => `<option value="${edu}">${edu}</option>`).join('')}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Религия</span>
+                            </div>
+                            <select class="chat-input" id="filter-religion" style="width: 100%; margin-top: 5px;">
+                                <option value="">Любая</option>
+                                ${religionOptions.map(rel => `<option value="${rel}">${rel}</option>`).join('')}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Курение</span>
+                            </div>
+                            <select class="chat-input" id="filter-smoking" style="width: 100%; margin-top: 5px;">
+                                <option value="">Не важно</option>
+                                <option value="Нет">Нет</option>
+                                <option value="Иногда">Иногда</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Алкоголь</span>
+                            </div>
+                            <select class="chat-input" id="filter-alcohol" style="width: 100%; margin-top: 5px;">
+                                <option value="">Не важно</option>
+                                <option value="Нет">Нет</option>
+                                <option value="Редко">Редко</option>
+                                <option value="Иногда">Иногда</option>
+                                <option value="Социально">Социально</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Рост</span>
+                                <span class="filter-value">${searchFilters.heightMin} - ${searchFilters.heightMax} см</span>
+                            </div>
+                            <div class="range-slider" id="height-slider">
+                                <div class="range-track"></div>
+                                <div class="range-progress" id="height-progress"></div>
+                                <div class="range-thumb" id="height-thumb-min"></div>
+                                <div class="range-thumb" id="height-thumb-max"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Знак зодиака</span>
+                            </div>
+                            <select class="chat-input" id="filter-zodiac" style="width: 100%; margin-top: 5px;">
+                                <option value="">Любой</option>
+                                ${zodiacSigns.map(sign => `<option value="${sign}">${sign}</option>`).join('')}
+                            </select>
+                        </div>
+                        
+                        <button class="btn-primary" onclick="applyFilters()" style="width: 100%; margin-top: 15px;">
+                            Применить фильтры
+                        </button>
+                    </div>
+                    
+                    <div class="search-results-grid" id="search-results-grid">
+                        <!-- Карточки будут здесь -->
+                    </div>
+                </div>
+            `;
+            
+            renderSearchGrid();
+            initFilters();
+        }
+        
+        // РЕНДЕРИНГ СЕТКИ КАРТОЧЕК ПОИСКА
+        function renderSearchGrid() {
+            const grid = document.getElementById('search-results-grid');
+            if (!grid) return;
+            
+            if (filteredUsers.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <div style="font-size: 40px; margin-bottom: 15px;">🔍</div>
+                        <div style="font-size: 18px; color: #80c0ff; margin-bottom: 10px;">Ничего не найдено</div>
+                        <div>Попробуйте изменить параметры поиска</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = filteredUsers.map(user => {
+                const genderIcon = user.gender === 'male' ? '👨' : '👩';
+                
+                return `
+                    <div class="search-grid-card" data-user-id="${user.id}">
+                        <div class="search-grid-photo">
+                            <div class="search-grid-avatar">${genderIcon}</div>
+                            ${user.online ? '<div class="search-grid-online"></div>' : ''}
+                        </div>
+                        <div class="search-grid-info">
+                            <div class="search-grid-header">
+                                <div class="search-grid-name">${escapeHtml(user.name)}<span class="search-grid-age"> ${escapeHtml(user.age)}</span></div>
+                                <div class="search-grid-details">${escapeHtml(user.city)} • ${escapeHtml(user.zodiac)}</div>
+                            </div>
+                            <div class="search-grid-actions">
+                                <button class="search-grid-btn search-grid-dislike" onclick="handleGridDislike('${user.id}')">
+                                    👎
+                                </button>
+                                <button class="search-grid-btn search-grid-like" onclick="handleGridLike('${user.id}')">
+                                    👍
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // ОБРАБОТКА ЛАЙКА В СЕТКЕ
+        function handleGridLike(userId) {
+            if (isModalOpen) return;
+            
+            const card = document.querySelector(`.search-grid-card[data-user-id="${userId}"]`);
+            if (!card) return;
+            
+            // Анимация
+            card.classList.add('liquid-effect');
+            setTimeout(() => {
+                card.classList.remove('liquid-effect');
+            }, 600);
+            
+            // Удаляем карточку из DOM
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(-20px) scale(0.9)';
+            
+            setTimeout(() => {
+                card.remove();
+                
+                // Обновляем список пользователей
+                const userIndex = filteredUsers.findIndex(user => user.id === userId);
+                if (userIndex !== -1) {
+                    filteredUsers.splice(userIndex, 1);
+                }
+                
+                // Если карточек не осталось, показываем сообщение
+                if (filteredUsers.length === 0) {
+                    renderSearchGrid();
+                }
+                
+                // Проверяем на взаимный лайк
+                if (Math.random() < 0.3) {
+                    handleMutualLike(userId);
+                }
+            }, 300);
+        }
+        
+        // ОБРАБОТКА ДИЗЛАЙКА В СЕТКЕ
+        function handleGridDislike(userId) {
+            if (isModalOpen) return;
+            
+            const card = document.querySelector(`.search-grid-card[data-user-id="${userId}"]`);
+            if (!card) return;
+            
+            // Анимация
+            card.classList.add('liquid-effect');
+            setTimeout(() => {
+                card.classList.remove('liquid-effect');
+            }, 600);
+            
+            // Удаляем карточку из DOM
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px) scale(0.9)';
+            
+            setTimeout(() => {
+                card.remove();
+                
+                // Обновляем список пользователей
+                const userIndex = filteredUsers.findIndex(user => user.id === userId);
+                if (userIndex !== -1) {
+                    filteredUsers.splice(userIndex, 1);
+                }
+                
+                // Если карточек не осталось, показываем сообщение
+                if (filteredUsers.length === 0) {
+                    renderSearchGrid();
+                }
+            }, 300);
+        }
+        
+        // ПЕРЕКЛЮЧЕНИЕ ФИЛЬТРОВ
+        function toggleFilters() {
+            isFiltersOpen = !isFiltersOpen;
+            const filters = document.getElementById('search-filters');
+            if (filters) {
+                if (isFiltersOpen) {
+                    filters.classList.add('active');
+                } else {
+                    filters.classList.remove('active');
+                }
+            }
+        }
+        
+        // ИНИЦИАЛИЗАЦИЯ ФИЛЬТРОВ
+        function initFilters() {
+            document.getElementById('filter-city').value = searchFilters.city;
+            document.getElementById('filter-education').value = searchFilters.education;
+            document.getElementById('filter-religion').value = searchFilters.religion;
+            document.getElementById('filter-smoking').value = searchFilters.smoking;
+            document.getElementById('filter-alcohol').value = searchFilters.alcohol;
+            document.getElementById('filter-zodiac').value = searchFilters.zodiac;
+            
+            initRangeSlider('age-slider', 'age-progress', ['age-thumb-min', 'age-thumb-max'], 
+                          [searchFilters.ageMin, searchFilters.ageMax], [18, 100], (values) => {
+                searchFilters.ageMin = values[0];
+                searchFilters.ageMax = values[1];
+                updateFilterValue('age', `${values[0]} - ${values[1]}`);
+            });
+            
+            initRangeSlider('distance-slider', 'distance-progress', ['distance-thumb'], 
+                          [searchFilters.distance], [1, 100], (values) => {
+                searchFilters.distance = values[0];
+                updateFilterValue('distance', `до ${values[0]} км`);
+            });
+            
+            initRangeSlider('height-slider', 'height-progress', ['height-thumb-min', 'height-thumb-max'], 
+                          [searchFilters.heightMin, searchFilters.heightMax], [150, 200], (values) => {
+                searchFilters.heightMin = values[0];
+                searchFilters.heightMax = values[1];
+                updateFilterValue('height', `${values[0]} - ${values[1]} см`);
+            });
+        }
+        
+        // ИНИЦИАЛИЗАЦИЯ ПОЛЗУНКА
+        function initRangeSlider(sliderId, progressId, thumbIds, initialValues, range, callback) {
+            const slider = document.getElementById(sliderId);
+            const progress = document.getElementById(progressId);
+            const min = range[0];
+            const max = range[1];
+            
+            const updateSlider = () => {
+                if (thumbIds.length === 1) {
+                    const value = initialValues[0];
+                    const percent = ((value - min) / (max - min)) * 100;
+                    progress.style.left = '0%';
+                    progress.style.width = `${percent}%`;
+                    
+                    const thumb = document.getElementById(thumbIds[0]);
+                    thumb.style.left = `${percent}%`;
+                } else {
+                    const minPercent = ((initialValues[0] - min) / (max - min)) * 100;
+                    const maxPercent = ((initialValues[1] - min) / (max - min)) * 100;
+                    progress.style.left = `${minPercent}%`;
+                    progress.style.width = `${maxPercent - minPercent}%`;
+                    
+                    const thumbMin = document.getElementById(thumbIds[0]);
+                    const thumbMax = document.getElementById(thumbIds[1]);
+                    thumbMin.style.left = `${minPercent}%`;
+                    thumbMax.style.left = `${maxPercent}%`;
+                }
+            };
+            
+            updateSlider();
+            
+            thumbIds.forEach((thumbId, index) => {
+                const thumb = document.getElementById(thumbId);
+                let isDragging = false;
+                
+                const startDrag = (e) => {
+                    isDragging = true;
+                    document.addEventListener('mousemove', drag);
+                    document.addEventListener('mouseup', stopDrag);
+                    document.addEventListener('touchmove', drag);
+                    document.addEventListener('touchend', stopDrag);
+                };
+                
+                const drag = (e) => {
+                    if (!isDragging) return;
+                    
+                    const rect = slider.getBoundingClientRect();
+                    let clientX;
+                    
+                    if (e.type.includes('mouse')) {
+                        clientX = e.clientX;
+                    } else {
+                        clientX = e.touches[0].clientX;
+                    }
+                    
+                    let percent = ((clientX - rect.left) / rect.width) * 100;
+                    percent = Math.max(0, Math.min(100, percent));
+                    
+                    const value = Math.round(min + (percent / 100) * (max - min));
+                    
+                    if (thumbIds.length === 1) {
+                        initialValues[0] = value;
+                        callback([value]);
+                    } else {
+                        if (index === 0) {
+                            if (value < initialValues[1] - 5) {
+                                initialValues[0] = value;
+                            }
+                        } else {
+                            if (value > initialValues[0] + 5) {
+                                initialValues[1] = value;
+                            }
+                        }
+                        callback([initialValues[0], initialValues[1]]);
+                    }
+                    
+                    updateSlider();
+                };
+                
+                const stopDrag = () => {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', drag);
+                    document.removeEventListener('mouseup', stopDrag);
+                    document.removeEventListener('touchmove', drag);
+                    document.removeEventListener('touchend', stopDrag);
+                };
+                
+                thumb.addEventListener('mousedown', startDrag);
+                thumb.addEventListener('touchstart', startDrag);
+            });
+        }
+        
+        // ОБНОВЛЕНИЕ ЗНАЧЕНИЯ ФИЛЬТРА
+        function updateFilterValue(filterName, value) {
+            const filterElement = document.querySelector(`[data-filter="${filterName}"]`);
+            if (filterElement) {
+                filterElement.textContent = value;
+            }
+        }
+        
+        // ПЕРЕКЛЮЧЕНИЕ ЧЕКБОКСА
+        function toggleCheckbox(type) {
+            if (type === 'online') {
+                searchFilters.onlineOnly = !searchFilters.onlineOnly;
+                const checkbox = document.getElementById('online-checkbox');
+                if (checkbox) {
+                    if (searchFilters.onlineOnly) {
+                        checkbox.classList.add('checked');
+                    } else {
+                        checkbox.classList.remove('checked');
+                    }
+                }
+            }
+        }
+        
+        // ПРИМЕНЕНИЕ ФИЛЬТРОВ
+        function applyFilters() {
+            searchFilters.city = document.getElementById('filter-city').value;
+            searchFilters.education = document.getElementById('filter-education').value;
+            searchFilters.religion = document.getElementById('filter-religion').value;
+            searchFilters.smoking = document.getElementById('filter-smoking').value;
+            searchFilters.alcohol = document.getElementById('filter-alcohol').value;
+            searchFilters.zodiac = document.getElementById('filter-zodiac').value;
+            
+            isFiltersOpen = false;
+            showSearchScreen();
+        }
+        
         // ЭКРАН ПРОФИЛЯ
         function showProfileScreen() {
             const container = document.getElementById('content-container');
             const isTestCompleted = currentUser.testCompleted || false;
             const genderIcon = currentUser.gender === 'male' ? '👨' : '👩';
+            const subscriptionColor = currentUser.subscription === 'free' ? '#c0c0c0' : 
+                                   currentUser.subscription === 'plus' ? '#00c8ff' : '#b450ff';
+            const subscriptionText = currentUser.subscription === 'free' ? 'Бесплатно' : 
+                                   currentUser.subscription === 'plus' ? 'Plus+' : 'PREMIUM';
             
             container.innerHTML = `
                 <div class="profile-container">
@@ -4188,6 +5831,8 @@ ${deviceInfo.userAgent}
                             <div>
                                 <div style="color: #80c0ff; font-weight: 600; margin-bottom: 3px;">${escapeHtml(currentUser.name)}</div>
                                 <div style="font-size: 13px; opacity: 0.8;">${escapeHtml(currentUser.gender === 'male' ? 'Мужчина' : 'Женщина')}, ${escapeHtml(currentUser.age)} лет</div>
+                                <div style="font-size: 13px; opacity: 0.8;">${escapeHtml(currentUser.city)} • ${escapeHtml(currentUser.zodiac)}</div>
+                                <div style="font-size: 13px; opacity: 0.8; color: ${subscriptionColor};">Подписка: ${subscriptionText}</div>
                             </div>
                         </div>
                         
@@ -4207,11 +5852,11 @@ ${deviceInfo.userAgent}
                         <div class="section-title">Психологический тест совместимости</div>
                         
                         ${isTestCompleted ? `
-                            <div style="background: linear-gradient(45deg, rgba(100, 255, 100, 0.1), rgba(150, 255, 150, 0.2)); border: 1px solid rgba(100, 255, 100, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                            <div style="background: rgba(20, 20, 40, 0.6); border: 1px solid rgba(64, 128, 255, 0.2); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
                                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
                                     <span style="font-size: 20px;">✅</span>
                                     <div>
-                                        <div style="color: #aaffaa; font-weight: 600;">Тест пройден</div>
+                                        <div style="color: #80c0ff; font-weight: 600;">Тест пройден</div>
                                         <div style="font-size: 13px; opacity: 0.8;">Ваши ответы сохранены и используются для подбора партнеров</div>
                                     </div>
                                 </div>
@@ -4220,11 +5865,11 @@ ${deviceInfo.userAgent}
                                 </button>
                             </div>
                         ` : `
-                            <div style="background: linear-gradient(45deg, rgba(255, 200, 100, 0.1), rgba(255, 220, 150, 0.2)); border: 1px solid rgba(255, 200, 100, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                            <div style="background: rgba(20, 20, 40, 0.6); border: 1px solid rgba(64, 128, 255, 0.2); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
                                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
                                     <span style="font-size: 20px;">📝</span>
                                     <div>
-                                        <div style="color: #ffddaa; font-weight: 600;">Тест не пройден</div>
+                                        <div style="color: #80c0ff; font-weight: 600;">Тест не пройден</div>
                                         <div style="font-size: 13px; opacity: 0.8;">Пройдите тест для повышения точности подбора партнеров</div>
                                     </div>
                                 </div>
@@ -4233,12 +5878,6 @@ ${deviceInfo.userAgent}
                                 </button>
                             </div>
                         `}
-                        
-                        <div style="font-size: 13px; color: rgba(192, 200, 255, 0.7); line-height: 1.5;">
-                            <p>📊 Тест включает 20 вопросов о ваших ценностях, отношениях и предпочтениях.</p>
-                            <p>💭 5 вопросов посвящены интимной близости для понимания ваших ожиданий.</p>
-                            <p>🎯 Результаты используются для подбора максимально совместимых партнеров.</p>
-                        </div>
                     </div>
                 </div>
             `;
@@ -4261,6 +5900,17 @@ ${deviceInfo.userAgent}
                     
                     <div class="input-group">
                         <input type="number" id="edit-age" placeholder="Возраст" value="${escapeHtml(currentUser.age)}" min="18" max="100">
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="text" id="edit-city" placeholder="Город" value="${escapeHtml(currentUser.city)}" maxlength="50">
+                    </div>
+
+                    <div class="input-group">
+                        <select id="edit-zodiac" required style="appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2380c0ff"><path d="M7 10l5 5 5-5z"/></svg>'); background-repeat: no-repeat; background-position: right 16px center; background-size: 16px;">
+                            <option value="" disabled>Выберите знак зодиака</option>
+                            ${zodiacSigns.map(sign => `<option value="${sign}" ${currentUser.zodiac === sign ? 'selected' : ''}>${sign}</option>`).join('')}
+                        </select>
                     </div>
                     
                     <div class="gender-selection">
@@ -4289,7 +5939,6 @@ ${deviceInfo.userAgent}
                 </div>
             `;
             
-            // Инициализируем пол для редактирования
             userGender = currentUser.gender;
         }
         
@@ -4308,10 +5957,12 @@ ${deviceInfo.userAgent}
         function saveProfile() {
             const name = escapeHtml(document.getElementById('edit-name').value.trim());
             const age = parseInt(document.getElementById('edit-age').value);
+            const city = escapeHtml(document.getElementById('edit-city').value.trim());
+            const zodiac = escapeHtml(document.getElementById('edit-zodiac').value);
             const bio = escapeHtml(document.getElementById('edit-bio').value.trim());
             
-            if (!name || !age) {
-                alert('Пожалуйста, заполните имя и возраст');
+            if (!name || !age || !city || !zodiac) {
+                alert('Пожалуйста, заполните все обязательные поля');
                 return;
             }
             
@@ -4320,17 +5971,16 @@ ${deviceInfo.userAgent}
                 return;
             }
             
-            // Обновляем данные пользователя
             currentUser.name = name;
             currentUser.age = age;
+            currentUser.city = city;
+            currentUser.zodiac = zodiac;
             currentUser.gender = userGender;
             currentUser.bio = bio;
             currentUser.profileComplete = true;
             
-            // Обновляем в localStorage
             localStorage.setItem('aion_premium_user', JSON.stringify(currentUser));
             
-            // Обновляем в общем списке пользователей
             const existingUsers = JSON.parse(localStorage.getItem('aion_premium_users') || '[]');
             const userIndex = existingUsers.findIndex(user => user.id === currentUser.id);
             if (userIndex !== -1) {
@@ -4405,7 +6055,6 @@ ${deviceInfo.userAgent}
         function selectTestAnswer(questionId, answerIndex) {
             testAnswers[questionId] = answerIndex;
             
-            // Обновляем отображение выбранного ответа
             const options = document.querySelectorAll('.test-option');
             options.forEach((option, index) => {
                 option.classList.remove('selected');
@@ -4416,7 +6065,6 @@ ${deviceInfo.userAgent}
                 selectedOption.classList.add('selected');
             }
             
-            // Активируем кнопку Далее
             const nextButton = document.querySelector('.test-navigation .btn-primary:not([onclick*="prev"])');
             if (nextButton) {
                 nextButton.disabled = false;
@@ -4454,7 +6102,6 @@ ${deviceInfo.userAgent}
                 return;
             }
             
-            // Проверяем, все ли вопросы отвечены
             const unansweredQuestions = psychologicalTest.filter(q => !testAnswers[q.id] && testAnswers[q.id] !== 0);
             
             if (unansweredQuestions.length > 0) {
@@ -4463,14 +6110,11 @@ ${deviceInfo.userAgent}
                 }
             }
             
-            // Сохраняем результаты теста
             currentUser.testCompleted = true;
             currentUser.testAnswers = testAnswers;
             
-            // Обновляем в localStorage
             localStorage.setItem('aion_premium_user', JSON.stringify(currentUser));
             
-            // Обновляем в общем списке пользователей
             const existingUsers = JSON.parse(localStorage.getItem('aion_premium_users') || '[]');
             const userIndex = existingUsers.findIndex(user => user.id === currentUser.id);
             if (userIndex !== -1) {
@@ -4478,7 +6122,6 @@ ${deviceInfo.userAgent}
                 localStorage.setItem('aion_premium_users', JSON.stringify(existingUsers));
             }
             
-            // Показываем результаты
             showTestResults();
         }
         
@@ -4495,7 +6138,7 @@ ${deviceInfo.userAgent}
                         <div style="color: rgba(192, 200, 255, 0.7); font-size: 14px;">Тест завершен успешно!</div>
                     </div>
                     
-                    <div style="background: linear-gradient(45deg, rgba(64, 128, 255, 0.1), rgba(100, 150, 255, 0.2)); border: 1px solid rgba(64, 128, 255, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
+                    <div style="background: rgba(20, 20, 40, 0.6); border: 1px solid rgba(64, 128, 255, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
                         <div style="font-size: 48px; margin-bottom: 10px;">🎯</div>
                         <div style="color: #80c0ff; font-weight: 600; font-size: 24px; margin-bottom: 5px;">${percentage}%</div>
                         <div style="font-size: 14px; opacity: 0.8;">Тест пройден</div>
@@ -4522,6 +6165,8 @@ ${deviceInfo.userAgent}
         // ЭКРАН ПОДПИСКИ
         function showSubscriptionScreen() {
             const container = document.getElementById('content-container');
+            const currentSubscription = currentUser.subscription || 'free';
+            
             container.innerHTML = `
                 <div style="width: 100%;">
                     <div style="text-align: center; margin-bottom: 10px;">
@@ -4533,8 +6178,9 @@ ${deviceInfo.userAgent}
                     </div>
                     
                     <div class="subscription-container">
-                        <div class="subscription-card free">
+                        <div class="subscription-card free ${currentSubscription === 'free' ? 'current' : ''}">
                             <div class="subscription-header">
+                                ${currentSubscription === 'free' ? '<div class="subscription-current-badge">ТЕКУЩАЯ</div>' : ''}
                                 <div class="subscription-title">Бесплатно</div>
                                 <div class="subscription-price">₽0</div>
                                 <div class="subscription-period">навсегда</div>
@@ -4543,13 +6189,14 @@ ${deviceInfo.userAgent}
                                 <li><span>200 лайков в день</span></li>
                                 <li><span>Ai подсказка в 3 чатах<br>50% от возможности</span></li>
                             </ul>
-                            <button class="btn-subscribe" style="cursor: not-allowed;">
-                                Активна
+                            <button class="btn-subscribe" style="cursor: ${currentSubscription === 'free' ? 'not-allowed' : 'pointer'};" ${currentSubscription === 'free' ? 'disabled' : ''} onclick="${currentSubscription !== 'free' ? "changeSubscription('free')" : ''}">
+                                ${currentSubscription === 'free' ? 'Активна' : 'Выбрать'}
                             </button>
                         </div>
                         
-                        <div class="subscription-card plus">
+                        <div class="subscription-card plus ${currentSubscription === 'plus' ? 'current' : ''}">
                             <div class="subscription-header">
+                                ${currentSubscription === 'plus' ? '<div class="subscription-current-badge">ТЕКУЩАЯ</div>' : ''}
                                 <div class="subscription-title">Plus+</div>
                                 <div class="subscription-price">₽---</div>
                                 <div class="subscription-period">в месяц</div>
@@ -4563,13 +6210,14 @@ ${deviceInfo.userAgent}
                                 <li><span>Узнать кто лайкнул тебя</span></li>
                                 <li><span>1 сеанс внимания в неделю по<br>три часа (ваша анкета в топе<br>поиска)</span></li>
                             </ul>
-                            <button class="btn-subscribe" onclick="handleSubscription('plus')">
-                                Выбрать Plus+
+                            <button class="btn-subscribe" onclick="changeSubscription('plus')">
+                                ${currentSubscription === 'plus' ? 'Активна' : 'Выбрать Plus+'}
                             </button>
                         </div>
                         
-                        <div class="subscription-card premium">
+                        <div class="subscription-card premium ${currentSubscription === 'premium' ? 'current' : ''}">
                             <div class="subscription-header">
+                                ${currentSubscription === 'premium' ? '<div class="subscription-current-badge">ТЕКУЩАЯ</div>' : ''}
                                 <div class="subscription-title">PREMIUM</div>
                                 <div class="subscription-price">₽---</div>
                                 <div class="subscription-period">в месяц</div>
@@ -4586,8 +6234,8 @@ ${deviceInfo.userAgent}
                                 <li><span>Персональный поиск<br>ближайшего партнера по<br>местоположению</span></li>
                                 <li><span>3 сеанса внимания в неделю<br>по три часа (ваша анкета в<br>топе поиска)</span></li>
                             </ul>
-                            <button class="btn-subscribe" onclick="handleSubscription('premium')">
-                                Выбрать PREMIUM
+                            <button class="btn-subscribe" onclick="changeSubscription('premium')">
+                                ${currentSubscription === 'premium' ? 'Активна' : 'Выбрать PREMIUM'}
                             </button>
                         </div>
                     </div>
@@ -4595,24 +6243,46 @@ ${deviceInfo.userAgent}
             `;
         }
         
-        // ОБРАБОТКА ВЫБОРА ПОДПИСКИ
-        function handleSubscription(type) {
+        // СМЕНА ПОДПИСКИ
+        function changeSubscription(type) {
             if (isModalOpen) return;
             
-            const subscriptionName = type === 'plus' ? 'Plus+' : 'PREMIUM';
-            alert(`Вы выбрали подписку ${subscriptionName}! В следующем обновлении будет реализована система платежей.`);
+            if (currentUser.subscription === type) {
+                alert(`Подписка ${type === 'free' ? 'Бесплатно' : type === 'plus' ? 'Plus+' : 'PREMIUM'} уже активирована!`);
+                return;
+            }
+            
+            const subscriptionName = type === 'free' ? 'Бесплатно' : type === 'plus' ? 'Plus+' : 'PREMIUM';
+            
+            if (confirm(`Вы уверены, что хотите сменить подписку на "${subscriptionName}"?`)) {
+                currentUser.subscription = type;
+                
+                localStorage.setItem('aion_premium_user', JSON.stringify(currentUser));
+                
+                const existingUsers = JSON.parse(localStorage.getItem('aion_premium_users') || '[]');
+                const userIndex = existingUsers.findIndex(user => user.id === currentUser.id);
+                if (userIndex !== -1) {
+                    existingUsers[userIndex] = currentUser;
+                    localStorage.setItem('aion_premium_users', JSON.stringify(existingUsers));
+                }
+                
+                alert(`Подписка успешно изменена на "${subscriptionName}"!`);
+                showSubscriptionScreen();
+            }
         }
         
         // Функция для форматирования текста с переносами строк
         function formatMultilineText(text) {
-            return text.split('\n').map(line => `<p>${line}</p>`).join('');
+            return text.split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('');
         }
         
         // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ
         function showCurrentCard() {
             const container = document.getElementById('content-container');
             
-            if (currentCardIndex >= sampleUsers.length) {
+            filteredUsers = filterUsersByGender();
+            
+            if (currentCardIndex >= filteredUsers.length) {
                 container.innerHTML = `
                     <div style="text-align: center; color: #c0c8ff; padding: 30px;">
                         <h3 style="margin-bottom: 12px; font-size: 20px; color: #80c0ff;">🌸 На сегодня достаточно</h3>
@@ -4625,45 +6295,51 @@ ${deviceInfo.userAgent}
                 return;
             }
             
-            currentCard = sampleUsers[currentCardIndex];
+            currentCard = filteredUsers[currentCardIndex];
             const genderIcon = currentCard.gender === 'male' ? '👨' : '👩';
             
             container.innerHTML = `
-                <div class="card" id="current-card" style="transform: perspective(1200px) rotateX(0) rotateY(0) rotateZ(0); transition: transform 0.4s ease;">
+                <div class="card" id="current-card">
                     <div class="card-photo">
                         <div class="card-avatar">${genderIcon}</div>
                     </div>
                     <div class="card-info">
                         <div class="card-header">
                             <h2>${escapeHtml(currentCard.name)} <span class="age">${escapeHtml(currentCard.age)}</span></h2>
+                            <div style="color: rgba(192, 200, 255, 0.7); font-size: 14px; margin-top: 5px;">
+                                ${escapeHtml(currentCard.city)} • ${escapeHtml(currentCard.zodiac)}
+                            </div>
                         </div>
                         <div class="card-bio">${escapeHtml(currentCard.bio)}</div>
                         
                         <div class="card-details">
                             <div class="detail-section">
                                 <div class="detail-section-title">Интересы</div>
-                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.interests))}</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.interests)}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Образ жизни</div>
-                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.lifestyle))}</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.lifestyle)}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Цели и мечты</div>
-                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.goals))}</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.goals)}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Образование</div>
-                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.education))}</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.education)}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Работа</div>
-                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.work))}</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.work)}</div>
                             </div>
                             <div class="detail-section">
                                 <div class="detail-section-title">Хобби и увлечения</div>
-                                <div class="detail-content">${formatMultilineText(escapeHtml(currentCard.details.hobbies))}</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.hobbies)}</div>
                             </div>
+                        </div>
+                        <div class="card-collapse-btn" onclick="toggleCardInfo()">
+                            Свернуть
                         </div>
                     </div>
                     <div class="info-toggle" onclick="toggleCardInfo()">
@@ -4671,14 +6347,131 @@ ${deviceInfo.userAgent}
                     </div>
                 </div>
             `;
-
-            setTimeout(() => {
-                if (isParallaxActive && !isModalOpen) {
-                    initParallax();
+            
+            if (isMainCardInfoVisible) {
+                const info = document.querySelector('.card-info');
+                const indicator = document.querySelector('.info-toggle');
+                if (info && indicator) {
+                    info.classList.add('visible');
+                    indicator.classList.add('hidden');
                 }
-            }, 100);
+            }
+            
+            // Инициализация свайпов для карточки
+            initSwipeForCard('current-card');
         }
         
+        // ИНИЦИАЛИЗАЦИЯ СВАЙПОВ ДЛЯ КАРТОЧКИ
+        function initSwipeForCard(cardId) {
+            const card = document.getElementById(cardId);
+            if (!card) return;
+            
+            // Удаляем старые обработчики
+            card.removeEventListener('touchstart', handleTouchStart);
+            card.removeEventListener('touchmove', handleTouchMove);
+            card.removeEventListener('touchend', handleTouchEnd);
+            card.removeEventListener('mousedown', handleMouseDown);
+            card.removeEventListener('mousemove', handleMouseMove);
+            card.removeEventListener('mouseup', handleMouseUp);
+            
+            // Добавляем новые обработчики
+            card.addEventListener('touchstart', handleTouchStart);
+            card.addEventListener('touchmove', handleTouchMove);
+            card.addEventListener('touchend', handleTouchEnd);
+            card.addEventListener('mousedown', handleMouseDown);
+            card.addEventListener('mousemove', handleMouseMove);
+            card.addEventListener('mouseup', handleMouseUp);
+        }
+        
+        // ОБРАБОТЧИКИ СВАЙПОВ ДЛЯ КАРТОЧКИ
+        function handleTouchStart(e) {
+            if (isModalOpen || isSettingsOpen || isNotificationsOpen) return;
+            
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            touchEndX = touchStartX;
+            touchEndY = touchStartY;
+            isSwiping = true;
+            
+            e.preventDefault();
+        }
+        
+        function handleTouchMove(e) {
+            if (!isSwiping || isModalOpen || isSettingsOpen || isNotificationsOpen) return;
+            
+            const touch = e.touches[0];
+            touchEndX = touch.clientX;
+            touchEndY = touch.clientY;
+            
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+            
+            // Если движение по горизонтали больше чем по вертикали, предотвращаем прокрутку
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                e.preventDefault();
+            }
+        }
+        
+        function handleTouchEnd(e) {
+            if (!isSwiping || isModalOpen || isSettingsOpen || isNotificationsOpen) return;
+            
+            isSwiping = false;
+            
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+            
+            // Определяем направление свайпа
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                if (diffX > 0) {
+                    // Свайп вправо - лайк
+                    handleSwipe('right');
+                } else {
+                    // Свайп влево - дизлайк
+                    handleSwipe('left');
+                }
+            }
+        }
+        
+        function handleMouseDown(e) {
+            if (isModalOpen || isSettingsOpen || isNotificationsOpen) return;
+            
+            touchStartX = e.clientX;
+            touchStartY = e.clientY;
+            touchEndX = touchStartX;
+            touchEndY = touchStartY;
+            isSwiping = true;
+            
+            e.preventDefault();
+        }
+        
+        function handleMouseMove(e) {
+            if (!isSwiping || isModalOpen || isSettingsOpen || isNotificationsOpen) return;
+            
+            touchEndX = e.clientX;
+            touchEndY = e.clientY;
+        }
+        
+        function handleMouseUp(e) {
+            if (!isSwiping || isModalOpen || isSettingsOpen || isNotificationsOpen) return;
+            
+            isSwiping = false;
+            
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+            
+            // Определяем направление свайпа
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                if (diffX > 0) {
+                    // Свайп вправо - лайк
+                    handleSwipe('right');
+                } else {
+                    // Свайп влево - дизлайк
+                    handleSwipe('left');
+                }
+            }
+        }
+
         // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ
         function toggleCardInfo() {
             const card = document.getElementById('current-card');
@@ -4690,13 +6483,9 @@ ${deviceInfo.userAgent}
                 if (isMainCardInfoVisible) {
                     info.classList.add('visible');
                     indicator.classList.add('hidden');
-                    stopParallax();
                 } else {
                     info.classList.remove('visible');
                     indicator.classList.remove('hidden');
-                    if (isParallaxActive && !isModalOpen) {
-                        initParallax();
-                    }
                 }
             }
         }
@@ -4718,8 +6507,6 @@ ${deviceInfo.userAgent}
                 return;
             }
 
-            stopParallax();
-            
             const card = document.getElementById('current-card');
             const buttons = document.querySelectorAll('.action-btn');
             
@@ -4731,7 +6518,6 @@ ${deviceInfo.userAgent}
             if (direction === 'right') {
                 card.classList.add('swipe-right');
                 
-                // С вероятностью 30% создаем мэтч
                 if (Math.random() < 0.3) {
                     setTimeout(() => {
                         handleMutualLike(currentCard.id);
@@ -4783,10 +6569,12 @@ ${deviceInfo.userAgent}
         window.selectGender = selectGender;
         window.selectEditGender = selectEditGender;
         window.handleSwipe = handleSwipe;
+        window.handleGridLike = handleGridLike;
+        window.handleGridDislike = handleGridDislike;
         window.toggleCardInfo = toggleCardInfo;
         window.toggleChatCardInfo = toggleChatCardInfo;
-        window.toggleParallax = toggleParallax;
         window.toggleSettings = toggleSettings;
+        window.toggleNotifications = toggleNotifications;
         window.toggleSupportSubmenu = toggleSupportSubmenu;
         window.handleSupport = handleSupport;
         window.showModal = showModal;
@@ -4794,10 +6582,9 @@ ${deviceInfo.userAgent}
         window.closeAllModals = closeAllModals;
         window.handleSettingsAction = handleSettingsAction;
         window.switchTab = switchTab;
-        window.handleSubscription = handleSubscription;
+        window.changeSubscription = changeSubscription;
         window.resetCards = resetCards;
         window.logout = logout;
-        window.showDeviceInfo = showDeviceInfo;
         window.sendChatMessage = sendChatMessage;
         window.toggleEmojiPicker = toggleEmojiPicker;
         window.addEmoji = addEmoji;
@@ -4814,6 +6601,9 @@ ${deviceInfo.userAgent}
         window.nextTestQuestion = nextTestQuestion;
         window.prevTestQuestion = prevTestQuestion;
         window.finishTest = finishTest;
+        window.toggleFilters = toggleFilters;
+        window.toggleCheckbox = toggleCheckbox;
+        window.applyFilters = applyFilters;
     </script>
 </body>
 </html>

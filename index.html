@@ -21,7 +21,6 @@
             width: 100%;
             height: 100%;
             overflow-x: hidden;
-            position: fixed;
             overscroll-behavior: none;
             background: #0a0a1a;
         }
@@ -39,12 +38,6 @@
             align-items: center;
             padding: 0;
             margin: 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            overflow: hidden;
         }
         
         /* iOS safe-area insets */
@@ -292,24 +285,24 @@
             z-index: 2;
         }
         
-        /* Кнопка фильтра в поиске - ИЗМЕНЕНО: теперь внутри search-container */
+        /* Кнопка фильтра в поиске - ФИКСИРОВАННАЯ ПОЗИЦИЯ */
         .filter-button {
-            position: absolute;
-            top: 10px;
-            right: 15px;
+            position: fixed;
+            top: calc(env(safe-area-inset-top, 20px) + 10px);
+            right: calc(env(safe-area-inset-right, 20px) + 100px);
             background: rgba(10, 10, 25, 0.9);
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 50%;
             width: 44px;
             height: 44px;
-            display: none; /* По умолчанию скрыта */
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.4s ease;
             backdrop-filter: blur(10px);
-            z-index: 10;
+            z-index: 100;
             color: #80c0ff;
             box-shadow: 
                 0 5px 15px rgba(64, 128, 255, 0.2),
@@ -826,11 +819,11 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(64, 128, 255, 0.25);
             border-radius: 20px;
-            width: calc(100% - 30px);
+            width: calc(100% - 20px);
             max-width: 340px;
-            height: calc(100vh - 280px);
-            min-height: 480px;
-            max-height: 600px;
+            height: auto;
+            min-height: 450px;
+            max-height: 500px;
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.2);
@@ -838,7 +831,6 @@
             position: relative;
             margin: 0 auto;
             transition: all 0.4s ease;
-            margin-bottom: 100px;
             cursor: pointer;
             -webkit-user-select: none;
             user-select: none;
@@ -850,7 +842,7 @@
         .card-photo {
             position: relative;
             width: 100%;
-            height: 60%;
+            height: 250px;
             background: 
                 radial-gradient(circle at 30% 30%, rgba(64, 128, 255, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 70% 70%, rgba(100, 150, 255, 0.2) 0%, transparent 50%),
@@ -863,14 +855,14 @@
         }
         
         .card-avatar {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
+            font-size: 40px;
             color: white;
             border: 3px solid rgba(64, 128, 255, 0.6);
             backdrop-filter: blur(10px);
@@ -883,33 +875,23 @@
             z-index: 2;
         }
         
-        /* Информация о пользователе - ИЗМЕНЕНО: раскрывается вниз */
+        /* Информация о пользователе - РАСКРЫВАЮЩИЙСЯ БЛОК ПОД КАРТОЧКОЙ */
         .card-info {
             padding: 20px;
-            display: none; /* Скрыто по умолчанию */
+            display: none;
             flex-direction: column;
-            flex: 1;
-            overflow-y: auto;
-            box-sizing: border-box;
-            -webkit-overflow-scrolling: touch;
-            pointer-events: auto;
             background: rgba(10, 10, 25, 0.98);
             backdrop-filter: blur(10px);
-            position: absolute;
-            top: 60%; /* Начинается снизу фото */
-            left: 0;
-            right: 0;
-            bottom: 0;
             border-radius: 20px;
-            z-index: 3;
-            transform: translateY(100%);
-            transition: transform 0.4s ease;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+            margin-top: 10px;
+            border: 1px solid rgba(64, 128, 255, 0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            max-height: 400px;
+            overflow-y: auto;
         }
         
         .card-info.expanded {
             display: flex;
-            transform: translateY(0);
         }
         
         /* Имя и возраст вверху информации */
@@ -956,9 +938,6 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            box-shadow: 
-                inset 0 1px 3px rgba(0, 0, 0, 0.3),
-                0 1px 1px rgba(255, 255, 255, 0.1);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             min-height: 0;
@@ -1006,9 +985,9 @@
             margin-bottom: 0;
         }
         
-        /* Кнопка для показа дополнительной информации */
+        /* Кнопка для показа дополнительной информации - ТЕПЕРЬ ПОД КАРТОЧКОЙ */
         .info-toggle {
-            width: 100%;
+            width: calc(100% - 20px);
             padding: 12px;
             background: linear-gradient(45deg, rgba(64, 128, 255, 0.2), rgba(100, 150, 255, 0.3));
             border: 1px solid rgba(64, 128, 255, 0.4);
@@ -1025,10 +1004,9 @@
                 0 5px 15px rgba(64, 128, 255, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
             z-index: 10;
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
         }
         
         .info-toggle:hover {
@@ -2008,16 +1986,16 @@
         .content-wrapper {
             flex: 1;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: flex-start;
             position: relative;
             overflow-y: auto;
-            padding: 15px 10px;
+            padding: 10px;
             width: 100%;
             min-height: 400px;
             -webkit-overflow-scrolling: touch;
             padding-top: env(safe-area-inset-top, 0px);
-            padding-bottom: env(safe-area-inset-bottom, 0px);
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
         }
         
         /* Уведомление о мэтче */
@@ -2074,7 +2052,7 @@
             border: 1px solid rgba(64, 128, 255, 0.2);
             border-radius: 20px;
             padding: 25px;
-            width: calc(100% - 30px);
+            width: calc(100% - 20px);
             max-width: 380px;
             margin: 0 auto;
             color: #c0c8ff;
@@ -2186,11 +2164,12 @@
         /* Стили для вкладки поиска */
         .search-container {
             width: 100%;
-            padding: 0 15px;
+            padding: 0 10px;
             max-width: 400px;
             margin: 0 auto;
             position: relative;
             overflow-y: auto;
+            padding-top: 60px;
         }
         
         .search-filters {
@@ -2314,9 +2293,9 @@
         /* Сетка для карточек поиска */
         .search-results-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 12px;
-            padding: 15px 0;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 10px 0;
             padding-bottom: 80px;
             width: 100%;
             animation: fadeIn 0.5s ease;
@@ -2330,7 +2309,7 @@
             overflow: hidden;
             transition: all 0.4s ease;
             cursor: pointer;
-            height: 220px;
+            height: 200px;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -2350,7 +2329,7 @@
         }
         
         .search-grid-photo {
-            height: 140px;
+            height: 120px;
             background: 
                 radial-gradient(circle at 30% 30%, rgba(64, 128, 255, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 70% 70%, rgba(100, 150, 255, 0.2) 0%, transparent 50%),
@@ -2362,14 +2341,14 @@
         }
         
         .search-grid-avatar {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 20px;
             color: white;
             border: 2px solid rgba(64, 128, 255, 0.6);
             backdrop-filter: blur(10px);
@@ -2380,35 +2359,37 @@
         }
         
         .search-grid-info {
-            padding: 12px;
+            padding: 10px;
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
         }
         
         .search-grid-header {
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
         
         .search-grid-name {
-            font-size: 16px;
+            font-size: 15px;
             color: #80c0ff;
             font-weight: 600;
             margin-bottom: 3px;
+            text-align: center;
         }
         
         .search-grid-age {
             color: #a0d0ff;
-            font-size: 14px;
+            font-size: 13px;
             display: inline-block;
             margin-left: 5px;
         }
         
         .search-grid-details {
-            font-size: 11px;
+            font-size: 10px;
             color: rgba(192, 200, 255, 0.7);
             line-height: 1.3;
+            text-align: center;
         }
         
         .search-grid-online {
@@ -2420,46 +2401,6 @@
             background: #00ff88;
             border-radius: 50%;
             box-shadow: 0 0 8px #00ff88;
-        }
-        
-        .search-grid-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        
-        .search-grid-btn {
-            flex: 1;
-            padding: 6px 0;
-            border-radius: 8px;
-            border: none;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            min-height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .search-grid-dislike {
-            background: rgba(255, 100, 100, 0.15);
-            color: #ffaaaa;
-            border: 1px solid rgba(255, 100, 100, 0.3);
-        }
-        
-        .search-grid-like {
-            background: rgba(100, 255, 100, 0.15);
-            color: #aaffaa;
-            border: 1px solid rgba(100, 255, 100, 0.3);
-        }
-        
-        .search-grid-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
         }
         
         .no-results {
@@ -2490,7 +2431,6 @@
             .card {
                 max-width: 380px;
                 height: 520px;
-                margin-bottom: 100px;
             }
             
             .search-results-grid {
@@ -2541,7 +2481,6 @@
             .card {
                 max-width: 400px;
                 height: 500px;
-                margin-bottom: 100px;
             }
             
             .search-results-grid {
@@ -2574,35 +2513,34 @@
             .card {
                 width: calc(100% - 20px);
                 max-width: 100%;
-                height: calc(100vh - 250px);
+                height: auto;
                 min-height: 450px;
                 margin: 0 auto;
-                margin-bottom: 100px;
             }
             
             .search-results-grid {
-                grid-template-columns: repeat(2, minmax(140px, 1fr));
+                grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
                 padding: 10px 0;
                 padding-bottom: 80px;
             }
             
             .search-grid-card {
-                height: 200px;
+                height: 180px;
             }
             
             .search-grid-photo {
-                height: 120px;
+                height: 100px;
             }
             
             .search-grid-avatar {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
             }
             
             .search-grid-name {
-                font-size: 15px;
+                font-size: 14px;
             }
             
             .search-grid-details {
@@ -2720,7 +2658,13 @@
             }
             
             .search-container {
-                padding-top: 0;
+                padding-top: 60px;
+            }
+            
+            .filter-button {
+                top: calc(env(safe-area-inset-top, 20px) + 70px);
+                right: 20px;
+                z-index: 100;
             }
         }
         
@@ -2735,46 +2679,36 @@
             }
             
             .card {
-                height: calc(100vh - 240px);
+                height: auto;
                 min-height: 420px;
-                margin-bottom: 90px;
                 width: calc(100% - 20px);
             }
             
             .search-results-grid {
-                grid-template-columns: repeat(2, minmax(120px, 1fr));
+                grid-template-columns: repeat(2, 1fr);
                 gap: 8px;
             }
             
             .search-grid-card {
-                height: 180px;
+                height: 160px;
             }
             
             .search-grid-photo {
-                height: 100px;
+                height: 90px;
             }
             
             .search-grid-avatar {
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
             }
             
             .search-grid-info {
-                padding: 10px;
+                padding: 8px;
             }
             
             .search-grid-name {
-                font-size: 14px;
-            }
-            
-            .search-grid-actions {
-                margin-top: 6px;
-            }
-            
-            .search-grid-btn {
-                min-height: 28px;
-                font-size: 11px;
+                font-size: 13px;
             }
             
             .action-buttons {
@@ -2852,18 +2786,24 @@
             .header-buttons {
                 gap: 8px;
             }
+            
+            .filter-button {
+                top: calc(env(safe-area-inset-top, 20px) + 70px);
+                right: 15px;
+                width: 40px;
+                height: 40px;
+            }
         }
         
         /* Высокие экраны (iPhone X и подобные) */
         @media (min-height: 812px) {
             .card {
-                height: calc(100vh - 320px);
+                height: auto;
                 max-height: 550px;
-                margin-bottom: 120px;
             }
             
             .search-grid-card {
-                height: 240px;
+                height: 200px;
             }
             
             .action-buttons {
@@ -2874,13 +2814,12 @@
         /* Низкие экраны */
         @media (max-height: 700px) {
             .card {
-                height: calc(100vh - 250px);
+                height: auto;
                 min-height: 380px;
-                margin-bottom: 90px;
             }
             
             .search-grid-card {
-                height: 200px;
+                height: 180px;
             }
             
             .search-grid-photo {
@@ -2888,9 +2827,9 @@
             }
             
             .card-avatar {
-                width: 100px;
-                height: 100px;
-                font-size: 40px;
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
             }
             
             .chat-container {
@@ -2923,7 +2862,6 @@
                 height: calc(100vh - 120px);
                 min-height: auto;
                 margin: 0;
-                margin-bottom: 80px;
             }
             
             .search-results-grid {
@@ -3013,10 +2951,6 @@
             .search-grid-card:hover {
                 transform: none;
                 border-color: rgba(64, 128, 255, 0.2);
-            }
-            
-            .search-grid-btn:hover {
-                transform: none;
             }
             
             .notification-item:hover {
@@ -3394,7 +3328,12 @@
         ⚠️ Сообщение содержит неподходящий контент
     </div>
     
-    <!-- Кнопка фильтра для поиска (УДАЛЕНА ОТСЮДА, БУДЕТ ВНУТРИ SEARCH-CONTAINER) -->
+    <!-- Кнопка фильтра для поиска -->
+    <button class="filter-button" id="filter-button" onclick="toggleFilters()">
+        <div class="filter-line"></div>
+        <div class="filter-line"></div>
+        <div class="filter-line"></div>
+    </button>
     
     <div id="app">
         <!-- Приложение будет здесь -->
@@ -5267,9 +5206,7 @@
         function showMainScreen(user) {
             document.getElementById('app').innerHTML = `
                 <div style="color: #c0c8ff; text-align: center; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden;">
-                    <div style="background: rgba(10, 10, 25, 0.9); padding: 20px; border-radius: 20px; margin: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(64, 128, 255, 0.2); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);">
-                        <h1 style="margin-bottom: 0px; background: linear-gradient(45deg, #80c0ff, #a0d0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 36px; font-weight: 700; letter-spacing: 1px;">AION</h1>
-                    </div>
+                    <div style="height: 10px;"></div>
                     
                     <div class="nav-tabs">
                         <button class="nav-tab ${currentTab === 'dating' ? 'active' : ''}" onclick="switchTab('dating')">
@@ -5327,12 +5264,6 @@
             
             container.innerHTML = `
                 <div class="search-container">
-                    <button class="filter-button visible" id="filter-button" onclick="toggleFilters()">
-                        <div class="filter-line"></div>
-                        <div class="filter-line"></div>
-                        <div class="filter-line"></div>
-                    </button>
-                    
                     <div class="search-filters ${isFiltersOpen ? 'active' : ''}" id="search-filters">
                         <div class="filter-group">
                             <div class="filter-label">
@@ -5451,6 +5382,12 @@
                 </div>
             `;
             
+            // Показываем кнопку фильтра только во вкладке поиска
+            const filterButton = document.getElementById('filter-button');
+            if (filterButton) {
+                filterButton.classList.add('visible');
+            }
+            
             renderSearchGrid();
             initFilters();
         }
@@ -5485,14 +5422,8 @@
                             </div>
                         </div>
                         <div class="search-grid-info">
-                            <div class="search-grid-actions">
-                                <button class="search-grid-btn search-grid-dislike" onclick="handleGridDislike('${user.id}', event)">
-                                    👎
-                                </button>
-                                <button class="search-grid-btn search-grid-like" onclick="handleGridLike('${user.id}', event)">
-                                    👍
-                                </button>
-                            </div>
+                            <div class="search-grid-name">${escapeHtml(user.name)}, ${escapeHtml(user.age)}</div>
+                            <div class="search-grid-details">${escapeHtml(user.city)} • ${escapeHtml(user.zodiac)}</div>
                         </div>
                     </div>
                 `;
@@ -5512,7 +5443,7 @@
                     <button class="filter-button visible" style="top: 10px; right: 15px; z-index: 10;" onclick="backToSearchGrid()">
                         ←
                     </button>
-                    <div class="card" id="user-card-${userId}" style="width: calc(100% - 20px); max-width: 340px; margin: 0 auto; margin-bottom: 100px; position: relative;">
+                    <div class="card" id="user-card-${userId}" style="width: calc(100% - 20px); max-width: 340px; margin: 0 auto; position: relative;">
                         <div class="card-photo">
                             <div class="card-avatar">${genderIcon}</div>
                             <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; text-align: center;">
@@ -5781,7 +5712,7 @@
                     progress.style.width = `${percent}%`;
                     
                     const thumb = document.getElementById(thumbIds[0]);
-                    thumb.style.left = `${percent}%`;
+                    thumb.style.left = `${percent}%';
                 } else {
                     const minPercent = ((initialValues[0] - min) / (max - min)) * 100;
                     const maxPercent = ((initialValues[1] - min) / (max - min)) * 100;
@@ -6561,29 +6492,11 @@
             }
         }
         
-        // СБРОС КАРТОЧЕК
-        function resetCards() {
+        // СВАЙП КАРТОЧКИ
+        function handleSwipe(direction, userId = null) {
             if (isModalOpen) return;
             
-            currentCardIndex = 0;
-            showCurrentCard();
-        }
-        
-        // ОБРАБОТКА СВАЙПОВ
-        function handleSwipe(direction, userId) {
-            if (isModalOpen) return;
-            
-            if (userId) {
-                // Для карточки пользователя в поиске
-                handleUserCardSwipe(direction, userId);
-                return;
-            }
-            
-            if (!currentCard) {
-                return;
-            }
-
-            const card = document.getElementById('current-card');
+            const card = userId ? document.getElementById(`user-card-${userId}`) : document.getElementById('current-card');
             const buttons = document.querySelectorAll('.action-btn');
             
             buttons.forEach(btn => btn.classList.add('liquid-effect'));
@@ -6594,39 +6507,55 @@
             if (direction === 'right') {
                 card.classList.add('swipe-right');
                 
-                if (Math.random() < 0.3) {
+                if (!userId) {
+                    // Для вкладки "Знакомства"
                     setTimeout(() => {
-                        handleMutualLike(currentCard.id);
-                    }, 500);
+                        currentCardIndex++;
+                        showCurrentCard();
+                    }, 800);
+                    
+                    if (Math.random() < 0.3) {
+                        setTimeout(() => {
+                            handleMutualLike(currentCard.id);
+                        }, 500);
+                    }
+                } else {
+                    // Для вкладки "Поиск"
+                    handleUserCardSwipe('right', userId);
                 }
-                
-                setTimeout(() => {
-                    currentCardIndex++;
-                    showCurrentCard();
-                }, 800);
             } else {
                 card.classList.add('swipe-left');
-                setTimeout(() => {
-                    currentCardIndex++;
-                    showCurrentCard();
-                }, 800);
+                
+                if (!userId) {
+                    // Для вкладки "Знакомства"
+                    setTimeout(() => {
+                        currentCardIndex++;
+                        showCurrentCard();
+                    }, 800);
+                } else {
+                    // Для вкладки "Поиск"
+                    handleUserCardSwipe('left', userId);
+                }
             }
         }
         
-        // ВЫХОД
-        function logout() {
-            if (isModalOpen) return;
-            
-            toggleSettings();
-            
-            setTimeout(() => {
-                localStorage.removeItem('aion_premium_user');
-                currentCardIndex = 0;
-                showAuthScreen();
-            }, 1000);
+        // СБРОС КАРТОЧЕК
+        function resetCards() {
+            currentCardIndex = 0;
+            showCurrentCard();
         }
         
-        // ФУНКЦИЯ ЭКРАНИРОВАНИЯ HTML
+        // ВЫХОД ИЗ АККАУНТА
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
+                localStorage.removeItem('aion_premium_user');
+                currentUser = null;
+                showAuthScreen();
+                toggleSettings();
+            }
+        }
+        
+        // ЭКРАНИРОВАНИЕ HTML
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
@@ -6635,50 +6564,13 @@
         }
         
         // ЗАПУСК ПРИЛОЖЕНИЯ
-        window.addEventListener('load', initApp);
+        window.addEventListener('DOMContentLoaded', initApp);
         
-        // ДЕЛАЕМ ФУНКЦИИ ГЛОБАЛЬНЫМИ
-        window.selectGender = selectGender;
-        window.selectEditGender = selectEditGender;
-        window.handleSwipe = handleSwipe;
-        window.handleGridLike = handleGridLike;
-        window.handleGridDislike = handleGridDislike;
-        window.toggleCardInfo = toggleCardInfo;
-        window.toggleUserCardInfo = toggleUserCardInfo;
-        window.toggleChatCardInfo = toggleChatCardInfo;
-        window.toggleSettings = toggleSettings;
-        window.toggleNotifications = toggleNotifications;
-        window.toggleSupportSubmenu = toggleSupportSubmenu;
-        window.handleSupport = handleSupport;
-        window.showModal = showModal;
-        window.closeModal = closeModal;
-        window.closeAllModals = closeAllModals;
-        window.handleSettingsAction = handleSettingsAction;
-        window.switchTab = switchTab;
-        window.changeSubscription = changeSubscription;
-        window.resetCards = resetCards;
-        window.logout = logout;
-        window.sendChatMessage = sendChatMessage;
-        window.toggleEmojiPicker = toggleEmojiPicker;
-        window.addEmoji = addEmoji;
-        window.handleChatInput = handleChatInput;
-        window.useAISuggestion = useAISuggestion;
-        window.openChat = openChat;
-        window.renderChatsList = renderChatsList;
-        window.showChatProfile = showChatProfile;
-        window.toggleAuthMode = toggleAuthMode;
-        window.editProfile = editProfile;
-        window.saveProfile = saveProfile;
-        window.startTest = startTest;
-        window.selectTestAnswer = selectTestAnswer;
-        window.nextTestQuestion = nextTestQuestion;
-        window.prevTestQuestion = prevTestQuestion;
-        window.finishTest = finishTest;
-        window.toggleFilters = toggleFilters;
-        window.toggleCheckbox = toggleCheckbox;
-        window.applyFilters = applyFilters;
-        window.openUserCard = openUserCard;
-        window.backToSearchGrid = backToSearchGrid;
+        // ПРЕДУПРЕЖДЕНИЕ ПРИ ПЕРЕЗАГРУЗКЕ СТРАНИЦЫ
+        window.addEventListener('beforeunload', (e) => {
+            e.preventDefault();
+            e.returnValue = '';
+        });
     </script>
 </body>
 </html>

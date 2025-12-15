@@ -21,6 +21,7 @@
             width: 100%;
             height: 100%;
             overflow-x: hidden;
+            position: fixed;
             overscroll-behavior: none;
             background: #0a0a1a;
         }
@@ -38,6 +39,12 @@
             align-items: center;
             padding: 0;
             margin: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
         }
         
         /* iOS safe-area insets */
@@ -180,7 +187,7 @@
         /* Контейнер приложения */
         #app {
             position: relative;
-            z-index: 2;
+            z-index: 3; /* Исправлено: было 2, стало 3 - выше фона */
             width: 100%;
             max-width: 400px;
             height: 100vh;
@@ -285,24 +292,24 @@
             z-index: 2;
         }
         
-        /* Кнопка фильтра в поиске - ФИКСИРОВАННАЯ ПОЗИЦИЯ */
+        /* Кнопка фильтра в поиске - ИЗМЕНЕНО: теперь внутри search-container */
         .filter-button {
-            position: fixed;
-            top: calc(env(safe-area-inset-top, 20px) + 10px);
-            right: calc(env(safe-area-inset-right, 20px) + 100px);
+            position: absolute;
+            top: 10px;
+            right: 15px;
             background: rgba(10, 10, 25, 0.9);
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 50%;
             width: 44px;
             height: 44px;
-            display: none;
+            display: none; /* По умолчанию скрыта */
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.4s ease;
             backdrop-filter: blur(10px);
-            z-index: 100;
+            z-index: 10;
             color: #80c0ff;
             box-shadow: 
                 0 5px 15px rgba(64, 128, 255, 0.2),
@@ -606,6 +613,8 @@
                 0 5px 15px rgba(0, 0, 0, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
             margin: 10px;
+            position: relative;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         .nav-tab {
@@ -653,6 +662,8 @@
             width: calc(100% - 40px);
             max-width: 380px;
             margin: 0 auto;
+            position: relative;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         .auth-header {
@@ -813,15 +824,15 @@
             transform: translateY(-1px);
         }
         
-        /* КАРТОЧКИ - ИСПРАВЛЕНА АДАПТИВНОСТЬ И ДИЗАЙН - УБРАНЫ ЧЕРНЫЕ ПОЛОСЫ */
+        /* КАРТОЧКИ - ИСПРАВЛЕНА АДАПТИВНОСТЬ И ДИЗАЙН */
         .card {
             background: rgba(10, 10, 25, 0.95);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(64, 128, 255, 0.25);
             border-radius: 20px;
-            width: calc(100% - 20px);
+            width: calc(100% - 30px);
             max-width: 340px;
-            height: auto;
+            height: calc(100vh - 300px);
             min-height: 450px;
             max-height: 500px;
             box-shadow: 
@@ -831,18 +842,20 @@
             position: relative;
             margin: 0 auto;
             transition: all 0.4s ease;
+            margin-bottom: 0;
             cursor: pointer;
             -webkit-user-select: none;
             user-select: none;
             display: flex;
             flex-direction: column;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         /* Изображение на всю карточку */
         .card-photo {
             position: relative;
             width: 100%;
-            height: 250px;
+            height: 100%;
             background: 
                 radial-gradient(circle at 30% 30%, rgba(64, 128, 255, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 70% 70%, rgba(100, 150, 255, 0.2) 0%, transparent 50%),
@@ -855,14 +868,14 @@
         }
         
         .card-avatar {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
+            font-size: 48px;
             color: white;
             border: 3px solid rgba(64, 128, 255, 0.6);
             backdrop-filter: blur(10px);
@@ -875,23 +888,82 @@
             z-index: 2;
         }
         
-        /* Информация о пользователе - РАСКРЫВАЮЩИЙСЯ БЛОК ПОД КАРТОЧКОЙ */
+        /* Информация на карточке (имя, возраст, расстояние, город) */
+        .card-basic-info {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 0 20px;
+            z-index: 3;
+        }
+        
+        .card-basic-info h2 {
+            font-size: 24px;
+            color: white;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .card-basic-info .age {
+            color: #a0d0ff;
+            font-size: 20px;
+            font-weight: 500;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        .card-location-info {
+            color: rgba(192, 200, 255, 0.9);
+            font-size: 14px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .card-location-info span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        /* Информация о пользователе - РАСКРЫВАЕТСЯ ВНИЗ */
         .card-info {
-            padding: 20px;
-            display: none;
-            flex-direction: column;
             background: rgba(10, 10, 25, 0.98);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 20px;
+            padding: 20px;
             margin-top: 10px;
-            border: 1px solid rgba(64, 128, 255, 0.2);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            max-height: 400px;
-            overflow-y: auto;
+            width: calc(100% - 30px);
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+            display: none; /* Скрыто по умолчанию */
+            flex-direction: column;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(64, 128, 255, 0.2);
+            transform: translateY(100%);
+            opacity: 0;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 4;
+            max-height: 0;
+            overflow: hidden;
         }
         
         .card-info.expanded {
             display: flex;
+            transform: translateY(0);
+            opacity: 1;
+            max-height: 500px;
+            overflow-y: auto;
         }
         
         /* Имя и возраст вверху информации */
@@ -938,6 +1010,9 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            box-shadow: 
+                inset 0 1px 3px rgba(0, 0, 0, 0.3),
+                0 1px 1px rgba(255, 255, 255, 0.1);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             min-height: 0;
@@ -985,9 +1060,10 @@
             margin-bottom: 0;
         }
         
-        /* Кнопка для показа дополнительной информации - ТЕПЕРЬ ПОД КАРТОЧКОЙ */
+        /* Кнопка для показа дополнительной информации - ПОД КАРТОЧКОЙ БЕЗ ОТСТУПОВ */
         .info-toggle {
-            width: calc(100% - 20px);
+            width: calc(100% - 30px);
+            max-width: 340px;
             padding: 12px;
             background: linear-gradient(45deg, rgba(64, 128, 255, 0.2), rgba(100, 150, 255, 0.3));
             border: 1px solid rgba(64, 128, 255, 0.4);
@@ -998,15 +1074,18 @@
             cursor: pointer;
             transition: all 0.4s ease;
             text-align: center;
-            margin-top: 15px;
             backdrop-filter: blur(10px);
             box-shadow: 
                 0 5px 15px rgba(64, 128, 255, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
             z-index: 10;
-            margin-left: auto;
-            margin-right: auto;
-            display: block;
+            margin: 0 auto;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         .info-toggle:hover {
@@ -1017,7 +1096,7 @@
                 inset 0 1px 1px rgba(255, 255, 255, 0.2);
         }
         
-        /* Кнопки действий */
+        /* Кнопки действий - ПЕРЕМЕЩЕНЫ НИЖЕ КНОПКИ "УЗНАТЬ БОЛЬШЕ" */
         .action-buttons {
             display: flex;
             justify-content: center;
@@ -1031,6 +1110,14 @@
             left: 0;
             right: 0;
             z-index: 20;
+            transition: all 0.4s ease;
+        }
+        
+        /* Скрытие кнопок действий при открытой информации */
+        .card-info.expanded ~ .action-buttons {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
         }
         
         .action-btn {
@@ -1078,6 +1165,13 @@
             transform: scale(0.95);
         }
         
+        /* Кнопка написать (только для премиум) */
+        .btn-write {
+            background: linear-gradient(45deg, rgba(180, 80, 255, 0.2), rgba(220, 120, 255, 0.3));
+            border: 2px solid rgba(180, 80, 255, 0.4);
+            color: #d080ff;
+        }
+        
         /* Стили для подписок */
         .subscription-container {
             display: flex;
@@ -1091,6 +1185,8 @@
             -webkit-overflow-scrolling: touch;
             padding-left: max(20px, env(safe-area-inset-left, 20px));
             padding-right: max(20px, env(safe-area-inset-right, 20px));
+            position: relative;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         .subscription-container::-webkit-scrollbar {
@@ -1116,6 +1212,7 @@
             flex-direction: column;
             position: relative;
             overflow: hidden;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         .subscription-card:hover {
@@ -1513,6 +1610,8 @@
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.2);
+            position: relative;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         .chat-messages {
@@ -1823,6 +1922,8 @@
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.2);
             -webkit-overflow-scrolling: touch;
+            position: relative;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         .chat-item {
@@ -1982,20 +2083,21 @@
                 inset 0 1px 1px rgba(255, 255, 255, 0.2);
         }
         
-        /* Контейнер для контента - ИСПРАВЛЕНА АДАПТИВНОСТЬ */
+        /* Контейнер для контента - ИСПРАВЛЕНА АДАПТИВНОСТЬ И Z-INDEX */
         .content-wrapper {
             flex: 1;
             display: flex;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: flex-start;
             position: relative;
             overflow-y: auto;
-            padding: 10px;
+            padding: 15px 10px;
             width: 100%;
             min-height: 400px;
             -webkit-overflow-scrolling: touch;
             padding-top: env(safe-area-inset-top, 0px);
-            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            z-index: 3; /* КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: добавлен z-index */
         }
         
         /* Уведомление о мэтче */
@@ -2052,13 +2154,15 @@
             border: 1px solid rgba(64, 128, 255, 0.2);
             border-radius: 20px;
             padding: 25px;
-            width: calc(100% - 20px);
+            width: calc(100% - 30px);
             max-width: 380px;
             margin: 0 auto;
             color: #c0c8ff;
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.2);
+            position: relative;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         .profile-header {
@@ -2164,12 +2268,12 @@
         /* Стили для вкладки поиска */
         .search-container {
             width: 100%;
-            padding: 0 10px;
+            padding: 0 15px;
             max-width: 400px;
             margin: 0 auto;
             position: relative;
             overflow-y: auto;
-            padding-top: 60px;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         .search-filters {
@@ -2293,9 +2397,9 @@
         /* Сетка для карточек поиска */
         .search-results-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            padding: 10px 0;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            padding: 15px 0;
             padding-bottom: 80px;
             width: 100%;
             animation: fadeIn 0.5s ease;
@@ -2309,7 +2413,7 @@
             overflow: hidden;
             transition: all 0.4s ease;
             cursor: pointer;
-            height: 200px;
+            height: 220px;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -2318,6 +2422,7 @@
                 0 0 15px rgba(64, 128, 255, 0.15);
             -webkit-user-select: none;
             user-select: none;
+            z-index: 3; /* Исправлено: добавлен z-index */
         }
         
         .search-grid-card:hover {
@@ -2329,7 +2434,7 @@
         }
         
         .search-grid-photo {
-            height: 120px;
+            height: 140px;
             background: 
                 radial-gradient(circle at 30% 30%, rgba(64, 128, 255, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 70% 70%, rgba(100, 150, 255, 0.2) 0%, transparent 50%),
@@ -2341,14 +2446,14 @@
         }
         
         .search-grid-avatar {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 24px;
             color: white;
             border: 2px solid rgba(64, 128, 255, 0.6);
             backdrop-filter: blur(10px);
@@ -2359,19 +2464,19 @@
         }
         
         .search-grid-info {
-            padding: 10px;
+            padding: 12px;
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
         }
         
         .search-grid-header {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         
         .search-grid-name {
-            font-size: 15px;
+            font-size: 16px;
             color: #80c0ff;
             font-weight: 600;
             margin-bottom: 3px;
@@ -2380,16 +2485,17 @@
         
         .search-grid-age {
             color: #a0d0ff;
-            font-size: 13px;
+            font-size: 14px;
             display: inline-block;
             margin-left: 5px;
         }
         
-        .search-grid-details {
-            font-size: 10px;
+        .search-grid-location {
+            font-size: 11px;
             color: rgba(192, 200, 255, 0.7);
             line-height: 1.3;
             text-align: center;
+            margin-top: 5px;
         }
         
         .search-grid-online {
@@ -2430,7 +2536,8 @@
             
             .card {
                 max-width: 380px;
-                height: 520px;
+                height: 500px;
+                margin-bottom: 0;
             }
             
             .search-results-grid {
@@ -2481,6 +2588,7 @@
             .card {
                 max-width: 400px;
                 height: 500px;
+                margin-bottom: 0;
             }
             
             .search-results-grid {
@@ -2513,37 +2621,38 @@
             .card {
                 width: calc(100% - 20px);
                 max-width: 100%;
-                height: auto;
+                height: calc(100vh - 280px);
                 min-height: 450px;
                 margin: 0 auto;
+                margin-bottom: 0;
             }
             
             .search-results-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2, minmax(140px, 1fr));
                 gap: 10px;
                 padding: 10px 0;
                 padding-bottom: 80px;
             }
             
             .search-grid-card {
-                height: 180px;
+                height: 200px;
             }
             
             .search-grid-photo {
-                height: 100px;
+                height: 120px;
             }
             
             .search-grid-avatar {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
             }
             
             .search-grid-name {
-                font-size: 14px;
+                font-size: 15px;
             }
             
-            .search-grid-details {
+            .search-grid-location {
                 font-size: 10px;
             }
             
@@ -2658,13 +2767,7 @@
             }
             
             .search-container {
-                padding-top: 60px;
-            }
-            
-            .filter-button {
-                top: calc(env(safe-area-inset-top, 20px) + 70px);
-                right: 20px;
-                z-index: 100;
+                padding-top: 0;
             }
         }
         
@@ -2679,36 +2782,37 @@
             }
             
             .card {
-                height: auto;
+                height: calc(100vh - 260px);
                 min-height: 420px;
+                margin-bottom: 0;
                 width: calc(100% - 20px);
             }
             
             .search-results-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2, minmax(120px, 1fr));
                 gap: 8px;
             }
             
             .search-grid-card {
-                height: 160px;
+                height: 180px;
             }
             
             .search-grid-photo {
-                height: 90px;
+                height: 100px;
             }
             
             .search-grid-avatar {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
             }
             
             .search-grid-info {
-                padding: 8px;
+                padding: 10px;
             }
             
             .search-grid-name {
-                font-size: 13px;
+                font-size: 14px;
             }
             
             .action-buttons {
@@ -2786,24 +2890,18 @@
             .header-buttons {
                 gap: 8px;
             }
-            
-            .filter-button {
-                top: calc(env(safe-area-inset-top, 20px) + 70px);
-                right: 15px;
-                width: 40px;
-                height: 40px;
-            }
         }
         
         /* Высокие экраны (iPhone X и подобные) */
         @media (min-height: 812px) {
             .card {
-                height: auto;
+                height: calc(100vh - 320px);
                 max-height: 550px;
+                margin-bottom: 0;
             }
             
             .search-grid-card {
-                height: 200px;
+                height: 240px;
             }
             
             .action-buttons {
@@ -2814,12 +2912,13 @@
         /* Низкие экраны */
         @media (max-height: 700px) {
             .card {
-                height: auto;
+                height: calc(100vh - 250px);
                 min-height: 380px;
+                margin-bottom: 0;
             }
             
             .search-grid-card {
-                height: 180px;
+                height: 200px;
             }
             
             .search-grid-photo {
@@ -2827,9 +2926,9 @@
             }
             
             .card-avatar {
-                width: 80px;
-                height: 80px;
-                font-size: 32px;
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
             }
             
             .chat-container {
@@ -2862,6 +2961,7 @@
                 height: calc(100vh - 120px);
                 min-height: auto;
                 margin: 0;
+                margin-bottom: 0;
             }
             
             .search-results-grid {
@@ -3022,6 +3122,22 @@
             justify-content: center;
             z-index: 1001;
             box-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
+        }
+        
+        /* Кнопки действий для открытой карточки в поиске */
+        .user-card-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px 15px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            position: fixed;
+            bottom: calc(env(safe-area-inset-bottom, 20px) + 10px);
+            left: 0;
+            right: 0;
+            z-index: 20;
         }
     </style>
 </head>
@@ -3328,12 +3444,7 @@
         ⚠️ Сообщение содержит неподходящий контент
     </div>
     
-    <!-- Кнопка фильтра для поиска -->
-    <button class="filter-button" id="filter-button" onclick="toggleFilters()">
-        <div class="filter-line"></div>
-        <div class="filter-line"></div>
-        <div class="filter-line"></div>
-    </button>
+    <!-- Кнопка фильтра для поиска (УДАЛЕНА ОТСЮДА, БУДЕТ ВНУТРИ SEARCH-CONTAINER) -->
     
     <div id="app">
         <!-- Приложение будет здесь -->
@@ -3650,14 +3761,15 @@
             }
         ];
 
-        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ (6 мужчин и 6 женщин)
+        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ (6 мужчин и 6 женщин) с расстоянием
         const sampleUsers = [
             { 
                 id: 'user_1',
                 name: "Анна", 
                 age: 25, 
                 gender: "female",
-                city: "Москва",
+                city: "Москва, ЦАО",
+                distance: "~2 км",
                 zodiac: "Весы",
                 height: 168,
                 education: "Высшее образование",
@@ -3680,7 +3792,8 @@
                 name: "София", 
                 age: 23, 
                 gender: "female",
-                city: "Казань",
+                city: "Казань, Советский район",
+                distance: "~15 км",
                 zodiac: "Рак",
                 height: 172,
                 education: "Среднее специальное образование",
@@ -3703,7 +3816,8 @@
                 name: "Мария", 
                 age: 27, 
                 gender: "female",
-                city: "Екатеринбург",
+                city: "Екатеринбург, Верх-Исетский район",
+                distance: "~8 км",
                 zodiac: "Дева",
                 height: 165,
                 education: "Высшее образование",
@@ -3715,7 +3829,7 @@
                 details: {
                     interests: "Медицина, природа, походы, психология, чтение",
                     lifestyle: "Активный образ жизни, правильное питание, ранние подъемы, регулярные прогулки",
-                    goals: "Помогать людям и развиваться в медицине\nСоздать крепкую семью\nИзучить психологию отношений",
+                    goals: "Помогать людям и развиваться в медицине\nСоздать крепкую семью\nИзучить психология отношений",
                     education: "Высшее медицинское образование\nКурсы по психологии",
                     work: "Врач-терапевт в городской больнице",
                     hobbies: "Походы в горы, чтение медицинской литературы, фотография природы"
@@ -3726,7 +3840,8 @@
                 name: "Екатерина", 
                 age: 29, 
                 gender: "female",
-                city: "Краснодар",
+                city: "Краснодар, Центральный округ",
+                distance: "~25 км",
                 zodiac: "Скорпион",
                 height: 170,
                 education: "Высшее образование",
@@ -3749,7 +3864,8 @@
                 name: "Алиса", 
                 age: 24, 
                 gender: "female",
-                city: "Санкт-Петербург",
+                city: "Санкт-Петербург, Петроградский район",
+                distance: "~5 км",
                 zodiac: "Близнецы",
                 height: 175,
                 education: "Высшее образование",
@@ -3772,7 +3888,8 @@
                 name: "Виктория", 
                 age: 26, 
                 gender: "female",
-                city: "Нижний Новгород",
+                city: "Нижний Новгород, Советский район",
+                distance: "~12 км",
                 zodiac: "Лев",
                 height: 160,
                 education: "Высшее образование",
@@ -3795,7 +3912,8 @@
                 name: "Максим", 
                 age: 28, 
                 gender: "male",
-                city: "Санкт-Петербург",
+                city: "Санкт-Петербург, Василеостровский район",
+                distance: "~3 км",
                 zodiac: "Стрелец",
                 height: 185,
                 education: "Высшее образование",
@@ -3818,7 +3936,8 @@
                 name: "Александр", 
                 age: 30, 
                 gender: "male",
-                city: "Новосибирск",
+                city: "Новосибирск, Центральный район",
+                distance: "~20 км",
                 zodiac: "Овен",
                 height: 180,
                 education: "Высшее образование",
@@ -3841,7 +3960,8 @@
                 name: "Дмитрий", 
                 age: 32, 
                 gender: "male",
-                city: "Ростов-на-Дону",
+                city: "Ростов-на-Дону, Ленинский район",
+                distance: "~18 км",
                 zodiac: "Телец",
                 height: 178,
                 education: "Высшее образование",
@@ -3864,7 +3984,8 @@
                 name: "Иван", 
                 age: 26, 
                 gender: "male",
-                city: "Воронеж",
+                city: "Воронеж, Центральный район",
+                distance: "~10 км",
                 zodiac: "Водолей",
                 height: 182,
                 education: "Высшее образование",
@@ -3887,7 +4008,8 @@
                 name: "Андрей", 
                 age: 29, 
                 gender: "male",
-                city: "Уфа",
+                city: "Уфа, Кировский район",
+                distance: "~22 км",
                 zodiac: "Рыбы",
                 height: 175,
                 education: "Высшее образование",
@@ -3910,7 +4032,8 @@
                 name: "Сергей", 
                 age: 31, 
                 gender: "male",
-                city: "Красноярск",
+                city: "Красноярск, Советский район",
+                distance: "~30 км",
                 zodiac: "Козерог",
                 height: 190,
                 education: "Высшее образование",
@@ -4063,7 +4186,7 @@
                         userGender: 'female',
                         userCity: 'Москва',
                         userZodiac: 'Весы',
-                        lastMessage: 'Привет! Как твои дела? 😊',
+                        lastMessage: 'Начните общение! 👋',
                         lastMessageTime: new Date(Date.now() - 3600000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                         messages: [
                             {
@@ -4410,20 +4533,22 @@
             
             const container = document.getElementById('content-container');
             container.innerHTML = `
-                <div class="back-to-chat-btn" onclick="renderActiveChat()">
-                    ←
-                </div>
-                <div class="card" id="chat-profile-card" style="width: calc(100% - 20px); max-width: 340px; margin: 0 auto; margin-bottom: 100px;">
-                    <div class="card-photo">
-                        <div class="card-avatar">${genderIcon}</div>
-                        <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; text-align: center;">
-                            <h2 style="font-size: 24px; color: white; margin-bottom: 5px;">${escapeHtml(user.name)} <span style="color: #a0d0ff;">${escapeHtml(user.age)}</span></h2>
-                            <div style="color: rgba(255, 255, 255, 0.9); font-size: 14px;">
-                                ${escapeHtml(user.city)} • ${escapeHtml(user.zodiac)}
+                <div style="position: relative; width: 100%; height: 100%;">
+                    <div class="back-to-chat-btn" onclick="renderActiveChat()">
+                        ←
+                    </div>
+                    <div class="card" id="chat-profile-card">
+                        <div class="card-photo">
+                            <div class="card-avatar">${genderIcon}</div>
+                            <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; text-align: center;">
+                                <h2 style="font-size: 24px; color: white; margin-bottom: 5px;">${escapeHtml(user.name)} <span style="color: #a0d0ff;">${escapeHtml(user.age)}</span></h2>
                             </div>
                         </div>
                     </div>
-                    <div class="card-info">
+                    <div class="info-toggle" onclick="toggleChatCardInfo()">
+                        Узнать больше
+                    </div>
+                    <div class="card-info" id="chat-profile-info">
                         <div class="card-bio">${escapeHtml(user.bio)}</div>
                         
                         <div class="card-details">
@@ -4452,25 +4577,18 @@
                                 <div class="detail-content">${formatMultilineText(escapeHtml(user.details.hobbies))}</div>
                             </div>
                         </div>
-                        <div class="info-toggle" onclick="toggleChatCardInfo()">
+                        <div class="info-toggle" onclick="toggleChatCardInfo()" style="margin-top: 15px;">
                             Свернуть
                         </div>
                     </div>
-                    <div class="info-toggle" onclick="toggleChatCardInfo()" style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
-                        Узнать больше
-                    </div>
                 </div>
             `;
-            
-            // Инициализация свайпов для карточки
-            initSwipeForCard('chat-profile-card');
         }
 
         // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ В ЧАТЕ
         function toggleChatCardInfo() {
-            const card = document.getElementById('chat-profile-card');
-            const info = card.querySelector('.card-info');
-            const indicator = card.querySelector('.info-toggle');
+            const info = document.getElementById('chat-profile-info');
+            const indicator = document.querySelector('.info-toggle:not(#chat-profile-info .info-toggle)');
             
             if (info) {
                 if (info.classList.contains('expanded')) {
@@ -5206,7 +5324,9 @@
         function showMainScreen(user) {
             document.getElementById('app').innerHTML = `
                 <div style="color: #c0c8ff; text-align: center; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden;">
-                    <div style="height: 10px;"></div>
+                    <div style="background: rgba(10, 10, 25, 0.9); padding: 20px; border-radius: 20px; margin: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(64, 128, 255, 0.2); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);">
+                        <h1 style="margin-bottom: 0px; background: linear-gradient(45deg, #80c0ff, #a0d0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 36px; font-weight: 700; letter-spacing: 1px;">AION</h1>
+                    </div>
                     
                     <div class="nav-tabs">
                         <button class="nav-tab ${currentTab === 'dating' ? 'active' : ''}" onclick="switchTab('dating')">
@@ -5231,10 +5351,7 @@
                     </div>
                     
                     ${currentTab === 'dating' ? `
-                        <div class="action-buttons">
-                            <button class="action-btn btn-dislike" onclick="handleSwipe('left')">👎</button>
-                            <button class="action-btn btn-like" onclick="handleSwipe('right')">👍</button>
-                        </div>
+                        <!-- Кнопки действий теперь находятся в основном контейнере, под информацией -->
                     ` : ''}
                 </div>
             `;
@@ -5264,6 +5381,12 @@
             
             container.innerHTML = `
                 <div class="search-container">
+                    <button class="filter-button visible" id="filter-button" onclick="toggleFilters()">
+                        <div class="filter-line"></div>
+                        <div class="filter-line"></div>
+                        <div class="filter-line"></div>
+                    </button>
+                    
                     <div class="search-filters ${isFiltersOpen ? 'active' : ''}" id="search-filters">
                         <div class="filter-group">
                             <div class="filter-label">
@@ -5382,12 +5505,6 @@
                 </div>
             `;
             
-            // Показываем кнопку фильтра только во вкладке поиска
-            const filterButton = document.getElementById('filter-button');
-            if (filterButton) {
-                filterButton.classList.add('visible');
-            }
-            
             renderSearchGrid();
             initFilters();
         }
@@ -5418,12 +5535,13 @@
                             ${user.online ? '<div class="search-grid-online"></div>' : ''}
                             <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; text-align: center;">
                                 <div style="font-size: 16px; color: white; font-weight: 600; margin-bottom: 3px;">${escapeHtml(user.name)} <span style="color: #a0d0ff;">${escapeHtml(user.age)}</span></div>
-                                <div style="font-size: 11px; color: rgba(255, 255, 255, 0.9);">${escapeHtml(user.city)} • ${escapeHtml(user.zodiac)}</div>
+                                <div style="font-size: 11px; color: rgba(255, 255, 255, 0.9);">${escapeHtml(user.distance)} • ${escapeHtml(user.city.split(',')[0])}</div>
                             </div>
                         </div>
                         <div class="search-grid-info">
-                            <div class="search-grid-name">${escapeHtml(user.name)}, ${escapeHtml(user.age)}</div>
-                            <div class="search-grid-details">${escapeHtml(user.city)} • ${escapeHtml(user.zodiac)}</div>
+                            <div class="search-grid-location">
+                                ${escapeHtml(user.city)}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -5443,70 +5561,70 @@
                     <button class="filter-button visible" style="top: 10px; right: 15px; z-index: 10;" onclick="backToSearchGrid()">
                         ←
                     </button>
-                    <div class="card" id="user-card-${userId}" style="width: calc(100% - 20px); max-width: 340px; margin: 0 auto; position: relative;">
+                    <div class="card" id="user-card-${userId}">
                         <div class="card-photo">
                             <div class="card-avatar">${genderIcon}</div>
-                            <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; text-align: center;">
-                                <h2 style="font-size: 24px; color: white; margin-bottom: 5px;">${escapeHtml(user.name)} <span style="color: #a0d0ff;">${escapeHtml(user.age)}</span></h2>
-                                <div style="color: rgba(255, 255, 255, 0.9); font-size: 14px;">
-                                    ${escapeHtml(user.city)} • ${escapeHtml(user.zodiac)}
+                            <div class="card-basic-info">
+                                <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
+                                <div class="card-location-info">
+                                    <span>📍 ${escapeHtml(user.city)}</span>
+                                    <span>📏 ${escapeHtml(user.distance)}</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-info">
-                            <div class="card-bio">${escapeHtml(user.bio)}</div>
-                            
-                            <div class="card-details">
-                                <div class="detail-section">
-                                    <div class="detail-section-title">Интересы</div>
-                                    <div class="detail-content">${formatMultilineText(user.details.interests)}</div>
-                                </div>
-                                <div class="detail-section">
-                                    <div class="detail-section-title">Образ жизни</div>
-                                    <div class="detail-content">${formatMultilineText(user.details.lifestyle)}</div>
-                                </div>
-                                <div class="detail-section">
-                                    <div class="detail-section-title">Цели и мечты</div>
-                                    <div class="detail-content">${formatMultilineText(user.details.goals)}</div>
-                                </div>
-                                <div class="detail-section">
-                                    <div class="detail-section-title">Образование</div>
-                                    <div class="detail-content">${formatMultilineText(user.details.education)}</div>
-                                </div>
-                                <div class="detail-section">
-                                    <div class="detail-section-title">Работа</div>
-                                    <div class="detail-content">${formatMultilineText(user.details.work)}</div>
-                                </div>
-                                <div class="detail-section">
-                                    <div class="detail-section-title">Хобби и увлечения</div>
-                                    <div class="detail-content">${formatMultilineText(user.details.hobbies)}</div>
-                                </div>
+                    </div>
+                    <div class="info-toggle" onclick="toggleUserCardInfo('${userId}')">
+                        Узнать больше
+                    </div>
+                    <div class="card-info" id="user-card-info-${userId}">
+                        <div class="card-bio">${escapeHtml(user.bio)}</div>
+                        
+                        <div class="card-details">
+                            <div class="detail-section">
+                                <div class="detail-section-title">Интересы</div>
+                                <div class="detail-content">${formatMultilineText(user.details.interests)}</div>
                             </div>
-                            <div class="info-toggle" onclick="toggleUserCardInfo('${userId}')">
-                                Свернуть
+                            <div class="detail-section">
+                                <div class="detail-section-title">Образ жизни</div>
+                                <div class="detail-content">${formatMultilineText(user.details.lifestyle)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Цели и мечты</div>
+                                <div class="detail-content">${formatMultilineText(user.details.goals)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Образование</div>
+                                <div class="detail-content">${formatMultilineText(user.details.education)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Работа</div>
+                                <div class="detail-content">${formatMultilineText(user.details.work)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Хобби и увлечения</div>
+                                <div class="detail-content">${formatMultilineText(user.details.hobbies)}</div>
                             </div>
                         </div>
-                        <div class="info-toggle" onclick="toggleUserCardInfo('${userId}')" style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
-                            Узнать больше
+                        <div class="info-toggle" onclick="toggleUserCardInfo('${userId}')" style="margin-top: 15px;">
+                            Свернуть
                         </div>
                     </div>
                     
-                    <div class="action-buttons">
-                        <button class="action-btn btn-dislike" onclick="handleSwipe('left', '${userId}')">👎</button>
-                        <button class="action-btn btn-like" onclick="handleSwipe('right', '${userId}')">👍</button>
+                    <div class="user-card-actions">
+                        <button class="action-btn btn-dislike" onclick="handleUserCardAction('left', '${userId}')">👎</button>
+                        ${currentUser.subscription === 'premium' ? `
+                            <button class="action-btn btn-write" onclick="handleWriteMessage('${userId}')">✉️</button>
+                        ` : ''}
+                        <button class="action-btn btn-like" onclick="handleUserCardAction('right', '${userId}')">👍</button>
                     </div>
                 </div>
             `;
-            
-            // Инициализация свайпов для карточки
-            initSwipeForCard(`user-card-${userId}`);
         }
         
         // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ ПОЛЬЗОВАТЕЛЯ
         function toggleUserCardInfo(userId) {
-            const card = document.getElementById(`user-card-${userId}`);
-            const info = card.querySelector('.card-info');
-            const indicator = card.querySelector('.info-toggle');
+            const info = document.getElementById(`user-card-info-${userId}`);
+            const indicator = document.querySelector('.info-toggle:not(#user-card-info-' + userId + ' .info-toggle)');
             
             if (info) {
                 if (info.classList.contains('expanded')) {
@@ -5524,87 +5642,8 @@
             showSearchScreen();
         }
         
-        // ОБРАБОТКА ЛАЙКА В СЕТКЕ (С ПРЕДОТВРАЩЕНИЕМ ВСПЛЫТИЯ)
-        function handleGridLike(userId, event) {
-            if (event) {
-                event.stopPropagation();
-            }
-            
-            if (isModalOpen) return;
-            
-            const card = document.querySelector(`.search-grid-card[data-user-id="${userId}"]`);
-            if (!card) return;
-            
-            // Анимация
-            card.classList.add('liquid-effect');
-            setTimeout(() => {
-                card.classList.remove('liquid-effect');
-            }, 600);
-            
-            // Удаляем карточку из DOM
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(-20px) scale(0.9)';
-            
-            setTimeout(() => {
-                card.remove();
-                
-                // Обновляем список пользователей
-                const userIndex = filteredUsers.findIndex(user => user.id === userId);
-                if (userIndex !== -1) {
-                    filteredUsers.splice(userIndex, 1);
-                }
-                
-                // Если карточек не осталось, показываем сообщение
-                if (filteredUsers.length === 0) {
-                    renderSearchGrid();
-                }
-                
-                // Проверяем на взаимный лайк
-                if (Math.random() < 0.3) {
-                    handleMutualLike(userId);
-                }
-            }, 300);
-        }
-        
-        // ОБРАБОТКА ДИЗЛАЙКА В СЕТКЕ (С ПРЕДОТВРАЩЕНИЕМ ВСПЛЫТИЯ)
-        function handleGridDislike(userId, event) {
-            if (event) {
-                event.stopPropagation();
-            }
-            
-            if (isModalOpen) return;
-            
-            const card = document.querySelector(`.search-grid-card[data-user-id="${userId}"]`);
-            if (!card) return;
-            
-            // Анимация
-            card.classList.add('liquid-effect');
-            setTimeout(() => {
-                card.classList.remove('liquid-effect');
-            }, 600);
-            
-            // Удаляем карточку из DOM
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px) scale(0.9)';
-            
-            setTimeout(() => {
-                card.remove();
-                
-                // Обновляем список пользователей
-                const userIndex = filteredUsers.findIndex(user => user.id === userId);
-                if (userIndex !== -1) {
-                    filteredUsers.splice(userIndex, 1);
-                }
-                
-                // Если карточек не осталось, показываем сообщение
-                if (filteredUsers.length === 0) {
-                    renderSearchGrid();
-                }
-            }, 300);
-        }
-        
-        // СВАЙП ДЛЯ КАРТОЧКИ ПОЛЬЗОВАТЕЛЯ
-        function handleUserCardSwipe(direction, userId) {
+        // ОБРАБОТКА ДЕЙСТВИЙ С КАРТОЧКОЙ ПОЛЬЗОВАТЕЛЯ
+        function handleUserCardAction(direction, userId) {
             if (isModalOpen) return;
             
             const card = document.getElementById(`user-card-${userId}`);
@@ -5649,6 +5688,19 @@
                     showSearchScreen();
                 }, 800);
             }
+        }
+        
+        // ОБРАБОТКА КНОПКИ "НАПИСАТЬ" (ТОЛЬКО ДЛЯ ПРЕМИУМ)
+        function handleWriteMessage(userId) {
+            if (currentUser.subscription !== 'premium') {
+                alert('Функция "Написать" доступна только для пользователей с подпиской PREMIUM');
+                return;
+            }
+            
+            const user = filteredUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            alert(`Функция отправки сообщения пользователю ${user.name} будет реализована в следующем обновлении!`);
         }
         
         // ПЕРЕКЛЮЧЕНИЕ ФИЛЬТРОВ
@@ -5712,7 +5764,7 @@
                     progress.style.width = `${percent}%`;
                     
                     const thumb = document.getElementById(thumbIds[0]);
-                    thumb.style.left = `${percent}%';
+                    thumb.style.left = `${percent}%`;
                 } else {
                     const minPercent = ((initialValues[0] - min) / (max - min)) * 100;
                     const maxPercent = ((initialValues[1] - min) / (max - min)) * 100;
@@ -6311,17 +6363,23 @@
             const genderIcon = currentCard.gender === 'male' ? '👨' : '👩';
             
             container.innerHTML = `
-                <div class="card" id="current-card">
-                    <div class="card-photo">
-                        <div class="card-avatar">${genderIcon}</div>
-                        <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; text-align: center;">
-                            <h2 style="font-size: 24px; color: white; margin-bottom: 5px;">${escapeHtml(currentCard.name)} <span style="color: #a0d0ff;">${escapeHtml(currentCard.age)}</span></h2>
-                            <div style="color: rgba(255, 255, 255, 0.9); font-size: 14px;">
-                                ${escapeHtml(currentCard.city)} • ${escapeHtml(currentCard.zodiac)}
+                <div style="position: relative; width: 100%; height: 100%;">
+                    <div class="card" id="current-card">
+                        <div class="card-photo">
+                            <div class="card-avatar">${genderIcon}</div>
+                            <div class="card-basic-info">
+                                <h2>${escapeHtml(currentCard.name)} <span class="age">${escapeHtml(currentCard.age)}</span></h2>
+                                <div class="card-location-info">
+                                    <span>📍 ${escapeHtml(currentCard.city)}</span>
+                                    <span>📏 ${escapeHtml(currentCard.distance)}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-info">
+                    <div class="info-toggle" onclick="toggleCardInfo()">
+                        Узнать больше
+                    </div>
+                    <div class="card-info" id="card-info">
                         <div class="card-bio">${escapeHtml(currentCard.bio)}</div>
                         
                         <div class="card-details">
@@ -6350,136 +6408,27 @@
                                 <div class="detail-content">${formatMultilineText(currentCard.details.hobbies)}</div>
                             </div>
                         </div>
-                        <div class="info-toggle" onclick="toggleCardInfo()">
+                        <div class="info-toggle" onclick="toggleCardInfo()" style="margin-top: 15px;">
                             Свернуть
                         </div>
-                    </div>
-                    <div class="info-toggle" onclick="toggleCardInfo()" style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
-                        Узнать больше
                     </div>
                 </div>
             `;
             
-            // Инициализация свайпов для карточки
-            initSwipeForCard('current-card');
+            // Добавляем кнопки действий под всей информацией
+            const actionButtons = document.createElement('div');
+            actionButtons.className = 'action-buttons';
+            actionButtons.innerHTML = `
+                <button class="action-btn btn-dislike" onclick="handleSwipe('left')">👎</button>
+                <button class="action-btn btn-like" onclick="handleSwipe('right')">👍</button>
+            `;
+            container.appendChild(actionButtons);
         }
         
-        // ИНИЦИАЛИЗАЦИЯ СВАЙПОВ ДЛЯ КАРТОЧКИ
-        function initSwipeForCard(cardId) {
-            const card = document.getElementById(cardId);
-            if (!card) return;
-            
-            // Удаляем старые обработчики
-            card.removeEventListener('touchstart', handleTouchStart);
-            card.removeEventListener('touchmove', handleTouchMove);
-            card.removeEventListener('touchend', handleTouchEnd);
-            card.removeEventListener('mousedown', handleMouseDown);
-            card.removeEventListener('mousemove', handleMouseMove);
-            card.removeEventListener('mouseup', handleMouseUp);
-            
-            // Добавляем новые обработчики
-            card.addEventListener('touchstart', handleTouchStart);
-            card.addEventListener('touchmove', handleTouchMove);
-            card.addEventListener('touchend', handleTouchEnd);
-            card.addEventListener('mousedown', handleMouseDown);
-            card.addEventListener('mousemove', handleMouseMove);
-            card.addEventListener('mouseup', handleMouseUp);
-        }
-        
-        // ОБРАБОТЧИКИ СВАЙПОВ ДЛЯ КАРТОЧКИ
-        function handleTouchStart(e) {
-            if (isModalOpen || isSettingsOpen || isNotificationsOpen) return;
-            
-            const touch = e.touches[0];
-            touchStartX = touch.clientX;
-            touchStartY = touch.clientY;
-            touchEndX = touchStartX;
-            touchEndY = touchStartY;
-            isSwiping = true;
-            
-            e.preventDefault();
-        }
-        
-        function handleTouchMove(e) {
-            if (!isSwiping || isModalOpen || isSettingsOpen || isNotificationsOpen) return;
-            
-            const touch = e.touches[0];
-            touchEndX = touch.clientX;
-            touchEndY = touch.clientY;
-            
-            const diffX = touchEndX - touchStartX;
-            const diffY = touchEndY - touchStartY;
-            
-            // Если движение по горизонтали больше чем по вертикали, предотвращаем прокрутку
-            if (Math.abs(diffX) > Math.abs(diffY)) {
-                e.preventDefault();
-            }
-        }
-        
-        function handleTouchEnd(e) {
-            if (!isSwiping || isModalOpen || isSettingsOpen || isNotificationsOpen) return;
-            
-            isSwiping = false;
-            
-            const diffX = touchEndX - touchStartX;
-            const diffY = touchEndY - touchStartY;
-            
-            // Определяем направление свайпа
-            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-                if (diffX > 0) {
-                    // Свайп вправо - лайк
-                    handleSwipe('right');
-                } else {
-                    // Свайп влево - дизлайк
-                    handleSwipe('left');
-                }
-            }
-        }
-        
-        function handleMouseDown(e) {
-            if (isModalOpen || isSettingsOpen || isNotificationsOpen) return;
-            
-            touchStartX = e.clientX;
-            touchStartY = e.clientY;
-            touchEndX = touchStartX;
-            touchEndY = touchStartY;
-            isSwiping = true;
-            
-            e.preventDefault();
-        }
-        
-        function handleMouseMove(e) {
-            if (!isSwiping || isModalOpen || isSettingsOpen || isNotificationsOpen) return;
-            
-            touchEndX = e.clientX;
-            touchEndY = e.clientY;
-        }
-        
-        function handleMouseUp(e) {
-            if (!isSwiping || isModalOpen || isSettingsOpen || isNotificationsOpen) return;
-            
-            isSwiping = false;
-            
-            const diffX = touchEndX - touchStartX;
-            const diffY = touchEndY - touchStartY;
-            
-            // Определяем направление свайпа
-            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-                if (diffX > 0) {
-                    // Свайп вправо - лайк
-                    handleSwipe('right');
-                } else {
-                    // Свайп влево - дизлайк
-                    handleSwipe('left');
-                }
-            }
-        }
-
         // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ
         function toggleCardInfo() {
-            const card = document.getElementById('current-card');
-            const info = card.querySelector('.card-info');
-            const indicator = card.querySelector('.info-toggle');
+            const info = document.getElementById('card-info');
+            const indicator = document.querySelector('.info-toggle:not(#card-info .info-toggle)');
             
             if (info) {
                 if (info.classList.contains('expanded')) {
@@ -6491,12 +6440,17 @@
                 }
             }
         }
-        
-        // СВАЙП КАРТОЧКИ
+
+        // СВАЙП ДЛЯ КАРТОЧКИ
         function handleSwipe(direction, userId = null) {
             if (isModalOpen) return;
             
-            const card = userId ? document.getElementById(`user-card-${userId}`) : document.getElementById('current-card');
+            if (userId) {
+                handleUserCardAction(direction, userId);
+                return;
+            }
+            
+            const card = document.getElementById('current-card');
             const buttons = document.querySelectorAll('.action-btn');
             
             buttons.forEach(btn => btn.classList.add('liquid-effect'));
@@ -6507,35 +6461,22 @@
             if (direction === 'right') {
                 card.classList.add('swipe-right');
                 
-                if (!userId) {
-                    // Для вкладки "Знакомства"
+                if (Math.random() < 0.3) {
                     setTimeout(() => {
-                        currentCardIndex++;
-                        showCurrentCard();
-                    }, 800);
-                    
-                    if (Math.random() < 0.3) {
-                        setTimeout(() => {
-                            handleMutualLike(currentCard.id);
-                        }, 500);
-                    }
-                } else {
-                    // Для вкладки "Поиск"
-                    handleUserCardSwipe('right', userId);
+                        handleMutualLike(currentCard.id);
+                    }, 500);
                 }
+                
+                setTimeout(() => {
+                    currentCardIndex++;
+                    showCurrentCard();
+                }, 800);
             } else {
                 card.classList.add('swipe-left');
-                
-                if (!userId) {
-                    // Для вкладки "Знакомства"
-                    setTimeout(() => {
-                        currentCardIndex++;
-                        showCurrentCard();
-                    }, 800);
-                } else {
-                    // Для вкладки "Поиск"
-                    handleUserCardSwipe('left', userId);
-                }
+                setTimeout(() => {
+                    currentCardIndex++;
+                    showCurrentCard();
+                }, 800);
             }
         }
         
@@ -6550,27 +6491,20 @@
             if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
                 localStorage.removeItem('aion_premium_user');
                 currentUser = null;
-                showAuthScreen();
                 toggleSettings();
+                showAuthScreen();
             }
         }
         
-        // ЭКРАНИРОВАНИЕ HTML
+        // ESCAPE HTML
         function escapeHtml(text) {
-            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
         
-        // ЗАПУСК ПРИЛОЖЕНИЯ
-        window.addEventListener('DOMContentLoaded', initApp);
-        
-        // ПРЕДУПРЕЖДЕНИЕ ПРИ ПЕРЕЗАГРУЗКЕ СТРАНИЦЫ
-        window.addEventListener('beforeunload', (e) => {
-            e.preventDefault();
-            e.returnValue = '';
-        });
+        // ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>

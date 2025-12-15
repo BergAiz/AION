@@ -600,7 +600,7 @@
             opacity: 0.5;
         }
         
-        /* Навигационные вкладки */
+        /* Навигационные вкладки - ПЕРЕМЕЩЕНЫ ПОД КНОПКИ */
         .nav-tabs {
             display: flex;
             background: rgba(10, 10, 25, 0.95);
@@ -613,8 +613,9 @@
                 0 5px 15px rgba(0, 0, 0, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
             margin: 10px;
+            margin-top: calc(env(safe-area-inset-top, 20px) + 60px); /* Под кнопками */
             position: relative;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 3;
         }
         
         .nav-tab {
@@ -3522,7 +3523,7 @@
             "Католицизм",
             "Ислам",
             "Буддизм",
-            "Даосизм",
+            "Даосим",
             "Конфуцианство",
             "Атеист",
             "Не религиозен",
@@ -5324,10 +5325,6 @@
         function showMainScreen(user) {
             document.getElementById('app').innerHTML = `
                 <div style="color: #c0c8ff; text-align: center; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden;">
-                    <div style="background: rgba(10, 10, 25, 0.9); padding: 20px; border-radius: 20px; margin: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(64, 128, 255, 0.2); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);">
-                        <h1 style="margin-bottom: 0px; background: linear-gradient(45deg, #80c0ff, #a0d0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 36px; font-weight: 700; letter-spacing: 1px;">AION</h1>
-                    </div>
-                    
                     <div class="nav-tabs">
                         <button class="nav-tab ${currentTab === 'dating' ? 'active' : ''}" onclick="switchTab('dating')">
                             Знакомства

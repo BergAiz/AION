@@ -600,7 +600,7 @@
             opacity: 0.5;
         }
         
-        /* Навигационные вкладки - ПЕРЕМЕЩЕНЫ ПОД КНОПКИ */
+        /* Навигационные вкладки - ПЕРЕМЕЩЕНЫ ПОД КНОПКИ (ИСПРАВЛЕНО) */
         .nav-tabs {
             display: flex;
             background: rgba(10, 10, 25, 0.95);
@@ -613,7 +613,7 @@
                 0 5px 15px rgba(0, 0, 0, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
             margin: 10px;
-            margin-top: calc(env(safe-area-inset-top, 20px) + 60px); /* Под кнопками */
+            margin-top: calc(env(safe-area-inset-top, 20px) + 70px); /* Увеличено отступ сверху */
             position: relative;
             z-index: 3;
         }
@@ -1086,7 +1086,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 5; /* Увеличено, чтобы была выше кнопок */
         }
         
         .info-toggle:hover {
@@ -1097,7 +1097,7 @@
                 inset 0 1px 1px rgba(255, 255, 255, 0.2);
         }
         
-        /* Кнопки действий - ПЕРЕМЕЩЕНЫ НИЖЕ КНОПКИ "УЗНАТЬ БОЛЬШЕ" */
+        /* Кнопки действий - ПЕРЕМЕЩЕНЫ НИЖЕ КНОПКИ "УЗНАТЬ БОЛЬШЕ" (ИСПРАВЛЕНО) */
         .action-buttons {
             display: flex;
             justify-content: center;
@@ -1106,19 +1106,18 @@
             width: 100%;
             max-width: 400px;
             margin: 0 auto;
-            position: fixed;
-            bottom: calc(env(safe-area-inset-bottom, 20px) + 10px);
+            position: relative; /* Изменено с fixed на relative */
+            bottom: auto;
             left: 0;
             right: 0;
-            z-index: 20;
+            z-index: 3; /* Уменьшено, чтобы было ниже кнопки "Узнать больше" */
             transition: all 0.4s ease;
+            margin-top: 10px; /* Добавлен отступ сверху */
         }
         
         /* Скрытие кнопок действий при открытой информации */
         .card-info.expanded ~ .action-buttons {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
+            display: none; /* Скрываем кнопки при открытой информации */
         }
         
         .action-btn {
@@ -1140,7 +1139,7 @@
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
             min-width: 70px;
             min-height: 70px;
-            z-index: 20;
+            z-index: 3;
         }
         
         .btn-dislike {
@@ -2678,7 +2677,9 @@
             .action-buttons {
                 gap: 25px;
                 padding: 20px 15px;
-                bottom: calc(env(safe-area-inset-bottom, 10px) + 10px);
+                position: relative; /* Изменено с fixed на relative */
+                bottom: auto;
+                margin-top: 10px;
             }
             
             .action-btn {
@@ -2760,6 +2761,7 @@
             
             .nav-tabs {
                 margin: 10px;
+                margin-top: calc(env(safe-area-inset-top, 20px) + 70px); /* Увеличено отступ сверху */
             }
             
             .subscription-container {
@@ -2769,6 +2771,19 @@
             
             .search-container {
                 padding-top: 0;
+            }
+            
+            /* Дополнительные исправления для мобильных телефонов */
+            .info-toggle {
+                position: relative;
+                z-index: 5;
+                margin-top: 10px;
+            }
+            
+            .action-buttons {
+                margin-top: 10px;
+                position: relative;
+                z-index: 3;
             }
         }
         
@@ -2906,7 +2921,7 @@
             }
             
             .action-buttons {
-                bottom: calc(env(safe-area-inset-bottom, 30px) + 10px);
+                margin-top: 15px; /* Изменено с bottom на margin-top */
             }
         }
         
@@ -2941,7 +2956,7 @@
             }
             
             .action-buttons {
-                bottom: calc(env(safe-area-inset-bottom, 10px) + 10px);
+                margin-top: 8px; /* Изменено с bottom на margin-top */
             }
         }
         
@@ -5346,10 +5361,6 @@
                     <div class="content-wrapper" id="content-container">
                         <!-- Контент будет здесь -->
                     </div>
-                    
-                    ${currentTab === 'dating' ? `
-                        <!-- Кнопки действий теперь находятся в основном контейнере, под информацией -->
-                    ` : ''}
                 </div>
             `;
             
@@ -6337,7 +6348,7 @@
             return text.split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('');
         }
         
-        // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ
+        // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ (ИСПРАВЛЕНА СТРУКТУРА)
         function showCurrentCard() {
             const container = document.getElementById('content-container');
             
@@ -6409,20 +6420,17 @@
                             Свернуть
                         </div>
                     </div>
+                    
+                    <!-- Кнопки действий добавляются здесь -->
+                    <div class="action-buttons">
+                        <button class="action-btn btn-dislike" onclick="handleSwipe('left')">👎</button>
+                        <button class="action-btn btn-like" onclick="handleSwipe('right')">👍</button>
+                    </div>
                 </div>
             `;
-            
-            // Добавляем кнопки действий под всей информацией
-            const actionButtons = document.createElement('div');
-            actionButtons.className = 'action-buttons';
-            actionButtons.innerHTML = `
-                <button class="action-btn btn-dislike" onclick="handleSwipe('left')">👎</button>
-                <button class="action-btn btn-like" onclick="handleSwipe('right')">👍</button>
-            `;
-            container.appendChild(actionButtons);
         }
         
-        // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ
+        // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ (ИСПРАВЛЕНО)
         function toggleCardInfo() {
             const info = document.getElementById('card-info');
             const indicator = document.querySelector('.info-toggle:not(#card-info .info-toggle)');
@@ -6431,9 +6439,19 @@
                 if (info.classList.contains('expanded')) {
                     info.classList.remove('expanded');
                     indicator.textContent = 'Узнать больше';
+                    // Показываем кнопки действий когда информация скрыта
+                    const actionButtons = document.querySelector('.action-buttons');
+                    if (actionButtons) {
+                        actionButtons.style.display = 'flex';
+                    }
                 } else {
                     info.classList.add('expanded');
                     indicator.textContent = 'Свернуть';
+                    // Скрываем кнопки действий когда информация открыта
+                    const actionButtons = document.querySelector('.action-buttons');
+                    if (actionButtons) {
+                        actionButtons.style.display = 'none';
+                    }
                 }
             }
         }

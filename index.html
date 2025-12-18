@@ -613,7 +613,7 @@
                 0 5px 15px rgba(0, 0, 0, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
             margin: 10px;
-            margin-top: calc(env(safe-area-inset-top, 20px) + 70px);
+            margin-top: calc(env(safe-area-inset-top, 20px) + 10px);
             position: relative;
             z-index: 3;
         }
@@ -833,7 +833,7 @@
             border-radius: 20px;
             width: calc(100% - 30px);
             max-width: 340px;
-            height: calc(100vh - 300px);
+            height: calc(100vh - 200px);
             min-height: 450px;
             max-height: 500px;
             box-shadow: 
@@ -857,94 +857,165 @@
             position: relative;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(64, 128, 255, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 70% 70%, rgba(100, 150, 255, 0.2) 0%, transparent 50%),
-                linear-gradient(135deg, #1a1a3a 0%, #2a2a4a 100%);
+            background-size: cover;
+            background-position: center;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
             overflow: hidden;
             z-index: 1;
         }
         
-        .card-avatar {
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            color: white;
-            border: 3px solid rgba(64, 128, 255, 0.6);
-            backdrop-filter: blur(10px);
-            box-shadow: 
-                0 0 20px rgba(64, 128, 255, 0.4),
-                inset 0 0 30px rgba(255, 255, 255, 0.1);
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
+        .user-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, rgba(10, 10, 25, 0.9), transparent);
             z-index: 2;
         }
         
         /* Информация на карточке (имя, возраст, расстояние, город) */
         .card-basic-info {
             position: absolute;
-            bottom: 20px;
+            bottom: 0;
             left: 0;
             right: 0;
             text-align: center;
-            padding: 0 20px;
+            padding: 20px;
             z-index: 3;
         }
         
         .card-basic-info h2 {
-            font-size: 24px;
+            font-size: 28px;
             color: white;
             margin-bottom: 5px;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
         }
         
         .card-basic-info .age {
             color: #a0d0ff;
-            font-size: 20px;
-            font-weight: 500;
+            font-size: 24px;
+            font-weight: 600;
             display: inline-block;
             margin-left: 5px;
         }
         
         .card-location-info {
-            color: rgba(192, 200, 255, 0.9);
+            color: rgba(255, 255, 255, 0.9);
             font-size: 14px;
             margin-top: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 15px;
             flex-wrap: wrap;
         }
         
         .card-location-info span {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
+            background: rgba(10, 10, 25, 0.7);
+            padding: 5px 10px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        /* Информация о пользователе - РАСКРЫВАЕТСЯ ВНИЗ */
+        /* Кнопка "Узнать больше" для ПК */
+        .more-info-button {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 10, 25, 0.9);
+            border: 1px solid rgba(64, 128, 255, 0.4);
+            color: #80c0ff;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .more-info-button:hover {
+            background: rgba(64, 128, 255, 0.2);
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(64, 128, 255, 0.3);
+        }
+        
+        /* Кнопки действий на карточке */
+        .card-action-buttons {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 10;
+        }
+        
+        .card-action-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid transparent;
+        }
+        
+        .card-dislike {
+            background: rgba(255, 100, 100, 0.2);
+            color: #ffaaaa;
+            border-color: rgba(255, 100, 100, 0.4);
+        }
+        
+        .card-like {
+            background: rgba(100, 255, 100, 0.2);
+            color: #aaffaa;
+            border-color: rgba(100, 255, 100, 0.4);
+        }
+        
+        .card-action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Информация о пользователе - РАСКРЫВАЕТСЯ ВНИЗ ПОД КАРТОЧКОЙ */
         .card-info {
             background: rgba(10, 10, 25, 0.98);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(64, 128, 255, 0.3);
             border-radius: 20px;
             padding: 20px;
-            margin-top: 10px;
             width: calc(100% - 30px);
             max-width: 340px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 10px auto;
             display: none;
             flex-direction: column;
             box-shadow: 
@@ -953,11 +1024,8 @@
             transform: translateY(100%);
             opacity: 0;
             transition: all 0.4s ease;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 10;
+            position: relative;
+            z-index: 2;
             max-height: 0;
             overflow: hidden;
             height: auto;
@@ -967,7 +1035,7 @@
             display: flex;
             transform: translateY(0);
             opacity: 1;
-            max-height: calc(100vh - 300px);
+            max-height: calc(100vh - 250px);
             overflow-y: auto;
             height: auto;
         }
@@ -1071,25 +1139,22 @@
             display: flex;
             justify-content: center;
             gap: 30px;
-            padding: 20px 15px;
+            padding: 15px;
             width: 100%;
             max-width: 400px;
             margin: 0 auto;
             position: relative;
-            bottom: auto;
-            left: 0;
-            right: 0;
             z-index: 5;
             transition: all 0.4s ease;
             margin-top: 10px;
         }
         
         .action-btn {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border: none;
             border-radius: 50%;
-            font-size: 28px;
+            font-size: 24px;
             cursor: pointer;
             transition: all 0.4s ease;
             display: flex;
@@ -1099,10 +1164,10 @@
             overflow: hidden;
             backdrop-filter: blur(10px);
             box-shadow: 
-                0 10px 20px rgba(0, 0, 0, 0.3),
+                0 8px 15px rgba(0, 0, 0, 0.3),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
-            min-width: 70px;
-            min-height: 70px;
+            min-width: 60px;
+            min-height: 60px;
             z-index: 5;
         }
         
@@ -1121,7 +1186,7 @@
         .action-btn:hover {
             transform: scale(1.1) translateY(-3px);
             box-shadow: 
-                0 15px 30px rgba(0, 0, 0, 0.4),
+                0 12px 25px rgba(0, 0, 0, 0.4),
                 inset 0 1px 1px rgba(255, 255, 255, 0.2);
         }
         
@@ -2051,15 +2116,16 @@
         .content-wrapper {
             flex: 1;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
             position: relative;
             overflow-y: auto;
-            padding: 15px 10px;
+            padding: 0 10px;
             width: 100%;
             min-height: 400px;
             -webkit-overflow-scrolling: touch;
-            padding-top: env(safe-area-inset-top, 0px);
+            padding-top: 5px;
             padding-bottom: env(safe-area-inset-bottom, 0px);
             z-index: 3;
         }
@@ -2399,10 +2465,8 @@
         
         .search-grid-photo {
             height: 140px;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(64, 128, 255, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 70% 70%, rgba(100, 150, 255, 0.2) 0%, transparent 50%),
-                linear-gradient(135deg, #1a1a3a 0%, #2a2a4a 100%);
+            background-size: cover;
+            background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2638,7 +2702,7 @@
             .card {
                 width: calc(100% - 20px);
                 max-width: 100%;
-                height: calc(100vh - 280px);
+                height: calc(100vh - 200px);
                 min-height: 450px;
                 margin: 0 auto;
                 margin-bottom: 0;
@@ -2692,17 +2756,17 @@
             }
             
             .action-buttons {
-                gap: 25px;
-                padding: 20px 15px;
+                gap: 20px;
+                padding: 15px;
                 position: relative;
                 bottom: auto;
                 margin-top: 10px;
             }
             
             .action-btn {
-                width: 65px;
-                height: 65px;
-                font-size: 24px;
+                width: 60px;
+                height: 60px;
+                font-size: 22px;
             }
             
             .subscription-card {
@@ -2758,7 +2822,7 @@
             }
             
             .content-wrapper {
-                padding: 10px 0;
+                padding: 5px 0;
                 min-height: 350px;
             }
             
@@ -2778,7 +2842,7 @@
             
             .nav-tabs {
                 margin: 10px;
-                margin-top: calc(env(safe-area-inset-top, 20px) + 70px);
+                margin-top: calc(env(safe-area-inset-top, 20px) + 10px);
             }
             
             .subscription-container {
@@ -2802,7 +2866,7 @@
             }
             
             .card {
-                height: calc(100vh - 260px);
+                height: calc(100vh - 180px);
                 min-height: 420px;
                 margin-bottom: 0;
                 width: calc(100% - 20px);
@@ -2836,13 +2900,13 @@
             }
             
             .action-buttons {
-                gap: 20px;
+                gap: 15px;
             }
             
             .action-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 22px;
+                width: 55px;
+                height: 55px;
+                font-size: 20px;
             }
             
             .subscription-card {
@@ -2915,7 +2979,7 @@
         /* Высокие экраны (iPhone X и подобные) */
         @media (min-height: 812px) {
             .card {
-                height: calc(100vh - 320px);
+                height: calc(100vh - 250px);
                 max-height: 550px;
                 margin-bottom: 0;
             }
@@ -2932,7 +2996,7 @@
         /* Низкие экраны */
         @media (max-height: 700px) {
             .card {
-                height: calc(100vh - 250px);
+                height: calc(100vh - 180px);
                 min-height: 380px;
                 margin-bottom: 0;
             }
@@ -2943,12 +3007,6 @@
             
             .search-grid-photo {
                 height: 100px;
-            }
-            
-            .card-avatar {
-                width: 100px;
-                height: 100px;
-                font-size: 40px;
             }
             
             .chat-container {
@@ -3429,6 +3487,25 @@
         let isSwiping = false;
         let isCardExpanded = false;
         
+        // ФОТОГРАФИИ ДЛЯ ТЕСТОВЫХ ПОЛЬЗОВАТЕЛЕЙ
+        const userPhotos = {
+            // Женщины
+            'user_1': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            'user_3': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            'user_5': 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            'user_6': 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            'user_7': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            'user_8': 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            
+            // Мужчины
+            'user_2': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            'user_4': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            'user_9': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            'user_10': 'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            'user_11': 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+            'user_12': 'https://images.unsplash.com/photo-1507591064344-4c6ce005-128?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'
+        };
+        
         // Знаки зодиака
         const zodiacSigns = [
             "Овен", "Телец", "Близнецы", "Рак", "Лев", "Дева",
@@ -3460,9 +3537,8 @@
         // Emoji для пикера
         const emojis = ["😊", "😂", "🥰", "😍", "😘", "😎", "🤔", "😢", "😠", "👍", "👎", "❤️", "🔥", "🎉", "💯", "🤗", "😇", "🤩", "😜", "🤪"];
         
-        // ПСИХОЛОГИЧЕСКИЙ ТЕСТ (20 вопросов: 3 про интимную близость, 7 про личность, 10 про отношения)
+        // ПСИХОЛОГИЧЕСКИЙ ТЕСТ
         const psychologicalTest = [
-            // 3 вопроса про интимную близость
             {
                 id: 1,
                 question: "Насколько важна для вас интимная близость в отношениях?",
@@ -3496,8 +3572,6 @@
                 ],
                 category: "intimacy"
             },
-            
-            // 7 вопросов про личность
             {
                 id: 4,
                 question: "Как вы обычно реагируете на стрессовые ситуации?",
@@ -3575,8 +3649,6 @@
                 ],
                 category: "personality"
             },
-            
-            // 10 вопросов про отношения
             {
                 id: 11,
                 question: "Что для вас важнее в партнере?",
@@ -3689,7 +3761,7 @@
             }
         ];
 
-        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ (6 мужчин и 6 женщин) с расстоянием
+        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛЕЙ (6 мужчин и 6 женщин) с расстоянием
         const sampleUsers = [
             { 
                 id: 'user_1',
@@ -4434,7 +4506,7 @@
             const user = sampleUsers.find(u => u.id === userId);
             if (!user) return;
             
-            const genderIcon = user.gender === 'male' ? '👨' : '👩';
+            const photoUrl = userPhotos[userId];
             
             const container = document.getElementById('content-container');
             container.innerHTML = `
@@ -4443,10 +4515,16 @@
                         ←
                     </div>
                     <div class="card" id="chat-profile-card" style="height: calc(100vh - 280px);">
-                        <div class="card-photo">
-                            <div class="card-avatar">${genderIcon}</div>
+                        <div class="card-photo" style="background-image: url('${photoUrl}');">
+                            <div class="photo-overlay"></div>
                             <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; text-align: center;">
                                 <h2 style="font-size: 24px; color: white; margin-bottom: 5px;">${escapeHtml(user.name)} <span style="color: #a0d0ff;">${escapeHtml(user.age)}</span></h2>
+                                <div class="card-location-info">
+                                    <span>📍 ${escapeHtml(user.city)}</span>
+                                    <span>📏 ${escapeHtml(user.distance)}</span>
+                                    <span>📐 ${escapeHtml(user.height)} см</span>
+                                    <span>${user.zodiac}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -5242,12 +5320,17 @@
         function setupCardSwipe(card, info) {
             if (!card || !info) return;
             
+            let startX = 0;
             let startY = 0;
+            let currentX = 0;
             let currentY = 0;
             let isDragging = false;
+            let isHorizontalSwipe = false;
             
+            // Для мобильных устройств
             card.addEventListener('touchstart', (e) => {
                 if (isCardExpanded) return;
+                startX = e.touches[0].clientX;
                 startY = e.touches[0].clientY;
                 isDragging = true;
                 card.style.transition = 'none';
@@ -5256,10 +5339,18 @@
             card.addEventListener('touchmove', (e) => {
                 if (!isDragging || isCardExpanded) return;
                 e.preventDefault();
+                currentX = e.touches[0].clientX;
                 currentY = e.touches[0].clientY;
+                
+                const deltaX = currentX - startX;
                 const deltaY = currentY - startY;
                 
-                if (deltaY < -30) {
+                // Определяем тип свайпа
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    isHorizontalSwipe = true;
+                    card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.1}deg)`;
+                } else if (deltaY < -30) {
+                    // Свайп вверх для раскрытия информации
                     showSwipeIndicator("Свайп вверх для подробной информации");
                 }
             });
@@ -5267,16 +5358,80 @@
             card.addEventListener('touchend', (e) => {
                 if (!isDragging || isCardExpanded) return;
                 isDragging = false;
+                
+                const deltaX = currentX - startX;
                 const deltaY = currentY - startY;
                 
                 card.style.transition = 'transform 0.4s ease';
                 card.style.transform = '';
                 
-                if (deltaY < -50) {
+                if (isHorizontalSwipe) {
+                    if (Math.abs(deltaX) > 50) {
+                        if (deltaX > 0) {
+                            handleSwipe('right');
+                        } else {
+                            handleSwipe('left');
+                        }
+                    }
+                } else if (deltaY < -50) {
                     expandCard(card, info);
+                }
+                
+                isHorizontalSwipe = false;
+            });
+            
+            // Для десктопов
+            card.addEventListener('mousedown', (e) => {
+                if (isCardExpanded) return;
+                startX = e.clientX;
+                startY = e.clientY;
+                isDragging = true;
+                card.style.transition = 'none';
+            });
+            
+            card.addEventListener('mousemove', (e) => {
+                if (!isDragging || isCardExpanded) return;
+                currentX = e.clientX;
+                currentY = e.clientY;
+                
+                const deltaX = currentX - startX;
+                const deltaY = currentY - startY;
+                
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    isHorizontalSwipe = true;
+                    card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.1}deg)`;
                 }
             });
             
+            card.addEventListener('mouseup', (e) => {
+                if (!isDragging || isCardExpanded) return;
+                isDragging = false;
+                
+                const deltaX = currentX - startX;
+                
+                card.style.transition = 'transform 0.4s ease';
+                card.style.transform = '';
+                
+                if (isHorizontalSwipe && Math.abs(deltaX) > 50) {
+                    if (deltaX > 0) {
+                        handleSwipe('right');
+                    } else {
+                        handleSwipe('left');
+                    }
+                }
+                
+                isHorizontalSwipe = false;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    card.style.transition = 'transform 0.4s ease';
+                    card.style.transform = '';
+                }
+            });
+            
+            // Обработка свайпа для закрытия информации
             info.addEventListener('touchstart', (e) => {
                 if (!isCardExpanded) return;
                 startY = e.touches[0].clientY;
@@ -5307,19 +5462,50 @@
                     collapseCard(card, info);
                 }
             });
+            
+            // Для десктопов - кнопка закрытия
+            const closeBtn = info.querySelector('.close-info-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    collapseCard(card, info);
+                });
+            }
         }
         
         // РАСШИРЕНИЕ КАРТОЧКИ
         function expandCard(card, info) {
             if (!card || !info) return;
             
-            card.style.transform = 'translateY(-100%)';
-            card.style.opacity = '0';
+            // Плавное смещение карточки вверх
+            card.style.transform = 'translateY(-20px) scale(0.95)';
+            card.style.opacity = '0.8';
             
             setTimeout(() => {
                 info.style.display = 'flex';
                 info.classList.add('expanded');
                 isCardExpanded = true;
+                
+                // Добавляем кнопку закрытия для десктопа
+                if (!info.querySelector('.close-info-btn')) {
+                    const closeBtn = document.createElement('button');
+                    closeBtn.className = 'close-info-btn';
+                    closeBtn.innerHTML = '▲ Свернуть';
+                    closeBtn.style.cssText = `
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        background: rgba(10, 10, 25, 0.8);
+                        border: 1px solid rgba(64, 128, 255, 0.3);
+                        color: #80c0ff;
+                        padding: 8px 12px;
+                        border-radius: 15px;
+                        font-size: 12px;
+                        cursor: pointer;
+                        backdrop-filter: blur(10px);
+                        z-index: 100;
+                    `;
+                    info.appendChild(closeBtn);
+                }
             }, 300);
         }
         
@@ -5331,9 +5517,15 @@
             
             setTimeout(() => {
                 info.style.display = 'none';
-                card.style.transform = 'translateY(0)';
+                card.style.transform = 'translateY(0) scale(1)';
                 card.style.opacity = '1';
                 isCardExpanded = false;
+                
+                // Удаляем кнопку закрытия
+                const closeBtn = info.querySelector('.close-info-btn');
+                if (closeBtn) {
+                    closeBtn.remove();
+                }
             }, 300);
         }
         
@@ -5354,7 +5546,7 @@
             }, 1000);
         }
         
-        // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ (ИСПРАВЛЕНО)
+        // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ
         function showCurrentCard() {
             const container = document.getElementById('content-container');
             
@@ -5374,18 +5566,34 @@
             }
             
             currentCard = filteredUsers[currentCardIndex];
-            const genderIcon = currentCard.gender === 'male' ? '👨' : '👩';
+            const photoUrl = userPhotos[currentCard.id];
+            const isDesktop = window.innerWidth > 767;
             
             container.innerHTML = `
-                <div style="position: relative; width: 100%; height: 100%;">
+                <div style="position: relative; width: 100%;">
                     <div class="card" id="current-card">
-                        <div class="card-photo">
-                            <div class="card-avatar">${genderIcon}</div>
+                        <div class="card-photo" style="background-image: url('${photoUrl}');">
+                            <div class="photo-overlay"></div>
                             <div class="card-basic-info">
                                 <h2>${escapeHtml(currentCard.name)} <span class="age">${escapeHtml(currentCard.age)}</span></h2>
                                 <div class="card-location-info">
                                     <span>📍 ${escapeHtml(currentCard.city)}</span>
                                     <span>📏 ${escapeHtml(currentCard.distance)}</span>
+                                    <span>📐 ${escapeHtml(currentCard.height)} см</span>
+                                    <span>${currentCard.zodiac}</span>
+                                </div>
+                                <div class="card-action-buttons">
+                                    <button class="card-action-btn card-dislike" onclick="handleSwipe('left')">
+                                        👎
+                                    </button>
+                                    ${isDesktop ? `
+                                        <button class="more-info-button" onclick="expandCard(document.getElementById('current-card'), document.getElementById('card-info'))">
+                                            Узнать больше ▼
+                                        </button>
+                                    ` : ''}
+                                    <button class="card-action-btn card-like" onclick="handleSwipe('right')">
+                                        👍
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -5445,7 +5653,7 @@
             }
             
             const card = document.getElementById('current-card');
-            const buttons = document.querySelectorAll('.action-btn');
+            const buttons = document.querySelectorAll('.action-btn, .card-action-btn');
             
             buttons.forEach(btn => btn.classList.add('liquid-effect'));
             setTimeout(() => {
@@ -5633,21 +5841,21 @@
             }
             
             grid.innerHTML = filteredUsers.map(user => {
-                const genderIcon = user.gender === 'male' ? '👨' : '👩';
+                const photoUrl = userPhotos[user.id];
                 
                 return `
                     <div class="search-grid-card" data-user-id="${user.id}" onclick="openUserCard('${user.id}')">
-                        <div class="search-grid-photo">
-                            <div class="search-grid-avatar">${genderIcon}</div>
+                        <div class="search-grid-photo" style="background-image: url('${photoUrl}');">
                             ${user.online ? '<div class="search-grid-online"></div>' : ''}
-                            <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; text-align: center;">
+                            <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; text-align: center; background: rgba(10, 10, 25, 0.7); padding: 8px; border-radius: 10px; backdrop-filter: blur(10px);">
                                 <div style="font-size: 16px; color: white; font-weight: 600; margin-bottom: 3px;">${escapeHtml(user.name)} <span style="color: #a0d0ff;">${escapeHtml(user.age)}</span></div>
                                 <div style="font-size: 11px; color: rgba(255, 255, 255, 0.9);">${escapeHtml(user.distance)} • ${escapeHtml(user.city.split(',')[0])}</div>
                             </div>
                         </div>
                         <div class="search-grid-info">
                             <div class="search-grid-location">
-                                ${escapeHtml(user.city)}
+                                📍 ${escapeHtml(user.city.split(',')[0])}<br>
+                                📐 ${escapeHtml(user.height)} см • ${escapeHtml(user.zodiac)}
                             </div>
                         </div>
                     </div>
@@ -5660,22 +5868,38 @@
             const user = filteredUsers.find(u => u.id === userId);
             if (!user) return;
             
-            const genderIcon = user.gender === 'male' ? '👨' : '👩';
+            const photoUrl = userPhotos[userId];
+            const isDesktop = window.innerWidth > 767;
             
             const container = document.getElementById('content-container');
             container.innerHTML = `
-                <div style="position: relative; width: 100%; height: 100%;">
+                <div style="position: relative; width: 100%;">
                     <button class="filter-button visible" style="top: 10px; right: 15px; z-index: 10;" onclick="backToSearchGrid()">
                         ←
                     </button>
                     <div class="card" id="user-card-${userId}">
-                        <div class="card-photo">
-                            <div class="card-avatar">${genderIcon}</div>
+                        <div class="card-photo" style="background-image: url('${photoUrl}');">
+                            <div class="photo-overlay"></div>
                             <div class="card-basic-info">
                                 <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
                                 <div class="card-location-info">
                                     <span>📍 ${escapeHtml(user.city)}</span>
                                     <span>📏 ${escapeHtml(user.distance)}</span>
+                                    <span>📐 ${escapeHtml(user.height)} см</span>
+                                    <span>${user.zodiac}</span>
+                                </div>
+                                <div class="card-action-buttons">
+                                    <button class="card-action-btn card-dislike" onclick="handleUserCardAction('left', '${userId}')">
+                                        👎
+                                    </button>
+                                    ${isDesktop ? `
+                                        <button class="more-info-button" onclick="expandCard(document.getElementById('user-card-${userId}'), document.getElementById('user-card-info-${userId}'))">
+                                            Узнать больше ▼
+                                        </button>
+                                    ` : ''}
+                                    <button class="card-action-btn card-like" onclick="handleUserCardAction('right', '${userId}')">
+                                        👍
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -5740,7 +5964,7 @@
             const card = document.getElementById(`user-card-${userId}`);
             if (!card) return;
             
-            const buttons = document.querySelectorAll('.action-btn');
+            const buttons = document.querySelectorAll('.action-btn, .card-action-btn');
             
             buttons.forEach(btn => btn.classList.add('liquid-effect'));
             setTimeout(() => {
@@ -5960,7 +6184,6 @@
         function showProfileScreen() {
             const container = document.getElementById('content-container');
             const isTestCompleted = currentUser.testCompleted || false;
-            const genderIcon = currentUser.gender === 'male' ? '👨' : '👩';
             const subscriptionColor = currentUser.subscription === 'free' ? '#c0c0c0' : 
                                    currentUser.subscription === 'plus' ? '#00c8ff' : '#b450ff';
             const subscriptionText = currentUser.subscription === 'free' ? 'Бесплатно' : 
@@ -5977,7 +6200,7 @@
                         <div class="section-title">Основная информация</div>
                         <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
                             <div style="width: 60px; height: 60px; background: linear-gradient(45deg, rgba(64, 128, 255, 0.3), rgba(100, 150, 255, 0.4)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 2px solid rgba(64, 128, 255, 0.5);">
-                                ${genderIcon}
+                                ${currentUser.gender === 'male' ? '👨' : '👩'}
                             </div>
                             <div>
                                 <div style="color: #80c0ff; font-weight: 600; margin-bottom: 3px;">${escapeHtml(currentUser.name)}</div>

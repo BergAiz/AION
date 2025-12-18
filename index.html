@@ -187,7 +187,7 @@
         /* Контейнер приложения */
         #app {
             position: relative;
-            z-index: 3; /* Исправлено: было 2, стало 3 - выше фона */
+            z-index: 3;
             width: 100%;
             max-width: 400px;
             height: 100vh;
@@ -209,7 +209,7 @@
             z-index: 1000;
         }
         
-        /* Кнопка уведомлений - ИСПРАВЛЕНО ДИЗАЙН */
+        /* Кнопка уведомлений */
         .notifications-button {
             width: 44px;
             height: 44px;
@@ -292,7 +292,7 @@
             z-index: 2;
         }
         
-        /* Кнопка фильтра в поиске - ИЗМЕНЕНО: теперь внутри search-container */
+        /* Кнопка фильтра в поиске */
         .filter-button {
             position: absolute;
             top: 10px;
@@ -302,7 +302,7 @@
             border-radius: 50%;
             width: 44px;
             height: 44px;
-            display: none; /* По умолчанию скрыта */
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -490,7 +490,7 @@
             font-size: 13px;
         }
         
-        /* Меню уведомлений - ИСПРАВЛЕН ЦВЕТ */
+        /* Меню уведомлений */
         .notifications-menu {
             position: fixed;
             top: calc(env(safe-area-inset-top, 20px) + 60px);
@@ -600,7 +600,7 @@
             opacity: 0.5;
         }
         
-        /* Навигационные вкладки - ПЕРЕМЕЩЕНЫ ПОД КНОПКИ (ИСПРАВЛЕНО) */
+        /* Навигационные вкладки */
         .nav-tabs {
             display: flex;
             background: rgba(10, 10, 25, 0.95);
@@ -613,7 +613,7 @@
                 0 5px 15px rgba(0, 0, 0, 0.2),
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
             margin: 10px;
-            margin-top: calc(env(safe-area-inset-top, 20px) + 70px); /* Увеличено отступ сверху */
+            margin-top: calc(env(safe-area-inset-top, 20px) + 70px);
             position: relative;
             z-index: 3;
         }
@@ -664,7 +664,7 @@
             max-width: 380px;
             margin: 0 auto;
             position: relative;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 3;
         }
         
         .auth-header {
@@ -849,7 +849,7 @@
             user-select: none;
             display: flex;
             flex-direction: column;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 3;
         }
         
         /* Изображение на всю карточку */
@@ -945,7 +945,7 @@
             max-width: 340px;
             margin-left: auto;
             margin-right: auto;
-            display: none; /* Скрыто по умолчанию */
+            display: none;
             flex-direction: column;
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.4),
@@ -953,18 +953,23 @@
             transform: translateY(100%);
             opacity: 0;
             transition: all 0.4s ease;
-            position: relative;
-            z-index: 4;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
             max-height: 0;
             overflow: hidden;
+            height: auto;
         }
         
         .card-info.expanded {
             display: flex;
             transform: translateY(0);
             opacity: 1;
-            max-height: 500px;
+            max-height: calc(100vh - 300px);
             overflow-y: auto;
+            height: auto;
         }
         
         /* Имя и возраст вверху информации */
@@ -1061,43 +1066,7 @@
             margin-bottom: 0;
         }
         
-        /* Кнопка для показа дополнительной информации - ПОД КАРТОЧКОЙ БЕЗ ОТСТУПОВ */
-        .info-toggle {
-            width: calc(100% - 30px);
-            max-width: 340px;
-            padding: 12px;
-            background: linear-gradient(45deg, rgba(64, 128, 255, 0.2), rgba(100, 150, 255, 0.3));
-            border: 1px solid rgba(64, 128, 255, 0.4);
-            border-radius: 12px;
-            color: #80c0ff;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 
-                0 5px 15px rgba(64, 128, 255, 0.2),
-                inset 0 1px 1px rgba(255, 255, 255, 0.1);
-            z-index: 10;
-            margin: 0 auto;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            z-index: 5; /* Увеличено, чтобы была выше кнопок */
-        }
-        
-        .info-toggle:hover {
-            background: linear-gradient(45deg, rgba(64, 128, 255, 0.3), rgba(100, 150, 255, 0.4));
-            transform: translateY(-2px);
-            box-shadow: 
-                0 10px 20px rgba(64, 128, 255, 0.3),
-                inset 0 1px 1px rgba(255, 255, 255, 0.2);
-        }
-        
-        /* Кнопки действий - ПЕРЕМЕЩЕНЫ НИЖЕ КНОПКИ "УЗНАТЬ БОЛЬШЕ" (ИСПРАВЛЕНО) */
+        /* Кнопки действий - ИСПРАВЛЕНО: всегда видны и правильно расположены */
         .action-buttons {
             display: flex;
             justify-content: center;
@@ -1106,18 +1075,13 @@
             width: 100%;
             max-width: 400px;
             margin: 0 auto;
-            position: relative; /* Изменено с fixed на relative */
+            position: relative;
             bottom: auto;
             left: 0;
             right: 0;
-            z-index: 3; /* Уменьшено, чтобы было ниже кнопки "Узнать больше" */
+            z-index: 5;
             transition: all 0.4s ease;
-            margin-top: 10px; /* Добавлен отступ сверху */
-        }
-        
-        /* Скрытие кнопок действий при открытой информации */
-        .card-info.expanded ~ .action-buttons {
-            display: none; /* Скрываем кнопки при открытой информации */
+            margin-top: 10px;
         }
         
         .action-btn {
@@ -1139,7 +1103,7 @@
                 inset 0 1px 1px rgba(255, 255, 255, 0.1);
             min-width: 70px;
             min-height: 70px;
-            z-index: 3;
+            z-index: 5;
         }
         
         .btn-dislike {
@@ -1186,7 +1150,7 @@
             padding-left: max(20px, env(safe-area-inset-left, 20px));
             padding-right: max(20px, env(safe-area-inset-right, 20px));
             position: relative;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 3;
         }
         
         .subscription-container::-webkit-scrollbar {
@@ -1212,7 +1176,7 @@
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 3;
         }
         
         .subscription-card:hover {
@@ -1611,7 +1575,7 @@
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.2);
             position: relative;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 3;
         }
         
         .chat-messages {
@@ -1923,7 +1887,7 @@
                 0 0 30px rgba(64, 128, 255, 0.2);
             -webkit-overflow-scrolling: touch;
             position: relative;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 3;
         }
         
         .chat-item {
@@ -2097,7 +2061,7 @@
             -webkit-overflow-scrolling: touch;
             padding-top: env(safe-area-inset-top, 0px);
             padding-bottom: env(safe-area-inset-bottom, 0px);
-            z-index: 3; /* КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: добавлен z-index */
+            z-index: 3;
         }
         
         /* Уведомление о мэтче */
@@ -2162,7 +2126,7 @@
                 0 20px 40px rgba(0, 0, 0, 0.4),
                 0 0 30px rgba(64, 128, 255, 0.2);
             position: relative;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 3;
         }
         
         .profile-header {
@@ -2273,7 +2237,7 @@
             margin: 0 auto;
             position: relative;
             overflow-y: auto;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 3;
         }
         
         .search-filters {
@@ -2422,7 +2386,7 @@
                 0 0 15px rgba(64, 128, 255, 0.15);
             -webkit-user-select: none;
             user-select: none;
-            z-index: 3; /* Исправлено: добавлен z-index */
+            z-index: 3;
         }
         
         .search-grid-card:hover {
@@ -2514,6 +2478,59 @@
             color: rgba(192, 200, 255, 0.7);
             padding: 60px 20px;
             grid-column: 1 / -1;
+        }
+        
+        /* Бейдж уведомлений */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(45deg, #ff4444, #ff8888);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            box-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
+        }
+        
+        /* Кнопки действий для открытой карточки в поиске */
+        .user-card-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px 15px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            position: fixed;
+            bottom: calc(env(safe-area-inset-bottom, 20px) + 10px);
+            left: 0;
+            right: 0;
+            z-index: 20;
+        }
+        
+        /* Индикатор свайпа */
+        .swipe-indicator {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(128, 200, 255, 0.7);
+            font-size: 12px;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .swipe-indicator.show {
+            opacity: 1;
         }
         
         /* Большие экраны (ноутбуки, ПК) */
@@ -2677,7 +2694,7 @@
             .action-buttons {
                 gap: 25px;
                 padding: 20px 15px;
-                position: relative; /* Изменено с fixed на relative */
+                position: relative;
                 bottom: auto;
                 margin-top: 10px;
             }
@@ -2761,7 +2778,7 @@
             
             .nav-tabs {
                 margin: 10px;
-                margin-top: calc(env(safe-area-inset-top, 20px) + 70px); /* Увеличено отступ сверху */
+                margin-top: calc(env(safe-area-inset-top, 20px) + 70px);
             }
             
             .subscription-container {
@@ -2771,19 +2788,6 @@
             
             .search-container {
                 padding-top: 0;
-            }
-            
-            /* Дополнительные исправления для мобильных телефонов */
-            .info-toggle {
-                position: relative;
-                z-index: 5;
-                margin-top: 10px;
-            }
-            
-            .action-buttons {
-                margin-top: 10px;
-                position: relative;
-                z-index: 3;
             }
         }
         
@@ -2921,7 +2925,7 @@
             }
             
             .action-buttons {
-                margin-top: 15px; /* Изменено с bottom на margin-top */
+                margin-top: 15px;
             }
         }
         
@@ -2956,59 +2960,7 @@
             }
             
             .action-buttons {
-                margin-top: 8px; /* Изменено с bottom на margin-top */
-            }
-        }
-        
-        /* Горизонтальная ориентация на мобильных */
-        @media (max-height: 500px) and (orientation: landscape) {
-            #app {
-                max-width: 100%;
-                flex-direction: row;
-                padding: 10px;
-            }
-            
-            .content-wrapper {
-                height: calc(100vh - 120px);
-            }
-            
-            .card {
-                width: 300px;
-                height: calc(100vh - 120px);
-                min-height: auto;
-                margin: 0;
-                margin-bottom: 0;
-            }
-            
-            .search-results-grid {
-                grid-template-columns: repeat(3, minmax(140px, 1fr));
-            }
-            
-            .action-buttons {
-                position: relative;
-                bottom: auto;
-                margin-top: 10px;
-            }
-            
-            .nav-tabs {
-                flex-direction: column;
-                width: 100px;
-                margin: 10px;
-            }
-            
-            .chat-container {
-                height: calc(100vh - 120px);
-                width: 100%;
-            }
-            
-            .chats-list {
-                height: calc(100vh - 120px);
-                width: 100%;
-            }
-            
-            .header-buttons {
-                top: 10px;
-                right: 10px;
+                margin-top: 8px;
             }
         }
         
@@ -3057,10 +3009,6 @@
             }
             
             .back-to-chat-btn:hover {
-                transform: none;
-            }
-            
-            .info-toggle:hover {
                 transform: none;
             }
             
@@ -3119,41 +3067,6 @@
                 height: 100vh;
                 height: -webkit-fill-available;
             }
-        }
-        
-        /* Бейдж уведомлений */
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: linear-gradient(45deg, #ff4444, #ff8888);
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-            box-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
-        }
-        
-        /* Кнопки действий для открытой карточки в поиске */
-        .user-card-actions {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px 15px;
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            position: fixed;
-            bottom: calc(env(safe-area-inset-bottom, 20px) + 10px);
-            left: 0;
-            right: 0;
-            z-index: 20;
         }
     </style>
 </head>
@@ -3460,8 +3373,6 @@
         ⚠️ Сообщение содержит неподходящий контент
     </div>
     
-    <!-- Кнопка фильтра для поиска (УДАЛЕНА ОТСЮДА, БУДЕТ ВНУТРИ SEARCH-CONTAINER) -->
-    
     <div id="app">
         <!-- Приложение будет здесь -->
     </div>
@@ -3516,6 +3427,7 @@
         let touchEndX = 0;
         let touchEndY = 0;
         let isSwiping = false;
+        let isCardExpanded = false;
         
         // Знаки зодиака
         const zodiacSigns = [
@@ -3604,7 +3516,7 @@
                     "Очень важную, поддерживаю тесные связи",
                     "Важную, но отношения с партнером приоритетнее",
                     "Имеют значение, но я достаточно самостоятелен(льна)",
-                    "Предпочитаю узкий круг близких людей"
+                    "Предпочитаю узлый круг близких людей"
                 ],
                 category: "personality"
             },
@@ -4111,7 +4023,6 @@
             
             const currentUserGender = currentUser.gender;
             
-            // Если пользователь мужчина - показываем женщин, если женщина - мужчин
             if (currentUserGender === 'male') {
                 return sampleUsers.filter(user => user.gender === 'female');
             } else if (currentUserGender === 'female') {
@@ -4125,29 +4036,23 @@
         function filterUsersBySearchCriteria() {
             let filtered = filterUsersByGender();
             
-            // Применяем фильтры поиска
             filtered = filtered.filter(user => {
-                // Возраст
                 if (user.age < searchFilters.ageMin || user.age > searchFilters.ageMax) {
                     return false;
                 }
                 
-                // Город
                 if (searchFilters.city && !user.city.toLowerCase().includes(searchFilters.city.toLowerCase())) {
                     return false;
                 }
                 
-                // Онлайн статус
                 if (searchFilters.onlineOnly && !user.online) {
                     return false;
                 }
                 
-                // Образование
                 if (searchFilters.education && user.education !== searchFilters.education) {
                     return false;
                 }
                 
-                // Религия (адаптируем текст в зависимости от пола пользователя)
                 if (searchFilters.religion) {
                     if (searchFilters.religion === "Не религиозен" && currentUser.gender === "male") {
                         if (user.religion !== "Не религиозен" && user.religion !== "Атеист") return false;
@@ -4158,22 +4063,18 @@
                     }
                 }
                 
-                // Курение
                 if (searchFilters.smoking && user.smoking !== searchFilters.smoking) {
                     return false;
                 }
                 
-                // Алкоголь
                 if (searchFilters.alcohol && user.alcohol !== searchFilters.alcohol) {
                     return false;
                 }
                 
-                // Рост
                 if (user.height < searchFilters.heightMin || user.height > searchFilters.heightMax) {
                     return false;
                 }
                 
-                // Знак зодиака
                 if (searchFilters.zodiac && user.zodiac !== searchFilters.zodiac) {
                     return false;
                 }
@@ -4191,7 +4092,6 @@
                 userChats = JSON.parse(savedChats);
             }
             
-            // Добавляем демо-чаты если их нет
             if (userChats.length === 0) {
                 userChats = [
                     {
@@ -4264,7 +4164,6 @@
                 userNotifications = JSON.parse(savedNotifications);
             }
             
-            // Добавляем демо-уведомления если их нет
             if (userNotifications.length === 0) {
                 userNotifications = sampleNotifications;
                 saveNotifications();
@@ -4282,16 +4181,13 @@
             const button = document.getElementById('notifications-button');
             
             if (unreadCount > 0) {
-                // Удаляем старый бейдж если есть
                 const oldBadge = button.querySelector('.notification-badge');
                 if (oldBadge) oldBadge.remove();
                 
-                // Создаем новый бейдж
                 const badge = document.createElement('div');
                 badge.className = 'notification-badge';
                 button.appendChild(badge);
             } else {
-                // Удаляем бейдж если нет непрочитанных
                 const badge = button.querySelector('.notification-badge');
                 if (badge) badge.remove();
             }
@@ -4335,11 +4231,9 @@
             const user = sampleUsers.find(u => u.id === userId);
             if (!user) return;
             
-            // Проверяем, есть ли уже чат с этим пользователем
             const existingChat = userChats.find(chat => chat.userId === userId);
             
             if (!existingChat) {
-                // Создаем новый чат
                 const newChat = {
                     id: 'chat_' + Date.now(),
                     userId: user.id,
@@ -4357,14 +4251,12 @@
                 userChats.unshift(newChat);
                 saveChats();
                 
-                // Добавляем уведомление
                 addNotification({
                     title: '🎉 Новый мэтч!',
                     text: `У вас взаимная симпатия с ${user.name}`,
                     icon: '💞'
                 });
                 
-                // Показываем уведомление
                 showMatchNotification(user.name);
             }
         }
@@ -4394,15 +4286,12 @@
             const notification = userNotifications.find(n => n.id === notificationId);
             if (!notification) return;
             
-            // Помечаем как прочитанное
             notification.unread = false;
             saveNotifications();
             updateNotificationBadge();
             renderNotifications();
             
-            // В зависимости от типа уведомления выполняем действия
             if (notification.title.includes('мэтч')) {
-                // Переходим в чаты
                 toggleNotifications();
                 setTimeout(() => {
                     switchTab('chat');
@@ -4553,16 +4442,13 @@
                     <div class="back-to-chat-btn" onclick="renderActiveChat()">
                         ←
                     </div>
-                    <div class="card" id="chat-profile-card">
+                    <div class="card" id="chat-profile-card" style="height: calc(100vh - 280px);">
                         <div class="card-photo">
                             <div class="card-avatar">${genderIcon}</div>
                             <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; text-align: center;">
                                 <h2 style="font-size: 24px; color: white; margin-bottom: 5px;">${escapeHtml(user.name)} <span style="color: #a0d0ff;">${escapeHtml(user.age)}</span></h2>
                             </div>
                         </div>
-                    </div>
-                    <div class="info-toggle" onclick="toggleChatCardInfo()">
-                        Узнать больше
                     </div>
                     <div class="card-info" id="chat-profile-info">
                         <div class="card-bio">${escapeHtml(user.bio)}</div>
@@ -4593,28 +4479,15 @@
                                 <div class="detail-content">${formatMultilineText(escapeHtml(user.details.hobbies))}</div>
                             </div>
                         </div>
-                        <div class="info-toggle" onclick="toggleChatCardInfo()" style="margin-top: 15px;">
-                            Свернуть
-                        </div>
                     </div>
                 </div>
             `;
-        }
-
-        // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ В ЧАТЕ
-        function toggleChatCardInfo() {
-            const info = document.getElementById('chat-profile-info');
-            const indicator = document.querySelector('.info-toggle:not(#chat-profile-info .info-toggle)');
             
-            if (info) {
-                if (info.classList.contains('expanded')) {
-                    info.classList.remove('expanded');
-                    indicator.textContent = 'Узнать больше';
-                } else {
-                    info.classList.add('expanded');
-                    indicator.textContent = 'Свернуть';
-                }
-            }
+            const cardInfo = document.getElementById('chat-profile-info');
+            cardInfo.style.display = 'none';
+            
+            const card = document.getElementById('chat-profile-card');
+            setupCardSwipe(card, cardInfo);
         }
 
         // ОТОБРАЖЕНИЕ СООБЩЕНИЙ В ЧАТЕ
@@ -4635,23 +4508,6 @@
             });
 
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        // ОБРАБОТКА ВВОДА СООБЩЕНИЯ С AI-ПОМОЩЬЮ
-        let inputTimeout;
-        function handleChatInput() {
-            const input = document.getElementById('chat-input');
-            const messageText = input.value.trim();
-
-            clearTimeout(inputTimeout);
-            
-            if (messageText.length > 3) {
-                inputTimeout = setTimeout(() => {
-                    showAISuggestions(messageText);
-                }, 1000);
-            } else {
-                hideAISuggestions();
-            }
         }
 
         // АНАЛИЗ ТИПА СООБЩЕНИЯ
@@ -4716,6 +4572,23 @@
             }
             
             return suggestions.slice(0, 3);
+        }
+
+        // ОБРАБОТКА ВВОДА СООБЩЕНИЯ С AI-ПОМОЩЬЮ
+        let inputTimeout;
+        function handleChatInput() {
+            const input = document.getElementById('chat-input');
+            const messageText = input.value.trim();
+
+            clearTimeout(inputTimeout);
+            
+            if (messageText.length > 3) {
+                inputTimeout = setTimeout(() => {
+                    showAISuggestions(messageText);
+                }, 1000);
+            } else {
+                hideAISuggestions();
+            }
         }
 
         // ПОКАЗАТЬ AI-ПРЕДЛОЖЕНИЯ
@@ -4843,32 +4716,6 @@
         // МОДЕРАЦИЯ КОНТЕНТА
         async function moderateContent(text) {
             return false;
-            
-            const badWords = [
-                'хуй', 'пизда', 'ебал', 'ебать', 'блядь', 'гандон', 'мудак', 'сука', 'шлюха',
-                'fuck', 'shit', 'bitch', 'asshole', 'dick', 'pussy', 'cock', 'whore'
-            ];
-
-            const lowerText = text.toLowerCase();
-            
-            for (const word of badWords) {
-                if (lowerText.includes(word)) {
-                    return true;
-                }
-            }
-
-            const aggressivePatterns = [
-                /\b(убью|убить|ненавижу|ненависть|мразь|тварь|скотина)\b/gi,
-                /\b(умри|сдохни|пропади|исчезни)\b/gi
-            ];
-
-            for (const pattern of aggressivePatterns) {
-                if (pattern.test(text)) {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         // ПОКАЗАТЬ ПРЕДУПРЕЖДЕНИЕ МОДЕРАЦИИ
@@ -4936,7 +4783,6 @@
             const overlay = document.getElementById('settings-overlay');
             const button = document.getElementById('notifications-button');
             
-            // Закрываем другие меню если открыты
             if (isSettingsOpen) {
                 toggleSettings();
             }
@@ -4949,7 +4795,6 @@
                 overlay.classList.add('active');
                 button.classList.add('active');
                 
-                // Анимация колокольчика
                 setTimeout(() => {
                     button.classList.remove('active');
                 }, 500);
@@ -4971,7 +4816,6 @@
             const overlay = document.getElementById('settings-overlay');
             const button = document.getElementById('settings-button');
             
-            // Закрываем другие меню если открыты
             if (isNotificationsOpen) {
                 toggleNotifications();
             }
@@ -5116,25 +4960,38 @@
         
         // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
         function initApp() {
-            initChats();
-            initNotifications();
-            
-            if (!('localStorage' in window)) {
-                alert('Ваш браузер не поддерживает необходимое для работы приложения. Пожалуйста, обновите браузер.');
-                return;
+            try {
+                if (!('localStorage' in window)) {
+                    alert('Ваш браузер не поддерживает необходимое для работы приложения. Пожалуйста, обновите браузер.');
+                    return;
+                }
+                
+                initChats();
+                initNotifications();
+                
+                const savedUser = localStorage.getItem('aion_premium_user');
+                if (savedUser) {
+                    const user = JSON.parse(savedUser);
+                    currentUser = user;
+                    showMainScreen(user);
+                } else {
+                    showAuthScreen();
+                }
+                
+                updateNotificationBadge();
+            } catch (error) {
+                console.error('Ошибка инициализации приложения:', error);
+                document.getElementById('app').innerHTML = `
+                    <div style="color: #ff6b6b; text-align: center; padding: 50px 20px;">
+                        <div style="font-size: 40px; margin-bottom: 20px;">⚠️</div>
+                        <h3>Произошла ошибка</h3>
+                        <p>Пожалуйста, перезагрузите страницу</p>
+                        <button onclick="location.reload()" style="padding: 10px 20px; background: rgba(64, 128, 255, 0.3); color: #80c0ff; border: 1px solid rgba(64, 128, 255, 0.6); border-radius: 12px; margin-top: 20px; cursor: pointer;">
+                            Перезагрузить
+                        </button>
+                    </div>
+                `;
             }
-            
-            const savedUser = localStorage.getItem('aion_premium_user');
-            if (savedUser) {
-                const user = JSON.parse(savedUser);
-                currentUser = user;
-                showMainScreen(user);
-            } else {
-                showAuthScreen();
-            }
-            
-            // Обновляем бейдж уведомлений
-            updateNotificationBadge();
         }
         
         // ЭКРАН АВТОРИЗАЦИИ
@@ -5381,6 +5238,248 @@
             }
         }
         
+        // НАСТРОЙКА СВАЙПА ДЛЯ КАРТОЧКИ
+        function setupCardSwipe(card, info) {
+            if (!card || !info) return;
+            
+            let startY = 0;
+            let currentY = 0;
+            let isDragging = false;
+            
+            card.addEventListener('touchstart', (e) => {
+                if (isCardExpanded) return;
+                startY = e.touches[0].clientY;
+                isDragging = true;
+                card.style.transition = 'none';
+            });
+            
+            card.addEventListener('touchmove', (e) => {
+                if (!isDragging || isCardExpanded) return;
+                e.preventDefault();
+                currentY = e.touches[0].clientY;
+                const deltaY = currentY - startY;
+                
+                if (deltaY < -30) {
+                    showSwipeIndicator("Свайп вверх для подробной информации");
+                }
+            });
+            
+            card.addEventListener('touchend', (e) => {
+                if (!isDragging || isCardExpanded) return;
+                isDragging = false;
+                const deltaY = currentY - startY;
+                
+                card.style.transition = 'transform 0.4s ease';
+                card.style.transform = '';
+                
+                if (deltaY < -50) {
+                    expandCard(card, info);
+                }
+            });
+            
+            info.addEventListener('touchstart', (e) => {
+                if (!isCardExpanded) return;
+                startY = e.touches[0].clientY;
+                isDragging = true;
+                info.style.transition = 'none';
+            });
+            
+            info.addEventListener('touchmove', (e) => {
+                if (!isDragging || !isCardExpanded) return;
+                e.preventDefault();
+                currentY = e.touches[0].clientY;
+                const deltaY = currentY - startY;
+                
+                if (deltaY > 30) {
+                    showSwipeIndicator("Свайп вниз для возврата");
+                }
+            });
+            
+            info.addEventListener('touchend', (e) => {
+                if (!isDragging || !isCardExpanded) return;
+                isDragging = false;
+                const deltaY = currentY - startY;
+                
+                info.style.transition = 'transform 0.4s ease';
+                info.style.transform = '';
+                
+                if (deltaY > 50) {
+                    collapseCard(card, info);
+                }
+            });
+        }
+        
+        // РАСШИРЕНИЕ КАРТОЧКИ
+        function expandCard(card, info) {
+            if (!card || !info) return;
+            
+            card.style.transform = 'translateY(-100%)';
+            card.style.opacity = '0';
+            
+            setTimeout(() => {
+                info.style.display = 'flex';
+                info.classList.add('expanded');
+                isCardExpanded = true;
+            }, 300);
+        }
+        
+        // СВЕРТЫВАНИЕ КАРТОЧКИ
+        function collapseCard(card, info) {
+            if (!card || !info) return;
+            
+            info.classList.remove('expanded');
+            
+            setTimeout(() => {
+                info.style.display = 'none';
+                card.style.transform = 'translateY(0)';
+                card.style.opacity = '1';
+                isCardExpanded = false;
+            }, 300);
+        }
+        
+        // ПОКАЗАТЬ ИНДИКАТОР СВАЙПА
+        function showSwipeIndicator(text) {
+            let indicator = document.querySelector('.swipe-indicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.className = 'swipe-indicator';
+                document.querySelector('.content-wrapper').appendChild(indicator);
+            }
+            
+            indicator.textContent = text;
+            indicator.classList.add('show');
+            
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 1000);
+        }
+        
+        // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ (ИСПРАВЛЕНО)
+        function showCurrentCard() {
+            const container = document.getElementById('content-container');
+            
+            filteredUsers = filterUsersByGender();
+            
+            if (currentCardIndex >= filteredUsers.length) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #c0c8ff; padding: 30px;">
+                        <h3 style="margin-bottom: 12px; font-size: 20px; color: #80c0ff;">🌸 На сегодня достаточно</h3>
+                        <p style="margin-bottom: 15px; opacity: 0.9; font-size: 14px;">Вы познакомились со всеми анкетами. Завтра появятся новые люди.</p>
+                        <button onclick="resetCards()" style="padding: 10px 20px; background: rgba(20, 20, 40, 0.8); color: #c0c8ff; border: 1px solid rgba(64, 128, 255, 0.2); border-radius: 12px; cursor: pointer; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); font-size: 14px;">
+                            Начать заново
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            currentCard = filteredUsers[currentCardIndex];
+            const genderIcon = currentCard.gender === 'male' ? '👨' : '👩';
+            
+            container.innerHTML = `
+                <div style="position: relative; width: 100%; height: 100%;">
+                    <div class="card" id="current-card">
+                        <div class="card-photo">
+                            <div class="card-avatar">${genderIcon}</div>
+                            <div class="card-basic-info">
+                                <h2>${escapeHtml(currentCard.name)} <span class="age">${escapeHtml(currentCard.age)}</span></h2>
+                                <div class="card-location-info">
+                                    <span>📍 ${escapeHtml(currentCard.city)}</span>
+                                    <span>📏 ${escapeHtml(currentCard.distance)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info" id="card-info">
+                        <div class="card-bio">${escapeHtml(currentCard.bio)}</div>
+                        
+                        <div class="card-details">
+                            <div class="detail-section">
+                                <div class="detail-section-title">Интересы</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.interests)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Образ жизни</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.lifestyle)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Цели и мечты</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.goals)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Образование</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.education)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Работа</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.work)}</div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">Хобби и увлечения</div>
+                                <div class="detail-content">${formatMultilineText(currentCard.details.hobbies)}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn btn-dislike" onclick="handleSwipe('left')">👎</button>
+                        <button class="action-btn btn-like" onclick="handleSwipe('right')">👍</button>
+                    </div>
+                </div>
+            `;
+            
+            const card = document.getElementById('current-card');
+            const info = document.getElementById('card-info');
+            info.style.display = 'none';
+            
+            setupCardSwipe(card, info);
+        }
+        
+        // СВАЙП ДЛЯ КАРТОЧКИ
+        function handleSwipe(direction, userId = null) {
+            if (isModalOpen) return;
+            
+            if (userId) {
+                handleUserCardAction(direction, userId);
+                return;
+            }
+            
+            const card = document.getElementById('current-card');
+            const buttons = document.querySelectorAll('.action-btn');
+            
+            buttons.forEach(btn => btn.classList.add('liquid-effect'));
+            setTimeout(() => {
+                buttons.forEach(btn => btn.classList.remove('liquid-effect'));
+            }, 600);
+            
+            if (direction === 'right') {
+                card.classList.add('swipe-right');
+                
+                if (Math.random() < 0.3) {
+                    setTimeout(() => {
+                        handleMutualLike(currentCard.id);
+                    }, 500);
+                }
+                
+                setTimeout(() => {
+                    currentCardIndex++;
+                    showCurrentCard();
+                }, 800);
+            } else {
+                card.classList.add('swipe-left');
+                setTimeout(() => {
+                    currentCardIndex++;
+                    showCurrentCard();
+                }, 800);
+            }
+        }
+        
+        // СБРОС КАРТОЧЕК
+        function resetCards() {
+            currentCardIndex = 0;
+            showCurrentCard();
+        }
+        
         // ЭКРАН ПОИСКА
         function showSearchScreen() {
             filteredUsers = filterUsersBySearchCriteria();
@@ -5581,9 +5680,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="info-toggle" onclick="toggleUserCardInfo('${userId}')">
-                        Узнать больше
-                    </div>
                     <div class="card-info" id="user-card-info-${userId}">
                         <div class="card-bio">${escapeHtml(user.bio)}</div>
                         
@@ -5613,9 +5709,6 @@
                                 <div class="detail-content">${formatMultilineText(user.details.hobbies)}</div>
                             </div>
                         </div>
-                        <div class="info-toggle" onclick="toggleUserCardInfo('${userId}')" style="margin-top: 15px;">
-                            Свернуть
-                        </div>
                     </div>
                     
                     <div class="user-card-actions">
@@ -5627,22 +5720,12 @@
                     </div>
                 </div>
             `;
-        }
-        
-        // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ ПОЛЬЗОВАТЕЛЯ
-        function toggleUserCardInfo(userId) {
-            const info = document.getElementById(`user-card-info-${userId}`);
-            const indicator = document.querySelector('.info-toggle:not(#user-card-info-' + userId + ' .info-toggle)');
             
-            if (info) {
-                if (info.classList.contains('expanded')) {
-                    info.classList.remove('expanded');
-                    indicator.textContent = 'Узнать больше';
-                } else {
-                    info.classList.add('expanded');
-                    indicator.textContent = 'Свернуть';
-                }
-            }
+            const card = document.getElementById(`user-card-${userId}`);
+            const info = document.getElementById(`user-card-info-${userId}`);
+            info.style.display = 'none';
+            
+            setupCardSwipe(card, info);
         }
         
         // ВОЗВРАТ К СЕТКЕ ПОИСКА
@@ -5674,25 +5757,21 @@
                 }
                 
                 setTimeout(() => {
-                    // Удаляем пользователя из списка
                     const userIndex = filteredUsers.findIndex(user => user.id === userId);
                     if (userIndex !== -1) {
                         filteredUsers.splice(userIndex, 1);
                     }
                     
-                    // Возвращаемся к сетке поиска
                     showSearchScreen();
                 }, 800);
             } else {
                 card.classList.add('swipe-left');
                 setTimeout(() => {
-                    // Удаляем пользователя из списка
                     const userIndex = filteredUsers.findIndex(user => user.id === userId);
                     if (userIndex !== -1) {
                         filteredUsers.splice(userIndex, 1);
                     }
                     
-                    // Возвращаемся к сетке поиска
                     showSearchScreen();
                 }, 800);
             }
@@ -6348,159 +6427,6 @@
             return text.split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('');
         }
         
-        // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ (ИСПРАВЛЕНА СТРУКТУРА)
-        function showCurrentCard() {
-            const container = document.getElementById('content-container');
-            
-            filteredUsers = filterUsersByGender();
-            
-            if (currentCardIndex >= filteredUsers.length) {
-                container.innerHTML = `
-                    <div style="text-align: center; color: #c0c8ff; padding: 30px;">
-                        <h3 style="margin-bottom: 12px; font-size: 20px; color: #80c0ff;">🌸 На сегодня достаточно</h3>
-                        <p style="margin-bottom: 15px; opacity: 0.9; font-size: 14px;">Вы познакомились со всеми анкетами. Завтра появятся новые люди.</p>
-                        <button onclick="resetCards()" style="padding: 10px 20px; background: rgba(20, 20, 40, 0.8); color: #c0c8ff; border: 1px solid rgba(64, 128, 255, 0.2); border-radius: 12px; cursor: pointer; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); font-size: 14px;">
-                            Начать заново
-                        </button>
-                    </div>
-                `;
-                return;
-            }
-            
-            currentCard = filteredUsers[currentCardIndex];
-            const genderIcon = currentCard.gender === 'male' ? '👨' : '👩';
-            
-            container.innerHTML = `
-                <div style="position: relative; width: 100%; height: 100%;">
-                    <div class="card" id="current-card">
-                        <div class="card-photo">
-                            <div class="card-avatar">${genderIcon}</div>
-                            <div class="card-basic-info">
-                                <h2>${escapeHtml(currentCard.name)} <span class="age">${escapeHtml(currentCard.age)}</span></h2>
-                                <div class="card-location-info">
-                                    <span>📍 ${escapeHtml(currentCard.city)}</span>
-                                    <span>📏 ${escapeHtml(currentCard.distance)}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="info-toggle" onclick="toggleCardInfo()">
-                        Узнать больше
-                    </div>
-                    <div class="card-info" id="card-info">
-                        <div class="card-bio">${escapeHtml(currentCard.bio)}</div>
-                        
-                        <div class="card-details">
-                            <div class="detail-section">
-                                <div class="detail-section-title">Интересы</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.interests)}</div>
-                            </div>
-                            <div class="detail-section">
-                                <div class="detail-section-title">Образ жизни</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.lifestyle)}</div>
-                            </div>
-                            <div class="detail-section">
-                                <div class="detail-section-title">Цели и мечты</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.goals)}</div>
-                            </div>
-                            <div class="detail-section">
-                                <div class="detail-section-title">Образование</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.education)}</div>
-                            </div>
-                            <div class="detail-section">
-                                <div class="detail-section-title">Работа</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.work)}</div>
-                            </div>
-                            <div class="detail-section">
-                                <div class="detail-section-title">Хобби и увлечения</div>
-                                <div class="detail-content">${formatMultilineText(currentCard.details.hobbies)}</div>
-                            </div>
-                        </div>
-                        <div class="info-toggle" onclick="toggleCardInfo()" style="margin-top: 15px;">
-                            Свернуть
-                        </div>
-                    </div>
-                    
-                    <!-- Кнопки действий добавляются здесь -->
-                    <div class="action-buttons">
-                        <button class="action-btn btn-dislike" onclick="handleSwipe('left')">👎</button>
-                        <button class="action-btn btn-like" onclick="handleSwipe('right')">👍</button>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // ПЕРЕКЛЮЧЕНИЕ ИНФОРМАЦИИ О КАРТОЧКЕ (ИСПРАВЛЕНО)
-        function toggleCardInfo() {
-            const info = document.getElementById('card-info');
-            const indicator = document.querySelector('.info-toggle:not(#card-info .info-toggle)');
-            
-            if (info) {
-                if (info.classList.contains('expanded')) {
-                    info.classList.remove('expanded');
-                    indicator.textContent = 'Узнать больше';
-                    // Показываем кнопки действий когда информация скрыта
-                    const actionButtons = document.querySelector('.action-buttons');
-                    if (actionButtons) {
-                        actionButtons.style.display = 'flex';
-                    }
-                } else {
-                    info.classList.add('expanded');
-                    indicator.textContent = 'Свернуть';
-                    // Скрываем кнопки действий когда информация открыта
-                    const actionButtons = document.querySelector('.action-buttons');
-                    if (actionButtons) {
-                        actionButtons.style.display = 'none';
-                    }
-                }
-            }
-        }
-
-        // СВАЙП ДЛЯ КАРТОЧКИ
-        function handleSwipe(direction, userId = null) {
-            if (isModalOpen) return;
-            
-            if (userId) {
-                handleUserCardAction(direction, userId);
-                return;
-            }
-            
-            const card = document.getElementById('current-card');
-            const buttons = document.querySelectorAll('.action-btn');
-            
-            buttons.forEach(btn => btn.classList.add('liquid-effect'));
-            setTimeout(() => {
-                buttons.forEach(btn => btn.classList.remove('liquid-effect'));
-            }, 600);
-            
-            if (direction === 'right') {
-                card.classList.add('swipe-right');
-                
-                if (Math.random() < 0.3) {
-                    setTimeout(() => {
-                        handleMutualLike(currentCard.id);
-                    }, 500);
-                }
-                
-                setTimeout(() => {
-                    currentCardIndex++;
-                    showCurrentCard();
-                }, 800);
-            } else {
-                card.classList.add('swipe-left');
-                setTimeout(() => {
-                    currentCardIndex++;
-                    showCurrentCard();
-                }, 800);
-            }
-        }
-        
-        // СБРОС КАРТОЧЕК
-        function resetCards() {
-            currentCardIndex = 0;
-            showCurrentCard();
-        }
-        
         // ВЫХОД ИЗ АККАУНТА
         function logout() {
             if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
@@ -6519,7 +6445,23 @@
         }
         
         // ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
-        document.addEventListener('DOMContentLoaded', initApp);
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                initApp();
+            } catch (error) {
+                console.error('Ошибка инициализации приложения:', error);
+                document.getElementById('app').innerHTML = `
+                    <div style="color: #ff6b6b; text-align: center; padding: 50px 20px;">
+                        <div style="font-size: 40px; margin-bottom: 20px;">⚠️</div>
+                        <h3>Произошла ошибка</h3>
+                        <p>Пожалуйста, перезагрузите страницу</p>
+                        <button onclick="location.reload()" style="padding: 10px 20px; background: rgba(64, 128, 255, 0.3); color: #80c0ff; border: 1px solid rgba(64, 128, 255, 0.6); border-radius: 12px; margin-top: 20px; cursor: pointer;">
+                            Перезагрузить
+                        </button>
+                    </div>
+                `;
+            }
+        });
     </script>
 </body>
 </html>

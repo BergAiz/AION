@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0a0a1a">
-    <title>AION</title>
+    <title>AION Premium - Liquid Dating</title>
     <style>
         /* RESET */
         * {
@@ -1055,7 +1055,10 @@
     opacity: 0;
     transform: scale(0.98);
     pointer-events: none;
+
+    visibility: hidden;
 }
+
 
 /* Доп.инфо: поверх карточки, без рамки (красиво оформленный текст) */
 .card-info {
@@ -4559,7 +4562,7 @@
                         <button class="emoji-button" onclick="toggleEmojiPicker()">
                             😊
                         </button>
-                        <textarea class="chat-input" id="chat-input" placeholder="Введите сообщение..." rows="1" oninput="handleChatInput()"></textarea>
+                        <textarea class="chat-input" id="chat-input" placeholder="Введите сообщение" rows="1" oninput="handleChatInput()"></textarea>
                         <button class="chat-send-button" onclick="sendChatMessage()">
                             ➤
                         </button>
@@ -5212,7 +5215,7 @@
                             </div>
                             
                             <div class="input-group">
-                                <textarea id="bio" placeholder="Расскажите о себе... Что делает вас счастливым?" rows="3" maxlength="500"></textarea>
+                                <textarea id="bio" placeholder="Расскажите о себе. Что делает вас счастливым?" rows="3" maxlength="500"></textarea>
                             </div>
                         `}
                         
@@ -5438,8 +5441,12 @@
 
     const openInfo = () => {
         if (isExpanded()) return;
+
+        // Показать панель доп.инфо ВМЕСТО карточки
         info.classList.add('expanded');
         card.classList.add('is-hidden');
+        card.style.display = 'none';
+
         // всегда стартуем сверху
         const details = info.querySelector('.card-details');
         if (details) details.scrollTop = 0;
@@ -5447,7 +5454,14 @@
 
     const closeInfo = () => {
         if (!isExpanded()) return;
+
+        // Скрыть доп.инфо и вернуть карточку
         info.classList.remove('expanded');
+
+        card.style.display = 'flex';
+        // принудительный reflow для корректного возврата анимаций
+        void card.offsetWidth;
+
         card.classList.remove('is-hidden');
     };
 
@@ -6327,7 +6341,7 @@
                     </div>
                     
                     <div class="input-group">
-                        <textarea id="edit-bio" placeholder="Расскажите о себе... Что делает вас счастливым?" rows="4" maxlength="500">${escapeHtml(currentUser.bio || '')}</textarea>
+                        <textarea id="edit-bio" placeholder="Расскажите о себе. Что делает вас счастливым?" rows="4" maxlength="500">${escapeHtml(currentUser.bio || '')}</textarea>
                     </div>
                     
                     <div style="display: flex; gap: 10px; margin-top: 20px;">

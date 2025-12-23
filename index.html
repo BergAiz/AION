@@ -984,6 +984,27 @@
         }
         
         /* Кнопки действий на карточке */
+        
+        /* Хинт для свайпа вверх (вместо кнопок лайк/дизлайк) */
+        .swipe-handle-container{
+            position:absolute;
+            left:0;
+            right:0;
+            bottom:18px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            pointer-events:none;
+            z-index:6;
+        }
+        .swipe-handle{
+            width:48px;
+            height:5px;
+            border-radius:999px;
+            background:rgba(255,255,255,0.45);
+            box-shadow:0 0 18px rgba(64,128,255,0.35);
+        }
+
         .card-action-buttons {
             position: absolute;
             bottom: 80px;
@@ -4561,15 +4582,8 @@
                                     <span>📏 ${escapeHtml(user.distance)}</span>
                                 </div>
                             </div>
-                            <div class="card-action-buttons">
-                                <button class="card-action-btn card-dislike" onclick="handleUserCardAction('left', '${userId}')">
-                                    👎
-                                </button>
-                                <button class="card-action-btn card-like" onclick="handleUserCardAction('right', '${userId}')">
-                                    👍
-                                </button>
-                            </div>
-                        </div>
+                            <div class="swipe-handle-container" aria-hidden="true"><div class="swipe-handle"></div></div>
+</div>
                     </div>
                     <div class="card-info" id="chat-profile-info">
                         <div class="card-bio">${escapeHtml(user.bio)}</div>
@@ -5490,6 +5504,84 @@
                     card.style.transform = '';
                 }
             });
+        
+
+            // Свайп вниз на блоке информации: закрываем ТОЛЬКО если пользователь находится вверху скролла
+            (function setupInfoSwipeDown() {
+                let infoStartX = 0;
+                let infoStartY = 0;
+                let infoCurrentX = 0;
+                let infoCurrentY = 0;
+                let infoDragging = false;
+                let allowClose = false;
+
+                const onStart = (x, y) => {
+                    infoStartX = x;
+                    infoStartY = y;
+                    infoCurrentX = x;
+                    infoCurrentY = y;
+                    infoDragging = true;
+                    allowClose = (info.scrollTop <= 0);
+                };
+
+                const onMove = (x, y, e) => {
+                    if (!infoDragging || !isCardExpanded) return;
+                    infoCurrentX = x;
+                    infoCurrentY = y;
+
+                    const dx = infoCurrentX - infoStartX;
+                    const dy = infoCurrentY - infoStartY;
+
+                    // Закрываем только когда вверху и движение вниз — и это вертикальный жест
+                    if (allowClose && dy > 10 && Math.abs(dy) > Math.abs(dx)) {
+                        if (e && e.cancelable) e.preventDefault();
+                        showSwipeIndicator("Свайп вниз — назад к карточке");
+                    }
+                };
+
+                const onEnd = () => {
+                    if (!infoDragging) return;
+                    infoDragging = false;
+                    if (!isCardExpanded) return;
+
+                    const dx = infoCurrentX - infoStartX;
+                    const dy = infoCurrentY - infoStartY;
+
+                    if (allowClose && dy > 60 && Math.abs(dy) > Math.abs(dx)) {
+                        collapseCard(card, info);
+                    }
+                };
+
+                // touch
+                info.addEventListener('touchstart', (e) => {
+                    if (!isCardExpanded) return;
+                    onStart(e.touches[0].clientX, e.touches[0].clientY);
+                }, { passive: true });
+
+                info.addEventListener('touchmove', (e) => {
+                    if (!isCardExpanded) return;
+                    onMove(e.touches[0].clientX, e.touches[0].clientY, e);
+                }, { passive: false });
+
+                info.addEventListener('touchend', () => {
+                    onEnd();
+                });
+
+                // mouse (для удобства теста на ноутбуке)
+                info.addEventListener('mousedown', (e) => {
+                    if (!isCardExpanded) return;
+                    onStart(e.clientX, e.clientY);
+                });
+                info.addEventListener('mousemove', (e) => {
+                    if (!isCardExpanded || !infoDragging) return;
+                    onMove(e.clientX, e.clientY, e);
+                });
+                info.addEventListener('mouseup', () => onEnd());
+                info.addEventListener('mouseleave', () => {
+                    if (infoDragging) onEnd();
+                });
+            })();
+
         }
         
         // РАСШИРЕНИЕ КАРТОЧКИ
@@ -5506,15 +5598,6 @@
                 // Показываем информацию
                 info.style.display = 'flex';
                 info.classList.add('expanded');
-                
-                // Добавляем кнопку "Свернуть" для десктопа
-                if (window.innerWidth > 1024 && !info.querySelector('.collapse-info-btn')) {
-                    const collapseBtn = document.createElement('button');
-                    collapseBtn.className = 'collapse-info-btn';
-                    collapseBtn.innerHTML = '▲ Свернуть';
-                    collapseBtn.onclick = () => collapseCard(card, info);
-                    info.appendChild(collapseBtn);
-                }
             }, 300);
         }
         
@@ -5526,6 +5609,7 @@
             
             setTimeout(() => {
                 info.style.display = 'none';
+                info.scrollTop = 0;
                 card.style.transform = 'translateY(0)';
                 card.style.opacity = '1';
                 isCardExpanded = false;
@@ -5559,7 +5643,10 @@
         function showCurrentCard() {
             const container = document.getElementById('content-container');
             
-            filteredUsers = filterUsersByGender();
+            
+            // На вкладке знакомств скролла НЕ должно быть до открытия доп.инфы
+            container.style.overflowY = 'hidden';
+filteredUsers = filterUsersByGender();
             
             if (currentCardIndex >= filteredUsers.length) {
                 container.innerHTML = `
@@ -5576,9 +5663,7 @@
             
             currentCard = filteredUsers[currentCardIndex];
             const photoUrl = userPhotos[currentCard.id];
-            const isDesktop = window.innerWidth > 1024;
-            
-            container.innerHTML = `
+container.innerHTML = `
                 <div style="position: relative; width: 100%;">
                     <div class="card" id="current-card">
                         <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
@@ -5593,20 +5678,8 @@
                                     <span>📏 ${escapeHtml(currentCard.distance)}</span>
                                 </div>
                             </div>
-                            <div class="card-action-buttons">
-                                <button class="card-action-btn card-dislike" onclick="handleSwipe('left')">
-                                    👎
-                                </button>
-                                ${isDesktop ? `
-                                    <button class="more-info-button" onclick="expandCard(document.getElementById('current-card'), document.getElementById('card-info'))">
-                                        Узнать больше ▼
-                                    </button>
-                                ` : ''}
-                                <button class="card-action-btn card-like" onclick="handleSwipe('right')">
-                                    👍
-                                </button>
-                            </div>
-                        </div>
+                            <div class="swipe-handle-container" aria-hidden="true"><div class="swipe-handle"></div></div>
+</div>
                     </div>
                     <div class="card-info" id="card-info">
                         <div class="card-bio">${escapeHtml(currentCard.bio)}</div>
@@ -5665,8 +5738,8 @@
                 buttons.forEach(btn => btn.classList.remove('liquid-effect'));
             }, 600);
             
-            if (direction === 'right') {
-                card.classList.add('swipe-right');
+            if (direction === 'left') {
+                card.classList.add('swipe-left');
                 
                 if (Math.random() < 0.3) {
                     setTimeout(() => {
@@ -5679,7 +5752,7 @@
                     showCurrentCard();
                 }, 800);
             } else {
-                card.classList.add('swipe-left');
+                card.classList.add('swipe-right');
                 setTimeout(() => {
                     currentCardIndex++;
                     showCurrentCard();
@@ -5874,9 +5947,7 @@
             if (!user) return;
             
             const photoUrl = userPhotos[userId];
-            const isDesktop = window.innerWidth > 1024;
-            
-            const container = document.getElementById('content-container');
+const container = document.getElementById('content-container');
             container.innerHTML = `
                 <div style="position: relative; width: 100%;">
                     <button class="filter-button visible" style="top: 10px; right: 15px; z-index: 10;" onclick="backToSearchGrid()">
@@ -5895,20 +5966,8 @@
                                     <span>📏 ${escapeHtml(user.distance)}</span>
                                 </div>
                             </div>
-                            <div class="card-action-buttons">
-                                <button class="card-action-btn card-dislike" onclick="handleUserCardAction('left', '${userId}')">
-                                    👎
-                                </button>
-                                ${isDesktop ? `
-                                    <button class="more-info-button" onclick="expandCard(document.getElementById('user-card-${userId}'), document.getElementById('user-card-info-${userId}'))">
-                                        Узнать больше ▼
-                                    </button>
-                                ` : ''}
-                                <button class="card-action-btn card-like" onclick="handleUserCardAction('right', '${userId}')">
-                                    👍
-                                </button>
-                            </div>
-                        </div>
+                            <div class="swipe-handle-container" aria-hidden="true"><div class="swipe-handle"></div></div>
+</div>
                     </div>
                     <div class="card-info" id="user-card-info-${userId}">
                         <div class="card-bio">${escapeHtml(user.bio)}</div>

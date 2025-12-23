@@ -984,27 +984,6 @@
         }
         
         /* Кнопки действий на карточке */
-        
-        /* Хинт для свайпа вверх (вместо кнопок лайк/дизлайк) */
-        .swipe-handle-container{
-            position:absolute;
-            left:0;
-            right:0;
-            bottom:18px;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            pointer-events:none;
-            z-index:6;
-        }
-        .swipe-handle{
-            width:48px;
-            height:5px;
-            border-radius:999px;
-            background:rgba(255,255,255,0.45);
-            box-shadow:0 0 18px rgba(64,128,255,0.35);
-        }
-
         .card-action-buttons {
             position: absolute;
             bottom: 80px;
@@ -1048,7 +1027,48 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
         
-        /* Информация о пользователе - РАСКРЫВАЕТСЯ ВНИЗ ПОД КАРТОЧКОЙ */
+
+        /* STACK: карточка и доп.инфо в одном месте (доп.инфо заменяет карточку) */
+        .dating-card-stack {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .dating-card-stack .card,
+        .dating-card-stack .card-info {
+            width: calc(100% - 30px);
+            max-width: 340px;
+        }
+
+        /* Карточка скрывается, когда открыта доп.инфо */
+        .card.is-hidden {
+            opacity: 0;
+            transform: scale(0.98);
+            pointer-events: none;
+        }
+
+        /* Доп.инфо как оверлей поверх карточки */
+        .card-info {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, 8%) translateY(100%);
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+        }
+        .card-info.expanded {
+            transform: translate(-50%, 0) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+            max-height: none;
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Информация о пользователе - РАСКРЫВАЕТСЯ В ОВЕРЛЕЕ (СВАЙП ВВЕРХ/ВНИЗ) */
         .card-info {
             background: rgba(10, 10, 25, 0.98);
             backdrop-filter: blur(20px);
@@ -3181,7 +3201,19 @@
                 height: -webkit-fill-available;
             }
         }
-    </style>
+    
+        /* === AION Mobile Fix: Доп.инфо заменяет карточку (overlay) === */
+        .dating-card-stack { position: relative; width: 100%; display: flex; justify-content: center; }
+        .dating-card-stack .card,
+        .dating-card-stack .card-info { width: calc(100% - 30px); max-width: 340px; }
+        .card.is-hidden { opacity: 0; transform: scale(0.98); pointer-events: none; }
+        .dating-card-stack .card-info { position: absolute; top: 0; left: 50%; height: 100%;
+            transform: translate(-50%, 0) translateY(100%);
+            opacity: 0; pointer-events: none; display: flex; }
+        .dating-card-stack .card-info.expanded { transform: translate(-50%, 0) translateY(0);
+            opacity: 1; pointer-events: auto; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+</style>
 </head>
 <body>
     <!-- Жидкие волны -->
@@ -3544,21 +3576,16 @@
         
         // ФОТОГРАФИИ ДЛЯ ТЕСТОВЫХ ПОЛЬЗОВАТЕЛЕЙ - ИСПОЛЬЗУЕМ ПУБЛИЧНО ДОСТУПНЫЕ ФОТО
         const userPhotos = {
-            // Женщины
-            'user_1': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'user_3': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'user_5': 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'user_6': 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'user_7': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'user_8': 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            
-            // Мужчины
-            'user_2': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'user_4': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'user_9': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'user_10': 'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'user_11': 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'user_12': 'https://images.unsplash.com/photo-1507591064344-4c6ce005-128?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'
+            // Тестовые фото (стабильно грузятся даже при слабом интернете)
+            // pravatar.cc — публичные тестовые аватары
+            'user_1': 'https://i.pravatar.cc/900?img=47',
+            'user_2': 'https://i.pravatar.cc/900?img=12',
+            'user_3': 'https://i.pravatar.cc/900?img=32',
+            'user_4': 'https://i.pravatar.cc/900?img=14',
+            'user_5': 'https://i.pravatar.cc/900?img=45',
+            'user_6': 'https://i.pravatar.cc/900?img=48',
+            'user_7': 'https://i.pravatar.cc/900?img=49',
+            'user_8': 'https://i.pravatar.cc/900?img=15'
         };
         
         // Знаки зодиака
@@ -4582,8 +4609,15 @@
                                     <span>📏 ${escapeHtml(user.distance)}</span>
                                 </div>
                             </div>
-                            <div class="swipe-handle-container" aria-hidden="true"><div class="swipe-handle"></div></div>
-</div>
+                            <div class="card-action-buttons">
+                                <button class="card-action-btn card-dislike" onclick="handleUserCardAction('left', '${userId}')">
+                                    👎
+                                </button>
+                                <button class="card-action-btn card-like" onclick="handleUserCardAction('right', '${userId}')">
+                                    👍
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-info" id="chat-profile-info">
                         <div class="card-bio">${escapeHtml(user.bio)}</div>
@@ -5376,275 +5410,163 @@
         // НАСТРОЙКА СВАЙПА ДЛЯ КАРТОЧКИ
         function setupCardSwipe(card, info) {
             if (!card || !info) return;
-            
+
+            // Чтобы обработчики не дублировались при перерендере
+            if (card.__aionSwipeBound) return;
+            card.__aionSwipeBound = true;
+
             let startX = 0;
             let startY = 0;
             let currentX = 0;
             let currentY = 0;
             let isDragging = false;
             let isHorizontalSwipe = false;
-            
-            // Для мобильных устройств
-            card.addEventListener('touchstart', (e) => {
+
+            const onCardTouchStart = (e) => {
                 if (isCardExpanded) return;
+                if (!e.touches || !e.touches[0]) return;
                 startX = e.touches[0].clientX;
                 startY = e.touches[0].clientY;
+                currentX = startX;
+                currentY = startY;
                 isDragging = true;
+                isHorizontalSwipe = false;
                 card.style.transition = 'none';
-            });
-            
-            card.addEventListener('touchmove', (e) => {
+            };
+
+            const onCardTouchMove = (e) => {
                 if (!isDragging || isCardExpanded) return;
-                e.preventDefault();
+                if (!e.touches || !e.touches[0]) return;
+
                 currentX = e.touches[0].clientX;
                 currentY = e.touches[0].clientY;
-                
+
                 const deltaX = currentX - startX;
                 const deltaY = currentY - startY;
-                
-                // Определяем тип свайпа
+
+                // Горизонтальный свайп: лайк/дизлайк
                 if (Math.abs(deltaX) > Math.abs(deltaY)) {
                     isHorizontalSwipe = true;
+                    // не мешаем прокрутке страницы (её всё равно нет), но даём анимацию
+                    e.preventDefault();
                     card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.1}deg)`;
-                } else if (deltaY < -30) {
-                    // Свайп вверх для раскрытия информации
-                    if (!isCardExpanded) {
-                        showSwipeIndicator("Свайп вверх для подробной информации");
-                    }
-                } else if (deltaY > 30) {
-                    // Свайп вниз для закрытия информации
-                    if (isCardExpanded) {
-                        showSwipeIndicator("Свайп вниз для возврата к карточке");
-                    }
+                } else {
+                    // Вертикальный свайп: открыть доп.инфо
+                    isHorizontalSwipe = false;
                 }
-            }, { passive: false });
-            card.addEventListener('touchcancel', () => {
-                isDragging = false;
-                isHorizontalSwipe = false;
-                card.style.transition = 'transform 0.4s ease';
-                card.style.transform = '';
-            });
-            
-            card.addEventListener('touchend', (e) => {
+            };
+
+            const onCardTouchEnd = () => {
                 if (!isDragging) return;
                 isDragging = false;
-                
+
                 const deltaX = currentX - startX;
                 const deltaY = currentY - startY;
-                
-                card.style.transition = 'transform 0.4s ease';
+
+                card.style.transition = 'transform 0.35s ease';
                 card.style.transform = '';
-                
+
                 if (isHorizontalSwipe) {
-                    if (Math.abs(deltaX) > 50) {
-                        if (deltaX > 0) {
-                            handleSwipe('right');
-                        } else {
+                    if (Math.abs(deltaX) > 55) {
+                        // ВЛЕВО = ЛАЙК, ВПРАВО = ДИЗЛАЙК (как ты просил)
+                        if (deltaX < 0) {
                             handleSwipe('left');
+                        } else {
+                            handleSwipe('right');
                         }
                     }
                 } else {
-                    if (deltaY < -50) {
-                        // Свайп вверх - открыть информацию
-                        if (!isCardExpanded) {
-                            expandCard(card, info);
-                        }
-                    } else if (deltaY > 50) {
-                        // Свайп вниз - закрыть информацию
-                        if (isCardExpanded) {
-                            collapseCard(card, info);
-                        }
+                    // Вверх — открыть доп.инфо
+                    if (deltaY < -60 && !isCardExpanded) {
+                        expandCard(card, info);
                     }
                 }
-                
+
                 isHorizontalSwipe = false;
-            });
-            
-            // Для десктопов
-            card.addEventListener('mousedown', (e) => {
-                if (isCardExpanded) return;
-                startX = e.clientX;
-                startY = e.clientY;
-                isDragging = true;
-                card.style.transition = 'none';
-            });
-            
-            card.addEventListener('mousemove', (e) => {
-                if (!isDragging || isCardExpanded) return;
-                currentX = e.clientX;
-                currentY = e.clientY;
-                
-                const deltaX = currentX - startX;
-                const deltaY = currentY - startY;
-                
-                if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    isHorizontalSwipe = true;
-                    card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.1}deg)`;
-                }
-            });
-            
-            card.addEventListener('mouseup', (e) => {
-                if (!isDragging || isCardExpanded) return;
+            };
+
+            const resetTouch = () => {
                 isDragging = false;
-                
-                const deltaX = currentX - startX;
-                
-                card.style.transition = 'transform 0.4s ease';
-                card.style.transform = '';
-                
-                if (isHorizontalSwipe && Math.abs(deltaX) > 50) {
-                    if (deltaX > 0) {
-                        handleSwipe('right');
-                    } else {
-                        handleSwipe('left');
-                    }
-                }
-                
                 isHorizontalSwipe = false;
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                if (isDragging) {
-                    isDragging = false;
-                    card.style.transition = 'transform 0.4s ease';
-                    card.style.transform = '';
-                }
-            });
-        
+                card.style.transition = '';
+                card.style.transform = '';
+            };
 
-            // Свайп вниз на блоке информации: закрываем ТОЛЬКО если пользователь находится вверху скролла
-            (function setupInfoSwipeDown() {
-                let infoStartX = 0;
-                let infoStartY = 0;
-                let infoCurrentX = 0;
-                let infoCurrentY = 0;
-                let infoDragging = false;
-                let allowClose = false;
+            card.addEventListener('touchstart', onCardTouchStart, { passive: true });
+            card.addEventListener('touchmove', onCardTouchMove, { passive: false });
+            card.addEventListener('touchend', onCardTouchEnd, { passive: true });
+            card.addEventListener('touchcancel', resetTouch, { passive: true });
 
-                const onStart = (x, y) => {
-                    infoStartX = x;
-                    infoStartY = y;
-                    infoCurrentX = x;
-                    infoCurrentY = y;
-                    infoDragging = true;
-                    allowClose = (info.scrollTop <= 0);
-                };
+            // Свайп вниз для закрытия доп.инфы — только если ты вверху скролла
+            let infoStartY = 0;
+            let infoCurrentY = 0;
+            let infoDragging = false;
 
-                const onMove = (x, y, e) => {
-                    if (!infoDragging || !isCardExpanded) return;
-                    infoCurrentX = x;
-                    infoCurrentY = y;
+            if (!info.__aionSwipeBound) {
+                info.__aionSwipeBound = true;
 
-                    const dx = infoCurrentX - infoStartX;
-                    const dy = infoCurrentY - infoStartY;
-
-                    // Закрываем только когда вверху и движение вниз — и это вертикальный жест
-                    if (allowClose && dy > 10 && Math.abs(dy) > Math.abs(dx)) {
-                        if (e && e.cancelable) e.preventDefault();
-                        showSwipeIndicator("Свайп вниз — назад к карточке");
-                    }
-                };
-
-                const onEnd = () => {
-                    if (!infoDragging) return;
-                    infoDragging = false;
-                    if (!isCardExpanded) return;
-
-                    const dx = infoCurrentX - infoStartX;
-                    const dy = infoCurrentY - infoStartY;
-
-                    if (allowClose && dy > 60 && Math.abs(dy) > Math.abs(dx)) {
-                        collapseCard(card, info);
-                    }
-                };
-
-                // touch
                 info.addEventListener('touchstart', (e) => {
                     if (!isCardExpanded) return;
-                    onStart(e.touches[0].clientX, e.touches[0].clientY);
-                }, { passive: true });
-
-                info.addEventListener('touchcancel', () => {
-                    infoDragging = false;
-                    allowClose = (info.scrollTop <= 0);
+                    if (!e.touches || !e.touches[0]) return;
+                    infoStartY = e.touches[0].clientY;
+                    infoCurrentY = infoStartY;
+                    infoDragging = true;
                 }, { passive: true });
 
                 info.addEventListener('touchmove', (e) => {
-                    if (!isCardExpanded) return;
-                    onMove(e.touches[0].clientX, e.touches[0].clientY, e);
+                    if (!infoDragging || !isCardExpanded) return;
+                    if (!e.touches || !e.touches[0]) return;
+
+                    infoCurrentY = e.touches[0].clientY;
+                    const deltaY = infoCurrentY - infoStartY;
+
+                    // Закрываем только если вверху и свайп вниз достаточно сильный.
+                    // Если не вверху — разрешаем обычный скролл.
+                    if (info.scrollTop === 0 && deltaY > 0) {
+                        // не даём "резиновому" скроллу страницы
+                        e.preventDefault();
+                    }
                 }, { passive: false });
 
                 info.addEventListener('touchend', () => {
-                    onEnd();
-                });
+                    if (!infoDragging) return;
+                    infoDragging = false;
 
-                // mouse (для удобства теста на ноутбуке)
-                info.addEventListener('mousedown', (e) => {
-                    if (!isCardExpanded) return;
-                    onStart(e.clientX, e.clientY);
-                });
-                info.addEventListener('mousemove', (e) => {
-                    if (!isCardExpanded || !infoDragging) return;
-                    onMove(e.clientX, e.clientY, e);
-                });
-                info.addEventListener('mouseup', () => onEnd());
-                info.addEventListener('mouseleave', () => {
-                    if (infoDragging) onEnd();
-                });
-            })();
+                    const deltaY = infoCurrentY - infoStartY;
+                    if (isCardExpanded && info.scrollTop === 0 && deltaY > 70) {
+                        collapseCard(card, info);
+                    }
+                }, { passive: true });
 
+                info.addEventListener('touchcancel', () => { infoDragging = false; }, { passive: true });
+            }
         }
         
         // РАСШИРЕНИЕ КАРТОЧКИ
         function expandCard(card, info) {
             if (!card || !info) return;
-            
             isCardExpanded = true;
-            
-            
-            const stack = card.closest('.card-stack');
-            if (stack) stack.classList.add('is-expanded');
-            card.style.pointerEvents = 'none';
-            info.style.pointerEvents = 'auto';
-// Скрываем карточку плавно
-            card.style.transform = 'translateY(-100%)';
-            card.style.opacity = '0';
-            card.style.zIndex = '5';
-            info.style.zIndex = '6';
-            
-            setTimeout(() => {
-                // Показываем информацию
-                info.style.display = 'flex';
-                info.classList.add('expanded');
-            }, 300);
+
+            // Показать доп.инфо поверх карточки
+            info.style.display = 'flex';
+            // Сброс скролла при открытии
+            try { info.scrollTop = 0; } catch (e) {}
+            info.classList.add('expanded');
+            card.classList.add('is-hidden');
         }
         
         // СВЕРТЫВАНИЕ КАРТОЧКИ
         function collapseCard(card, info) {
             if (!card || !info) return;
-            
+
+            // Скрыть доп.инфо и вернуть карточку
             info.classList.remove('expanded');
-            
+            card.classList.remove('is-hidden');
+
             setTimeout(() => {
                 info.style.display = 'none';
-            info.style.pointerEvents = 'none';
-                info.scrollTop = 0;
-                card.style.transform = 'translateY(0)';
-                card.style.opacity = '1';
                 isCardExpanded = false;
-                const stack = card.closest('.card-stack');
-                if (stack) stack.classList.remove('is-expanded');
-                card.style.pointerEvents = 'auto';
-                info.style.pointerEvents = 'none';
-                card.style.zIndex = '';
-                info.style.zIndex = '';
-                
-                // Удаляем кнопку "Свернуть"
-                const collapseBtn = info.querySelector('.collapse-info-btn');
-                if (collapseBtn) {
-                    collapseBtn.remove();
-                }
-            }, 300);
+            }, 220);
         }
         
         // ПОКАЗАТЬ ИНДИКАТОР СВАЙПА
@@ -5668,10 +5590,7 @@
         function showCurrentCard() {
             const container = document.getElementById('content-container');
             
-            
-            // На вкладке знакомств скролла НЕ должно быть до открытия доп.инфы
-            container.style.overflowY = 'hidden';
-filteredUsers = filterUsersByGender();
+            filteredUsers = filterUsersByGender();
             
             if (currentCardIndex >= filteredUsers.length) {
                 container.innerHTML = `
@@ -5687,11 +5606,11 @@ filteredUsers = filterUsersByGender();
             }
             
             currentCard = filteredUsers[currentCardIndex];
-            const photoUrl = userPhotos[currentCard.id];
-container.innerHTML = `
-                <div style="position: relative; width: 100%;">
+            const photoUrl = (userPhotos && userPhotos[currentCard.id]) ? userPhotos[currentCard.id] : `https://i.pravatar.cc/900?u=${currentCard.id}`;
+            container.innerHTML = `
+                <div class="dating-card-stack">
                     <div class="card" id="current-card">
-                        <div class="card-photo" id="card-photo" style="background-size: cover; background-position: center;">
+                        <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
                             <div class="photo-overlay"></div>
                             <div class="card-top-info">
                                 ${currentCard.zodiac} • ${currentCard.city.split(',')[0]}
@@ -5703,9 +5622,7 @@ container.innerHTML = `
                                     <span>📏 ${escapeHtml(currentCard.distance)}</span>
                                 </div>
                             </div>
-                            <div class="swipe-handle-container" aria-hidden="true"><div class="swipe-handle"></div></div>
-</div>
-                    </div>
+                            </div></div>
                     <div class="card-info" id="card-info">
                         <div class="card-bio">${escapeHtml(currentCard.bio)}</div>
                         
@@ -5741,8 +5658,6 @@ container.innerHTML = `
             
             const card = document.getElementById('current-card');
             const info = document.getElementById('card-info');
-            const photoEl = document.getElementById('card-photo');
-            applyCardPhoto(photoEl, photoUrl);
             info.style.display = 'none';
             
             setupCardSwipe(card, info);
@@ -5766,7 +5681,7 @@ container.innerHTML = `
             }, 600);
             
             if (direction === 'left') {
-                card.classList.add('swipe-left');
+                card.classList.add('swipe-right');
                 
                 if (Math.random() < 0.3) {
                     setTimeout(() => {
@@ -5779,7 +5694,7 @@ container.innerHTML = `
                     showCurrentCard();
                 }, 800);
             } else {
-                card.classList.add('swipe-right');
+                card.classList.add('swipe-left');
                 setTimeout(() => {
                     currentCardIndex++;
                     showCurrentCard();
@@ -5974,14 +5889,16 @@ container.innerHTML = `
             if (!user) return;
             
             const photoUrl = userPhotos[userId];
-const container = document.getElementById('content-container');
+            const isDesktop = window.innerWidth > 1024;
+            
+            const container = document.getElementById('content-container');
             container.innerHTML = `
                 <div style="position: relative; width: 100%;">
                     <button class="filter-button visible" style="top: 10px; right: 15px; z-index: 10;" onclick="backToSearchGrid()">
                         ←
                     </button>
                     <div class="card" id="user-card-${userId}">
-                        <div class="card-photo" id="card-photo" style="background-size: cover; background-position: center;">
+                        <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
                             <div class="photo-overlay"></div>
                             <div class="card-top-info">
                                 ${user.zodiac} • ${user.city.split(',')[0]}
@@ -5993,8 +5910,20 @@ const container = document.getElementById('content-container');
                                     <span>📏 ${escapeHtml(user.distance)}</span>
                                 </div>
                             </div>
-                            <div class="swipe-handle-container" aria-hidden="true"><div class="swipe-handle"></div></div>
-</div>
+                            <div class="card-action-buttons">
+                                <button class="card-action-btn card-dislike" onclick="handleUserCardAction('left', '${userId}')">
+                                    👎
+                                </button>
+                                ${isDesktop ? `
+                                    <button class="more-info-button" onclick="expandCard(document.getElementById('user-card-${userId}'), document.getElementById('user-card-info-${userId}'))">
+                                        Узнать больше ▼
+                                    </button>
+                                ` : ''}
+                                <button class="card-action-btn card-like" onclick="handleUserCardAction('right', '${userId}')">
+                                    👍
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-info" id="user-card-info-${userId}">
                         <div class="card-bio">${escapeHtml(user.bio)}</div>
@@ -6055,7 +5984,7 @@ const container = document.getElementById('content-container');
                 buttons.forEach(btn => btn.classList.remove('liquid-effect'));
             }, 600);
             
-            if (direction === 'right') {
+            if (direction === 'left') {
                 card.classList.add('swipe-right');
                 
                 if (Math.random() < 0.3) {
@@ -6613,7 +6542,7 @@ const container = document.getElementById('content-container');
             const currentSubscription = currentUser.subscription || 'free';
             
             container.innerHTML = `
-                <div class="card-stack">
+                <div style="width: 100%;">
                     <div style="text-align: center; margin-bottom: 10px;">
                         <div style="color: rgba(160, 170, 255, 0.8); font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;">
                             <span style="font-size: 14px;">←</span>

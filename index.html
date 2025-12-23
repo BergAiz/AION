@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0a0a1a">
-    <title>AION Premium - Liquid Dating</title>
+    <title>AION</title>
     <style>
         /* RESET */
         * {
@@ -880,9 +880,11 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 60%;
-            background: linear-gradient(to top, rgba(10, 10, 25, 0.9), transparent);
+            height: 55%;
+            /* Легкое затемнение, чтобы отделить текст от фото */
+            background: linear-gradient(to top, rgba(10, 10, 25, 0.55), rgba(10, 10, 25, 0.0));
             z-index: 2;
+            pointer-events: none;
         }
         
         /* ЗНАК ЗОДИАКА И ГОРОД В ВЕРХНЕМ ЛЕВОМ УГЛУ */
@@ -915,9 +917,9 @@
             text-align: center;
             padding: 15px 10px;
             z-index: 3;
-            background: rgba(10, 10, 25, 0.85);
+            background: rgba(10, 10, 25, 0.65);
             backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(64, 128, 255, 0.2);
+            border-top: 1px solid rgba(64, 128, 255, 0.18);
             border-radius: 0 0 20px 20px;
         }
         
@@ -985,6 +987,8 @@
         
         /* Кнопки действий на карточке */
         .card-action-buttons {
+            display: none;
+
             position: absolute;
             bottom: 80px;
             left: 0;
@@ -1028,80 +1032,83 @@
         }
         
 
-        /* STACK: карточка и доп.инфо в одном месте (доп.инфо заменяет карточку) */
-        .dating-card-stack {
-            position: relative;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-        .dating-card-stack .card,
-        .dating-card-stack .card-info {
-            width: calc(100% - 30px);
-            max-width: 340px;
-        }
+        /* STACK: карточка и доп.инфо в одном месте (доп.инфо полностью заменяет карточку) */
+.dating-card-stack {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    margin: 0 auto;
+}
+.dating-card-stack .card,
+.dating-card-stack .card-info {
+    width: calc(100% - 30px);
+    max-width: 340px;
+    height: calc(100vh - 200px);
+    min-height: 450px;
+    max-height: 500px;
+}
 
-        /* Карточка скрывается, когда открыта доп.инфо */
-        .card.is-hidden {
-            opacity: 0;
-            transform: scale(0.98);
-            pointer-events: none;
-        }
+/* Карточка скрывается, когда открыта доп.инфо */
+.card.is-hidden {
+    opacity: 0;
+    transform: scale(0.98);
+    pointer-events: none;
+}
 
-        /* Доп.инфо как оверлей поверх карточки */
-        .card-info {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translate(-50%, 8%) translateY(100%);
-            opacity: 0;
-            pointer-events: none;
-            display: flex;
-        }
-        .card-info.expanded {
-            transform: translate(-50%, 0) translateY(0);
-            opacity: 1;
-            pointer-events: auto;
-            max-height: none;
-            height: 100%;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+/* Доп.инфо: поверх карточки, без рамки (красиво оформленный текст) */
+.card-info {
+    position: absolute;
+    inset: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+    pointer-events: none;
 
-        /* Информация о пользователе - РАСКРЫВАЕТСЯ В ОВЕРЛЕЕ (СВАЙП ВВЕРХ/ВНИЗ) */
-        .card-info {
-            background: rgba(10, 10, 25, 0.98);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(64, 128, 255, 0.3);
-            border-radius: 20px;
-            padding: 20px;
-            width: calc(100% - 30px);
-            max-width: 340px;
-            margin: 10px auto;
-            display: none;
-            flex-direction: column;
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.4),
-                0 0 30px rgba(64, 128, 255, 0.2);
-            transform: translateY(100%);
-            opacity: 0;
-            transition: all 0.4s ease;
-            position: relative;
-            z-index: 2;
-            max-height: 0;
-            overflow: hidden;
-            height: auto;
-        }
-        
-        .card-info.expanded {
-            display: flex;
-            transform: translateY(0);
-            opacity: 1;
-            max-height: calc(100vh - 250px);
-            overflow-y: auto;
-            height: auto;
-        }
-        
+    display: flex;
+    flex-direction: column;
+
+    /* без рамки */
+    border: none;
+    background: rgba(10, 10, 25, 0.92);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 18px 18px 20px;
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.45),
+        0 0 30px rgba(64, 128, 255, 0.18);
+
+    transition: transform 0.35s ease, opacity 0.35s ease;
+    z-index: 50;
+    overflow: hidden; /* скролл будет внутри .card-details */
+}
+
+/* маленький "хендл" сверху (как в приложениях) */
+.card-info::before {
+    content: '';
+    width: 44px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(192, 200, 255, 0.25);
+    margin: 4px auto 14px;
+    flex-shrink: 0;
+}
+
+.card-info.expanded {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Важное: скролл только внутри деталей */
+.card-details {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
         /* Имя и возраст вверху информации */
         .card-header {
             margin-bottom: 15px;
@@ -5409,138 +5416,154 @@
         
         // НАСТРОЙКА СВАЙПА ДЛЯ КАРТОЧКИ
         function setupCardSwipe(card, info) {
-            if (!card || !info) return;
+    if (!card || !info) return;
 
-            // Чтобы обработчики не дублировались при перерендере
-            if (card.__aionSwipeBound) return;
-            card.__aionSwipeBound = true;
+    let startX = 0;
+    let startY = 0;
+    let dx = 0;
+    let dy = 0;
+    let isDragging = false;
+    let locked = false;
+    let lockAxis = null; // 'x' | 'y' | null
 
-            let startX = 0;
-            let startY = 0;
-            let currentX = 0;
-            let currentY = 0;
-            let isDragging = false;
-            let isHorizontalSwipe = false;
+    const resetGesture = () => {
+        isDragging = false;
+        locked = false;
+        lockAxis = null;
+        dx = 0;
+        dy = 0;
+    };
 
-            const onCardTouchStart = (e) => {
-                if (isCardExpanded) return;
-                if (!e.touches || !e.touches[0]) return;
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-                currentX = startX;
-                currentY = startY;
-                isDragging = true;
-                isHorizontalSwipe = false;
-                card.style.transition = 'none';
-            };
+    const isExpanded = () => info.classList.contains('expanded');
 
-            const onCardTouchMove = (e) => {
-                if (!isDragging || isCardExpanded) return;
-                if (!e.touches || !e.touches[0]) return;
+    const openInfo = () => {
+        if (isExpanded()) return;
+        info.classList.add('expanded');
+        card.classList.add('is-hidden');
+        // всегда стартуем сверху
+        const details = info.querySelector('.card-details');
+        if (details) details.scrollTop = 0;
+    };
 
-                currentX = e.touches[0].clientX;
-                currentY = e.touches[0].clientY;
+    const closeInfo = () => {
+        if (!isExpanded()) return;
+        info.classList.remove('expanded');
+        card.classList.remove('is-hidden');
+    };
 
-                const deltaX = currentX - startX;
-                const deltaY = currentY - startY;
+    const onStart = (e) => {
+        if (isModalOpen) return;
+        const t = e.touches ? e.touches[0] : e;
+        startX = t.clientX;
+        startY = t.clientY;
+        resetGesture();
+    };
 
-                // Горизонтальный свайп: лайк/дизлайк
-                if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    isHorizontalSwipe = true;
-                    // не мешаем прокрутке страницы (её всё равно нет), но даём анимацию
+    const onMove = (e) => {
+        if (isModalOpen) return;
+
+        const t = e.touches ? e.touches[0] : e;
+        dx = t.clientX - startX;
+        dy = t.clientY - startY;
+
+        if (!locked) {
+            const ax = Math.abs(dx);
+            const ay = Math.abs(dy);
+            if (ax < 6 && ay < 6) return;
+
+            locked = true;
+            lockAxis = ax > ay ? 'x' : 'y';
+        }
+
+        // Если открыта доп.инфа — разрешаем скролл,
+        // но свайп ВНИЗ закрывает только когда скролл вверху.
+        if (isExpanded()) {
+            if (lockAxis === 'y') {
+                const details = info.querySelector('.card-details');
+                const top = details ? details.scrollTop <= 0 : true;
+
+                // тянем вниз и мы вверху — блокируем скролл страницы, чтобы жест был "закрыть"
+                if (dy > 0 && top) {
                     e.preventDefault();
-                    card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.1}deg)`;
-                } else {
-                    // Вертикальный свайп: открыть доп.инфо
-                    isHorizontalSwipe = false;
                 }
-            };
+            }
+            return; // карточку не двигаем
+        }
 
-            const onCardTouchEnd = () => {
-                if (!isDragging) return;
-                isDragging = false;
+        // Карточка закрыта → работаем со свайпами (лайк/дизлайк) и свайпом вверх (открыть инфо)
+        if (lockAxis === 'x') {
+            // горизонтальный свайп: двигаем карточку В СТОРОНУ ПАЛЬЦА (без инверсии)
+            e.preventDefault();
+            isDragging = true;
 
-                const deltaX = currentX - startX;
-                const deltaY = currentY - startY;
-
-                card.style.transition = 'transform 0.35s ease';
-                card.style.transform = '';
-
-                if (isHorizontalSwipe) {
-                    if (Math.abs(deltaX) > 55) {
-                        // ВЛЕВО = ЛАЙК, ВПРАВО = ДИЗЛАЙК (как ты просил)
-                        if (deltaX < 0) {
-                            handleSwipe('left');
-                        } else {
-                            handleSwipe('right');
-                        }
-                    }
-                } else {
-                    // Вверх — открыть доп.инфо
-                    if (deltaY < -60 && !isCardExpanded) {
-                        expandCard(card, info);
-                    }
-                }
-
-                isHorizontalSwipe = false;
-            };
-
-            const resetTouch = () => {
-                isDragging = false;
-                isHorizontalSwipe = false;
-                card.style.transition = '';
-                card.style.transform = '';
-            };
-
-            card.addEventListener('touchstart', onCardTouchStart, { passive: true });
-            card.addEventListener('touchmove', onCardTouchMove, { passive: false });
-            card.addEventListener('touchend', onCardTouchEnd, { passive: true });
-            card.addEventListener('touchcancel', resetTouch, { passive: true });
-
-            // Свайп вниз для закрытия доп.инфы — только если ты вверху скролла
-            let infoStartY = 0;
-            let infoCurrentY = 0;
-            let infoDragging = false;
-
-            if (!info.__aionSwipeBound) {
-                info.__aionSwipeBound = true;
-
-                info.addEventListener('touchstart', (e) => {
-                    if (!isCardExpanded) return;
-                    if (!e.touches || !e.touches[0]) return;
-                    infoStartY = e.touches[0].clientY;
-                    infoCurrentY = infoStartY;
-                    infoDragging = true;
-                }, { passive: true });
-
-                info.addEventListener('touchmove', (e) => {
-                    if (!infoDragging || !isCardExpanded) return;
-                    if (!e.touches || !e.touches[0]) return;
-
-                    infoCurrentY = e.touches[0].clientY;
-                    const deltaY = infoCurrentY - infoStartY;
-
-                    // Закрываем только если вверху и свайп вниз достаточно сильный.
-                    // Если не вверху — разрешаем обычный скролл.
-                    if (info.scrollTop === 0 && deltaY > 0) {
-                        // не даём "резиновому" скроллу страницы
-                        e.preventDefault();
-                    }
-                }, { passive: false });
-
-                info.addEventListener('touchend', () => {
-                    if (!infoDragging) return;
-                    infoDragging = false;
-
-                    const deltaY = infoCurrentY - infoStartY;
-                    if (isCardExpanded && info.scrollTop === 0 && deltaY > 70) {
-                        collapseCard(card, info);
-                    }
-                }, { passive: true });
-
-                info.addEventListener('touchcancel', () => { infoDragging = false; }, { passive: true });
+            const rotate = Math.max(-12, Math.min(12, dx / 18));
+            card.style.transition = 'none';
+            card.style.transform = `translateX(${dx}px) rotate(${rotate}deg)`;
+        } else if (lockAxis === 'y') {
+            // вертикальный: свайп вверх открывает инфо
+            if (dy < -60) {
+                e.preventDefault();
+                openInfo();
+                resetGesture();
             }
         }
+    };
+
+    const onEnd = () => {
+        if (isModalOpen) return;
+
+        // если открыта инфо — свайп вниз закрывает только когда вверху
+        if (isExpanded()) {
+            const details = info.querySelector('.card-details');
+            const top = details ? details.scrollTop <= 0 : true;
+            if (lockAxis === 'y' && dy > 60 && top) {
+                closeInfo();
+            }
+            resetGesture();
+            return;
+        }
+
+        if (!isDragging) {
+            resetGesture();
+            return;
+        }
+
+        const ax = Math.abs(dx);
+        const ay = Math.abs(dy);
+
+        // только горизонтальные сильные свайпы
+        if (ax > 80 && ax > ay) {
+            if (dx < 0) {
+                // ВЛЕВО = ЛАЙК
+                card.style.transition = '';
+                card.classList.add('swipe-left');
+                handleSwipe('left');
+            } else {
+                // ВПРАВО = ДИЗЛАЙК
+                card.style.transition = '';
+                card.classList.add('swipe-right');
+                handleSwipe('right');
+            }
+        } else {
+            // возвращаем карточку на место
+            card.style.transition = 'transform 0.25s ease';
+            card.style.transform = '';
+        }
+
+        resetGesture();
+    };
+
+    card.addEventListener('touchstart', onStart, { passive: true });
+    card.addEventListener('touchmove', onMove, { passive: false });
+    card.addEventListener('touchend', onEnd, { passive: true });
+    card.addEventListener('touchcancel', resetGesture, { passive: true });
+
+    // Для инфо-панели — чтобы можно было закрывать "свайпом вниз" только с самого верха
+    info.addEventListener('touchstart', onStart, { passive: true });
+    info.addEventListener('touchmove', onMove, { passive: false });
+    info.addEventListener('touchend', onEnd, { passive: true });
+    info.addEventListener('touchcancel', resetGesture, { passive: true });
+}
         
         // РАСШИРЕНИЕ КАРТОЧКИ
         function expandCard(card, info) {
@@ -5665,42 +5688,47 @@
         
         // СВАЙП ДЛЯ КАРТОЧКИ
         function handleSwipe(direction, userId = null) {
-            if (isModalOpen) return;
-            
-            if (userId) {
-                handleUserCardAction(direction, userId);
-                return;
-            }
-            
-            const card = document.getElementById('current-card');
-            const buttons = document.querySelectorAll('.action-btn, .card-action-btn');
-            
-            buttons.forEach(btn => btn.classList.add('liquid-effect'));
+    if (isModalOpen) return;
+
+    if (userId) {
+        handleUserCardAction(direction, userId);
+        return;
+    }
+
+    const card = document.getElementById('current-card');
+    if (!card) return;
+
+    const buttons = document.querySelectorAll('.action-btn, .card-action-btn');
+    buttons.forEach(btn => btn.classList.add('liquid-effect'));
+    setTimeout(() => {
+        buttons.forEach(btn => btn.classList.remove('liquid-effect'));
+    }, 600);
+
+    // ВАЖНО: ЛЕВО = ЛАЙК, ПРАВО = ДИЗЛАЙК
+    if (direction === 'left') {
+        // лайк → карточка уходит ВЛЕВО
+        card.classList.add('swipe-left');
+
+        if (Math.random() < 0.3) {
             setTimeout(() => {
-                buttons.forEach(btn => btn.classList.remove('liquid-effect'));
-            }, 600);
-            
-            if (direction === 'left') {
-                card.classList.add('swipe-right');
-                
-                if (Math.random() < 0.3) {
-                    setTimeout(() => {
-                        handleMutualLike(currentCard.id);
-                    }, 500);
-                }
-                
-                setTimeout(() => {
-                    currentCardIndex++;
-                    showCurrentCard();
-                }, 800);
-            } else {
-                card.classList.add('swipe-left');
-                setTimeout(() => {
-                    currentCardIndex++;
-                    showCurrentCard();
-                }, 800);
-            }
+                handleMutualLike(currentCard.id);
+            }, 500);
         }
+
+        setTimeout(() => {
+            currentCardIndex++;
+            showCurrentCard();
+        }, 800);
+    } else {
+        // дизлайк → карточка уходит ВПРАВО
+        card.classList.add('swipe-right');
+
+        setTimeout(() => {
+            currentCardIndex++;
+            showCurrentCard();
+        }, 800);
+    }
+}
         
         // СБРОС КАРТОЧЕК
         function resetCards() {

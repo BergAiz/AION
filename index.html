@@ -5417,6 +5417,12 @@
                         showSwipeIndicator("Свайп вниз для возврата к карточке");
                     }
                 }
+            }, { passive: false });
+            card.addEventListener('touchcancel', () => {
+                isDragging = false;
+                isHorizontalSwipe = false;
+                card.style.transition = 'transform 0.4s ease';
+                card.style.transform = '';
             });
             
             card.addEventListener('touchend', (e) => {
@@ -5558,6 +5564,11 @@
                     onStart(e.touches[0].clientX, e.touches[0].clientY);
                 }, { passive: true });
 
+                info.addEventListener('touchcancel', () => {
+                    infoDragging = false;
+                    allowClose = (info.scrollTop <= 0);
+                }, { passive: true });
+
                 info.addEventListener('touchmove', (e) => {
                     if (!isCardExpanded) return;
                     onMove(e.touches[0].clientX, e.touches[0].clientY, e);
@@ -5590,9 +5601,16 @@
             
             isCardExpanded = true;
             
-            // Скрываем карточку плавно
+            
+            const stack = card.closest('.card-stack');
+            if (stack) stack.classList.add('is-expanded');
+            card.style.pointerEvents = 'none';
+            info.style.pointerEvents = 'auto';
+// Скрываем карточку плавно
             card.style.transform = 'translateY(-100%)';
             card.style.opacity = '0';
+            card.style.zIndex = '5';
+            info.style.zIndex = '6';
             
             setTimeout(() => {
                 // Показываем информацию
@@ -5609,10 +5627,17 @@
             
             setTimeout(() => {
                 info.style.display = 'none';
+            info.style.pointerEvents = 'none';
                 info.scrollTop = 0;
                 card.style.transform = 'translateY(0)';
                 card.style.opacity = '1';
                 isCardExpanded = false;
+                const stack = card.closest('.card-stack');
+                if (stack) stack.classList.remove('is-expanded');
+                card.style.pointerEvents = 'auto';
+                info.style.pointerEvents = 'none';
+                card.style.zIndex = '';
+                info.style.zIndex = '';
                 
                 // Удаляем кнопку "Свернуть"
                 const collapseBtn = info.querySelector('.collapse-info-btn');
@@ -5666,7 +5691,7 @@ filteredUsers = filterUsersByGender();
 container.innerHTML = `
                 <div style="position: relative; width: 100%;">
                     <div class="card" id="current-card">
-                        <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
+                        <div class="card-photo" id="card-photo" style="background-size: cover; background-position: center;">
                             <div class="photo-overlay"></div>
                             <div class="card-top-info">
                                 ${currentCard.zodiac} • ${currentCard.city.split(',')[0]}
@@ -5716,6 +5741,8 @@ container.innerHTML = `
             
             const card = document.getElementById('current-card');
             const info = document.getElementById('card-info');
+            const photoEl = document.getElementById('card-photo');
+            applyCardPhoto(photoEl, photoUrl);
             info.style.display = 'none';
             
             setupCardSwipe(card, info);
@@ -5954,7 +5981,7 @@ const container = document.getElementById('content-container');
                         ←
                     </button>
                     <div class="card" id="user-card-${userId}">
-                        <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
+                        <div class="card-photo" id="card-photo" style="background-size: cover; background-position: center;">
                             <div class="photo-overlay"></div>
                             <div class="card-top-info">
                                 ${user.zodiac} • ${user.city.split(',')[0]}
@@ -6586,7 +6613,7 @@ const container = document.getElementById('content-container');
             const currentSubscription = currentUser.subscription || 'free';
             
             container.innerHTML = `
-                <div style="width: 100%;">
+                <div class="card-stack">
                     <div style="text-align: center; margin-bottom: 10px;">
                         <div style="color: rgba(160, 170, 255, 0.8); font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;">
                             <span style="font-size: 14px;">←</span>

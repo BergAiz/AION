@@ -842,7 +842,7 @@
             overflow: hidden;
             position: relative;
             margin: 0 auto;
-            transition: all 0.4s ease;
+            transition: transform 0.4s ease, opacity 0.4s ease;
             margin-bottom: 0;
             cursor: pointer;
             -webkit-user-select: none;
@@ -885,18 +885,43 @@
             z-index: 2;
         }
         
-        /* Информация на карточке (имя, возраст, расстояние, город) */
-        .card-basic-info {
+        /* ЗНАК ЗОДИАКА И ГОРОД В ВЕРХНЕМ ЛЕВОМ УГЛУ */
+        .card-top-info {
             position: absolute;
-            bottom: 0;
+            top: 15px;
+            left: 15px;
+            background: rgba(10, 10, 25, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 8px 12px;
+            border-radius: 15px;
+            border: 1px solid rgba(64, 128, 255, 0.3);
+            color: #80c0ff;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 4;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            max-width: 80%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* ИМЯ, ВОЗРАСТ, РОСТ И РАССТОЯНИЕ ВНИЗУ КАРТОЧКИ - ИСПРАВЛЕНО */
+        .card-bottom-info {
+            position: absolute;
+            bottom: 15px;
             left: 0;
             right: 0;
             text-align: center;
-            padding: 20px;
+            padding: 15px 10px;
             z-index: 3;
+            background: rgba(10, 10, 25, 0.85);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(64, 128, 255, 0.2);
+            border-radius: 0 0 20px 20px;
         }
         
-        .card-basic-info h2 {
+        .card-bottom-info h2 {
             font-size: 28px;
             color: white;
             margin-bottom: 5px;
@@ -904,7 +929,7 @@
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
         }
         
-        .card-basic-info .age {
+        .card-bottom-info .age {
             color: #a0d0ff;
             font-size: 24px;
             font-weight: 600;
@@ -912,10 +937,10 @@
             margin-left: 5px;
         }
         
-        .card-location-info {
+        .card-metrics {
             color: rgba(255, 255, 255, 0.9);
             font-size: 14px;
-            margin-top: 5px;
+            margin-top: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -923,18 +948,13 @@
             flex-wrap: wrap;
         }
         
-        .card-location-info span {
+        .card-metrics span {
             display: flex;
             align-items: center;
             gap: 5px;
-            background: rgba(10, 10, 25, 0.7);
-            padding: 5px 10px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        /* Кнопка "Узнать больше" для ПК */
+        /* Кнопка "Узнать больше/Свернуть" для ПК - ИСПРАВЛЕНО */
         .more-info-button {
             position: absolute;
             bottom: 10px;
@@ -943,10 +963,10 @@
             background: rgba(10, 10, 25, 0.9);
             border: 1px solid rgba(64, 128, 255, 0.4);
             color: #80c0ff;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 15px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             backdrop-filter: blur(10px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             z-index: 5;
@@ -954,6 +974,7 @@
             align-items: center;
             gap: 5px;
             transition: all 0.3s ease;
+            display: none; /* Скрыта по умолчанию */
         }
         
         .more-info-button:hover {
@@ -965,7 +986,7 @@
         /* Кнопки действий на карточке */
         .card-action-buttons {
             position: absolute;
-            bottom: 20px;
+            bottom: 80px;
             left: 0;
             right: 0;
             display: flex;
@@ -1134,19 +1155,9 @@
             margin-bottom: 0;
         }
         
-        /* Кнопки действий - ИСПРАВЛЕНО: всегда видны и правильно расположены */
+        /* Кнопки действий - УБРАНЫ ЛАЙКИ И ДИЗЛАЙКИ ПОД КАРТОЧКОЙ */
         .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 15px;
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 5;
-            transition: all 0.4s ease;
-            margin-top: 10px;
+            display: none; /* Скрыты по требованию */
         }
         
         .action-btn {
@@ -2597,6 +2608,35 @@
             opacity: 1;
         }
         
+        /* Кнопка закрытия дополнительной информации */
+        .collapse-info-btn {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 10, 25, 0.9);
+            border: 1px solid rgba(64, 128, 255, 0.4);
+            color: #80c0ff;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            display: none; /* Скрыта по умолчанию */
+        }
+        
+        .collapse-info-btn:hover {
+            background: rgba(64, 128, 255, 0.2);
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(64, 128, 255, 0.3);
+        }
+        
         /* Большие экраны (ноутбуки, ПК) */
         @media (min-width: 1024px) {
             #app {
@@ -2649,6 +2689,24 @@
             
             .header-buttons {
                 right: calc(50% - 200px + 20px);
+            }
+            
+            /* Для ПК показываем кнопку "Узнать больше" под карточкой */
+            .more-info-button {
+                display: flex;
+                position: relative;
+                margin: 10px auto 0;
+                transform: none;
+                left: auto;
+            }
+            
+            /* Для ПК показываем кнопку "Свернуть" в дополнительной информации */
+            .collapse-info-btn {
+                display: flex;
+                position: relative;
+                margin: 10px auto 0;
+                transform: none;
+                left: auto;
             }
         }
         
@@ -2756,17 +2814,7 @@
             }
             
             .action-buttons {
-                gap: 20px;
-                padding: 15px;
-                position: relative;
-                bottom: auto;
-                margin-top: 10px;
-            }
-            
-            .action-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 22px;
+                display: none; /* Скрыты на мобильных */
             }
             
             .subscription-card {
@@ -2899,16 +2947,6 @@
                 font-size: 14px;
             }
             
-            .action-buttons {
-                gap: 15px;
-            }
-            
-            .action-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 20px;
-            }
-            
             .subscription-card {
                 min-width: 240px;
                 padding: 15px;
@@ -2987,10 +3025,6 @@
             .search-grid-card {
                 height: 240px;
             }
-            
-            .action-buttons {
-                margin-top: 15px;
-            }
         }
         
         /* Низкие экраны */
@@ -3015,10 +3049,6 @@
             
             .chats-list {
                 height: calc(100vh - 160px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
-            }
-            
-            .action-buttons {
-                margin-top: 8px;
             }
         }
         
@@ -3082,6 +3112,14 @@
             .support-option:hover {
                 transform: none;
             }
+            
+            .more-info-button:hover {
+                transform: none;
+            }
+            
+            .collapse-info-btn:hover {
+                transform: none;
+            }
         }
         
         /* Поддержка iOS и безопасных областей */
@@ -3098,10 +3136,6 @@
             .content-wrapper {
                 min-height: auto;
                 padding-bottom: max(15px, env(safe-area-inset-bottom, 15px));
-            }
-            
-            .action-buttons {
-                padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
             }
             
             .chat-input-container {
@@ -3487,7 +3521,7 @@
         let isSwiping = false;
         let isCardExpanded = false;
         
-        // ФОТОГРАФИИ ДЛЯ ТЕСТОВЫХ ПОЛЬЗОВАТЕЛЕЙ
+        // ФОТОГРАФИИ ДЛЯ ТЕСТОВЫХ ПОЛЬЗОВАТЕЛЕЙ - ИСПОЛЬЗУЕМ ПУБЛИЧНО ДОСТУПНЫЕ ФОТО
         const userPhotos = {
             // Женщины
             'user_1': 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
@@ -3761,7 +3795,7 @@
             }
         ];
 
-        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛЕЙ (6 мужчин и 6 женщин) с расстоянием
+        // ТЕСТОВЫЕ ПОЛЬЗОВАТЕЛИ (6 мужчин и 6 женщин) с расстоянием
         const sampleUsers = [
             { 
                 id: 'user_1',
@@ -4517,14 +4551,23 @@
                     <div class="card" id="chat-profile-card" style="height: calc(100vh - 280px);">
                         <div class="card-photo" style="background-image: url('${photoUrl}');">
                             <div class="photo-overlay"></div>
-                            <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; text-align: center;">
-                                <h2 style="font-size: 24px; color: white; margin-bottom: 5px;">${escapeHtml(user.name)} <span style="color: #a0d0ff;">${escapeHtml(user.age)}</span></h2>
-                                <div class="card-location-info">
-                                    <span>📍 ${escapeHtml(user.city)}</span>
-                                    <span>📏 ${escapeHtml(user.distance)}</span>
+                            <div class="card-top-info">
+                                ${user.zodiac} • ${user.city.split(',')[0]}
+                            </div>
+                            <div class="card-bottom-info">
+                                <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
+                                <div class="card-metrics">
                                     <span>📐 ${escapeHtml(user.height)} см</span>
-                                    <span>${user.zodiac}</span>
+                                    <span>📏 ${escapeHtml(user.distance)}</span>
                                 </div>
+                            </div>
+                            <div class="card-action-buttons">
+                                <button class="card-action-btn card-dislike" onclick="handleUserCardAction('left', '${userId}')">
+                                    👎
+                                </button>
+                                <button class="card-action-btn card-like" onclick="handleUserCardAction('right', '${userId}')">
+                                    👍
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -5351,12 +5394,19 @@
                     card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.1}deg)`;
                 } else if (deltaY < -30) {
                     // Свайп вверх для раскрытия информации
-                    showSwipeIndicator("Свайп вверх для подробной информации");
+                    if (!isCardExpanded) {
+                        showSwipeIndicator("Свайп вверх для подробной информации");
+                    }
+                } else if (deltaY > 30) {
+                    // Свайп вниз для закрытия информации
+                    if (isCardExpanded) {
+                        showSwipeIndicator("Свайп вниз для возврата к карточке");
+                    }
                 }
             });
             
             card.addEventListener('touchend', (e) => {
-                if (!isDragging || isCardExpanded) return;
+                if (!isDragging) return;
                 isDragging = false;
                 
                 const deltaX = currentX - startX;
@@ -5373,8 +5423,18 @@
                             handleSwipe('left');
                         }
                     }
-                } else if (deltaY < -50) {
-                    expandCard(card, info);
+                } else {
+                    if (deltaY < -50) {
+                        // Свайп вверх - открыть информацию
+                        if (!isCardExpanded) {
+                            expandCard(card, info);
+                        }
+                    } else if (deltaY > 50) {
+                        // Свайп вниз - закрыть информацию
+                        if (isCardExpanded) {
+                            collapseCard(card, info);
+                        }
+                    }
                 }
                 
                 isHorizontalSwipe = false;
@@ -5430,81 +5490,30 @@
                     card.style.transform = '';
                 }
             });
-            
-            // Обработка свайпа для закрытия информации
-            info.addEventListener('touchstart', (e) => {
-                if (!isCardExpanded) return;
-                startY = e.touches[0].clientY;
-                isDragging = true;
-                info.style.transition = 'none';
-            });
-            
-            info.addEventListener('touchmove', (e) => {
-                if (!isDragging || !isCardExpanded) return;
-                e.preventDefault();
-                currentY = e.touches[0].clientY;
-                const deltaY = currentY - startY;
-                
-                if (deltaY > 30) {
-                    showSwipeIndicator("Свайп вниз для возврата");
-                }
-            });
-            
-            info.addEventListener('touchend', (e) => {
-                if (!isDragging || !isCardExpanded) return;
-                isDragging = false;
-                const deltaY = currentY - startY;
-                
-                info.style.transition = 'transform 0.4s ease';
-                info.style.transform = '';
-                
-                if (deltaY > 50) {
-                    collapseCard(card, info);
-                }
-            });
-            
-            // Для десктопов - кнопка закрытия
-            const closeBtn = info.querySelector('.close-info-btn');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    collapseCard(card, info);
-                });
-            }
         }
         
         // РАСШИРЕНИЕ КАРТОЧКИ
         function expandCard(card, info) {
             if (!card || !info) return;
             
-            // Плавное смещение карточки вверх
-            card.style.transform = 'translateY(-20px) scale(0.95)';
-            card.style.opacity = '0.8';
+            isCardExpanded = true;
+            
+            // Скрываем карточку плавно
+            card.style.transform = 'translateY(-100%)';
+            card.style.opacity = '0';
             
             setTimeout(() => {
+                // Показываем информацию
                 info.style.display = 'flex';
                 info.classList.add('expanded');
-                isCardExpanded = true;
                 
-                // Добавляем кнопку закрытия для десктопа
-                if (!info.querySelector('.close-info-btn')) {
-                    const closeBtn = document.createElement('button');
-                    closeBtn.className = 'close-info-btn';
-                    closeBtn.innerHTML = '▲ Свернуть';
-                    closeBtn.style.cssText = `
-                        position: absolute;
-                        top: 10px;
-                        right: 10px;
-                        background: rgba(10, 10, 25, 0.8);
-                        border: 1px solid rgba(64, 128, 255, 0.3);
-                        color: #80c0ff;
-                        padding: 8px 12px;
-                        border-radius: 15px;
-                        font-size: 12px;
-                        cursor: pointer;
-                        backdrop-filter: blur(10px);
-                        z-index: 100;
-                    `;
-                    info.appendChild(closeBtn);
+                // Добавляем кнопку "Свернуть" для десктопа
+                if (window.innerWidth > 1024 && !info.querySelector('.collapse-info-btn')) {
+                    const collapseBtn = document.createElement('button');
+                    collapseBtn.className = 'collapse-info-btn';
+                    collapseBtn.innerHTML = '▲ Свернуть';
+                    collapseBtn.onclick = () => collapseCard(card, info);
+                    info.appendChild(collapseBtn);
                 }
             }, 300);
         }
@@ -5517,14 +5526,14 @@
             
             setTimeout(() => {
                 info.style.display = 'none';
-                card.style.transform = 'translateY(0) scale(1)';
+                card.style.transform = 'translateY(0)';
                 card.style.opacity = '1';
                 isCardExpanded = false;
                 
-                // Удаляем кнопку закрытия
-                const closeBtn = info.querySelector('.close-info-btn');
-                if (closeBtn) {
-                    closeBtn.remove();
+                // Удаляем кнопку "Свернуть"
+                const collapseBtn = info.querySelector('.collapse-info-btn');
+                if (collapseBtn) {
+                    collapseBtn.remove();
                 }
             }, 300);
         }
@@ -5546,7 +5555,7 @@
             }, 1000);
         }
         
-        // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ
+        // ПОКАЗАТЬ ТЕКУЩУЮ КАРТОЧКУ - ИСПРАВЛЕНО РАСПОЛОЖЕНИЕ ЭЛЕМЕНТОВ
         function showCurrentCard() {
             const container = document.getElementById('content-container');
             
@@ -5567,34 +5576,35 @@
             
             currentCard = filteredUsers[currentCardIndex];
             const photoUrl = userPhotos[currentCard.id];
-            const isDesktop = window.innerWidth > 767;
+            const isDesktop = window.innerWidth > 1024;
             
             container.innerHTML = `
                 <div style="position: relative; width: 100%;">
                     <div class="card" id="current-card">
-                        <div class="card-photo" style="background-image: url('${photoUrl}');">
+                        <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
                             <div class="photo-overlay"></div>
-                            <div class="card-basic-info">
+                            <div class="card-top-info">
+                                ${currentCard.zodiac} • ${currentCard.city.split(',')[0]}
+                            </div>
+                            <div class="card-bottom-info">
                                 <h2>${escapeHtml(currentCard.name)} <span class="age">${escapeHtml(currentCard.age)}</span></h2>
-                                <div class="card-location-info">
-                                    <span>📍 ${escapeHtml(currentCard.city)}</span>
-                                    <span>📏 ${escapeHtml(currentCard.distance)}</span>
+                                <div class="card-metrics">
                                     <span>📐 ${escapeHtml(currentCard.height)} см</span>
-                                    <span>${currentCard.zodiac}</span>
+                                    <span>📏 ${escapeHtml(currentCard.distance)}</span>
                                 </div>
-                                <div class="card-action-buttons">
-                                    <button class="card-action-btn card-dislike" onclick="handleSwipe('left')">
-                                        👎
+                            </div>
+                            <div class="card-action-buttons">
+                                <button class="card-action-btn card-dislike" onclick="handleSwipe('left')">
+                                    👎
+                                </button>
+                                ${isDesktop ? `
+                                    <button class="more-info-button" onclick="expandCard(document.getElementById('current-card'), document.getElementById('card-info'))">
+                                        Узнать больше ▼
                                     </button>
-                                    ${isDesktop ? `
-                                        <button class="more-info-button" onclick="expandCard(document.getElementById('current-card'), document.getElementById('card-info'))">
-                                            Узнать больше ▼
-                                        </button>
-                                    ` : ''}
-                                    <button class="card-action-btn card-like" onclick="handleSwipe('right')">
-                                        👍
-                                    </button>
-                                </div>
+                                ` : ''}
+                                <button class="card-action-btn card-like" onclick="handleSwipe('right')">
+                                    👍
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -5627,11 +5637,6 @@
                                 <div class="detail-content">${formatMultilineText(currentCard.details.hobbies)}</div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="action-btn btn-dislike" onclick="handleSwipe('left')">👎</button>
-                        <button class="action-btn btn-like" onclick="handleSwipe('right')">👍</button>
                     </div>
                 </div>
             `;
@@ -5845,7 +5850,7 @@
                 
                 return `
                     <div class="search-grid-card" data-user-id="${user.id}" onclick="openUserCard('${user.id}')">
-                        <div class="search-grid-photo" style="background-image: url('${photoUrl}');">
+                        <div class="search-grid-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
                             ${user.online ? '<div class="search-grid-online"></div>' : ''}
                             <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; text-align: center; background: rgba(10, 10, 25, 0.7); padding: 8px; border-radius: 10px; backdrop-filter: blur(10px);">
                                 <div style="font-size: 16px; color: white; font-weight: 600; margin-bottom: 3px;">${escapeHtml(user.name)} <span style="color: #a0d0ff;">${escapeHtml(user.age)}</span></div>
@@ -5863,13 +5868,13 @@
             }).join('');
         }
         
-        // ОТКРЫТИЕ КАРТОЧКИ ПОЛЬЗОВАТЕЛЯ
+        // ОТКРЫТИЕ КАРТОЧКИ ПОЛЬЗОВАТЕЛЯ - ИСПРАВЛЕНО РАСПОЛОЖЕНИЕ ЭЛЕМЕНТОВ
         function openUserCard(userId) {
             const user = filteredUsers.find(u => u.id === userId);
             if (!user) return;
             
             const photoUrl = userPhotos[userId];
-            const isDesktop = window.innerWidth > 767;
+            const isDesktop = window.innerWidth > 1024;
             
             const container = document.getElementById('content-container');
             container.innerHTML = `
@@ -5878,29 +5883,30 @@
                         ←
                     </button>
                     <div class="card" id="user-card-${userId}">
-                        <div class="card-photo" style="background-image: url('${photoUrl}');">
+                        <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
                             <div class="photo-overlay"></div>
-                            <div class="card-basic-info">
+                            <div class="card-top-info">
+                                ${user.zodiac} • ${user.city.split(',')[0]}
+                            </div>
+                            <div class="card-bottom-info">
                                 <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
-                                <div class="card-location-info">
-                                    <span>📍 ${escapeHtml(user.city)}</span>
-                                    <span>📏 ${escapeHtml(user.distance)}</span>
+                                <div class="card-metrics">
                                     <span>📐 ${escapeHtml(user.height)} см</span>
-                                    <span>${user.zodiac}</span>
+                                    <span>📏 ${escapeHtml(user.distance)}</span>
                                 </div>
-                                <div class="card-action-buttons">
-                                    <button class="card-action-btn card-dislike" onclick="handleUserCardAction('left', '${userId}')">
-                                        👎
+                            </div>
+                            <div class="card-action-buttons">
+                                <button class="card-action-btn card-dislike" onclick="handleUserCardAction('left', '${userId}')">
+                                    👎
+                                </button>
+                                ${isDesktop ? `
+                                    <button class="more-info-button" onclick="expandCard(document.getElementById('user-card-${userId}'), document.getElementById('user-card-info-${userId}'))">
+                                        Узнать больше ▼
                                     </button>
-                                    ${isDesktop ? `
-                                        <button class="more-info-button" onclick="expandCard(document.getElementById('user-card-${userId}'), document.getElementById('user-card-info-${userId}'))">
-                                            Узнать больше ▼
-                                        </button>
-                                    ` : ''}
-                                    <button class="card-action-btn card-like" onclick="handleUserCardAction('right', '${userId}')">
-                                        👍
-                                    </button>
-                                </div>
+                                ` : ''}
+                                <button class="card-action-btn card-like" onclick="handleUserCardAction('right', '${userId}')">
+                                    👍
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -5933,14 +5939,6 @@
                                 <div class="detail-content">${formatMultilineText(user.details.hobbies)}</div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="user-card-actions">
-                        <button class="action-btn btn-dislike" onclick="handleUserCardAction('left', '${userId}')">👎</button>
-                        ${currentUser.subscription === 'premium' ? `
-                            <button class="action-btn btn-write" onclick="handleWriteMessage('${userId}')">✉️</button>
-                        ` : ''}
-                        <button class="action-btn btn-like" onclick="handleUserCardAction('right', '${userId}')">👍</button>
                     </div>
                 </div>
             `;
@@ -5999,19 +5997,6 @@
                     showSearchScreen();
                 }, 800);
             }
-        }
-        
-        // ОБРАБОТКА КНОПКИ "НАПИСАТЬ" (ТОЛЬКО ДЛЯ ПРЕМИУМ)
-        function handleWriteMessage(userId) {
-            if (currentUser.subscription !== 'premium') {
-                alert('Функция "Написать" доступна только для пользователей с подпиской PREMIUM');
-                return;
-            }
-            
-            const user = filteredUsers.find(u => u.id === userId);
-            if (!user) return;
-            
-            alert(`Функция отправки сообщения пользователю ${user.name} будет реализована в следующем обновлении!`);
         }
         
         // ПЕРЕКЛЮЧЕНИЕ ФИЛЬТРОВ
@@ -6584,8 +6569,8 @@
                                 <li><span>Узнать кто лайкнул тебя</span></li>
                                 <li><span>1 сеанс внимания в неделю по<br>три часа (ваша анкета в топе<br>поиска)</span></li>
                             </ul>
-                            <button class="btn-subscribe" onclick="changeSubscription('plus')">
-                                ${currentSubscription === 'plus' ? 'Активна' : 'Выбрать Plus+'}
+                            <button class="btn-subscribe" ${currentSubscription === 'plus' ? 'disabled' : ''} onclick="${currentSubscription !== 'plus' ? "changeSubscription('plus')" : ''}">
+                                ${currentSubscription === 'plus' ? 'Активна' : 'Выбрать'}
                             </button>
                         </div>
                         
@@ -6597,19 +6582,17 @@
                                 <div class="subscription-period">в месяц</div>
                             </div>
                             <ul class="subscription-features">
-                                <li><span>Все функции Plus версии</span></li>
-                                <li><span>10 суперлайков в день</span></li>
-                                <li><span>AI подсказка на 100%<br>возможного потенциала</span></li>
-                                <li><span>Функция возвращения к<br>анкете после дизлайка<br>беслимитна</span></li>
-                                <li><span>Расширенная аналитика<br>совместимости</span></li>
+                                <li><span>Неограниченное количество<br>лайков</span></li>
+                                <li><span>20 суперлайков в день</span></li>
+                                <li><span>Ai подсказка, 100% от<br>возможного потенциала</span></li>
+                                <li><span>Функция возвращения к<br>анкете после дизлайка 15 раз</span></li>
                                 <li><span>Приоритетная техническая<br>поддержка</span></li>
                                 <li><span>Узнать кто лайкнул тебя</span></li>
-                                <li><span>Функция написать не<br>дожидаясь взаимного лайка</span></li>
-                                <li><span>Персональный поиск<br>ближайшего партнера по<br>местоположению</span></li>
-                                <li><span>3 сеанса внимания в неделю<br>по три часа (ваша анкета в<br>топе поиска)</span></li>
+                                <li><span>Неограниченное количество<br>сеансов внимания</span></li>
+                                <li><span>Персональный ассистент AI</span></li>
                             </ul>
-                            <button class="btn-subscribe" onclick="changeSubscription('premium')">
-                                ${currentSubscription === 'premium' ? 'Активна' : 'Выбрать PREMIUM'}
+                            <button class="btn-subscribe" ${currentSubscription === 'premium' ? 'disabled' : ''} onclick="${currentSubscription !== 'premium' ? "changeSubscription('premium')" : ''}">
+                                ${currentSubscription === 'premium' ? 'Активна' : 'Выбрать'}
                             </button>
                         </div>
                     </div>
@@ -6621,16 +6604,8 @@
         function changeSubscription(type) {
             if (isModalOpen) return;
             
-            if (currentUser.subscription === type) {
-                alert(`Подписка ${type === 'free' ? 'Бесплатно' : type === 'plus' ? 'Plus+' : 'PREMIUM'} уже активирована!`);
-                return;
-            }
-            
-            const subscriptionName = type === 'free' ? 'Бесплатно' : type === 'plus' ? 'Plus+' : 'PREMIUM';
-            
-            if (confirm(`Вы уверены, что хотите сменить подписку на "${subscriptionName}"?`)) {
+            if (confirm(`Вы уверены, что хотите изменить подписку на ${type === 'free' ? 'Бесплатную' : type === 'plus' ? 'Plus+' : 'PREMIUM'}?`)) {
                 currentUser.subscription = type;
-                
                 localStorage.setItem('aion_premium_user', JSON.stringify(currentUser));
                 
                 const existingUsers = JSON.parse(localStorage.getItem('aion_premium_users') || '[]');
@@ -6640,49 +6615,46 @@
                     localStorage.setItem('aion_premium_users', JSON.stringify(existingUsers));
                 }
                 
-                alert(`Подписка успешно изменена на "${subscriptionName}"!`);
+                alert(`Подписка успешно изменена на ${type === 'free' ? 'Бесплатную' : type === 'plus' ? 'Plus+' : 'PREMIUM'}!`);
                 showSubscriptionScreen();
             }
         }
         
-        // Функция для форматирования текста с переносами строк
-        function formatMultilineText(text) {
-            return text.split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('');
-        }
-        
         // ВЫХОД ИЗ АККАУНТА
         function logout() {
+            if (isModalOpen) return;
+            
             if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
                 localStorage.removeItem('aion_premium_user');
                 currentUser = null;
+                userGender = '';
                 toggleSettings();
                 showAuthScreen();
             }
         }
         
-        // ESCAPE HTML
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
         
-        // ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                initApp();
-            } catch (error) {
-                console.error('Ошибка инициализации приложения:', error);
-                document.getElementById('app').innerHTML = `
-                    <div style="color: #ff6b6b; text-align: center; padding: 50px 20px;">
-                        <div style="font-size: 40px; margin-bottom: 20px;">⚠️</div>
-                        <h3>Произошла ошибка</h3>
-                        <p>Пожалуйста, перезагрузите страницу</p>
-                        <button onclick="location.reload()" style="padding: 10px 20px; background: rgba(64, 128, 255, 0.3); color: #80c0ff; border: 1px solid rgba(64, 128, 255, 0.6); border-radius: 12px; margin-top: 20px; cursor: pointer;">
-                            Перезагрузить
-                        </button>
-                    </div>
-                `;
+        function formatMultilineText(text) {
+            return text.replace(/\n/g, '<br>');
+        }
+        
+        // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ПРИ ЗАГРУЗКЕ
+        window.addEventListener('load', initApp);
+        
+        // Обработка нажатия Escape для закрытия меню
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (isModalOpen) {
+                    closeAllModals();
+                } else if (isSettingsOpen || isNotificationsOpen) {
+                    closeAllMenus();
+                }
             }
         });
     </script>

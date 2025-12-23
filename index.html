@@ -882,7 +882,7 @@
             right: 0;
             height: 55%;
             /* Легкое затемнение, чтобы отделить текст от фото */
-            background: linear-gradient(to top, rgba(10, 10, 25, 0.55), rgba(10, 10, 25, 0.0));
+            background: linear-gradient(to top, rgba(10, 10, 25, 0.38), rgba(10, 10, 25, 0.0));
             z-index: 2;
             pointer-events: none;
         }
@@ -917,9 +917,9 @@
             text-align: center;
             padding: 15px 10px;
             z-index: 3;
-            background: rgba(10, 10, 25, 0.65);
+            background: rgba(10, 10, 25, 0.48);
             backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(64, 128, 255, 0.18);
+            border-top: 1px solid rgba(64, 128, 255, 0.14);
             border-radius: 0 0 20px 20px;
         }
         
@@ -5443,13 +5443,18 @@
         if (isExpanded()) return;
 
         // Показать панель доп.инфо ВМЕСТО карточки
-        info.classList.add('expanded');
-        card.classList.add('is-hidden');
-        card.style.display = 'none';
+        // (важно: info изначально display:none — включаем его вручную)
+        info.style.display = 'flex';
 
-        // всегда стартуем сверху
+        // стартуем сверху
         const details = info.querySelector('.card-details');
         if (details) details.scrollTop = 0;
+
+        // анимация появления (через rAF, чтобы CSS transition сработал стабильно)
+        requestAnimationFrame(() => {
+            info.classList.add('expanded');
+            card.classList.add('is-hidden');
+        });
     };
 
     const closeInfo = () => {
@@ -5457,12 +5462,12 @@
 
         // Скрыть доп.инфо и вернуть карточку
         info.classList.remove('expanded');
-
-        card.style.display = 'flex';
-        // принудительный reflow для корректного возврата анимаций
-        void card.offsetWidth;
-
         card.classList.remove('is-hidden');
+
+        // дождаться завершения transition, затем полностью скрыть панель
+        window.setTimeout(() => {
+            info.style.display = 'none';
+        }, 260);
     };
 
     const onStart = (e) => {

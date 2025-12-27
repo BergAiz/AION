@@ -1084,7 +1084,8 @@
 
     transition: transform 0.35s ease, opacity 0.35s ease;
     z-index: 50;
-    overflow: hidden; /* скролл будет внутри .card-details */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* маленький "хендл" сверху (как в приложениях) */
@@ -1104,13 +1105,7 @@
     pointer-events: auto;
 }
 
-/* Важное: скролл только внутри деталей */
-.card-details {
-    min-height: 0;
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
+/* Важное: скролл теперь по всей доп.инфо */
 
         /* Имя и возраст вверху информации */
         .card-header {
@@ -1147,21 +1142,15 @@
         
         /* Детальная информация */
         .card-details {
-            background: rgba(20, 20, 40, 0.7);
-            border-radius: 15px;
+            background: none;
+            border-radius: 0;
             padding: 0;
-            overflow: hidden;
-            border: 1px solid rgba(64, 128, 255, 0.15);
+            overflow: visible;
+            border: none;
             margin-bottom: 15px;
-            flex: 1;
             display: flex;
             flex-direction: column;
-            box-shadow: 
-                inset 0 1px 3px rgba(0, 0, 0, 0.3),
-                0 1px 1px rgba(255, 255, 255, 0.1);
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            min-height: 0;
+            box-shadow: none;
         }
         
         .detail-section {
@@ -5447,8 +5436,7 @@
         info.style.display = 'flex';
 
         // стартуем сверху
-        const details = info.querySelector('.card-details');
-        if (details) details.scrollTop = 0;
+        info.scrollTop = 0;
 
         // анимация появления (через rAF, чтобы CSS transition сработал стабильно)
         requestAnimationFrame(() => {
@@ -5498,8 +5486,7 @@
         // но свайп ВНИЗ закрывает только когда скролл вверху.
         if (isExpanded()) {
             if (lockAxis === 'y') {
-                const details = info.querySelector('.card-details');
-                const top = details ? details.scrollTop <= 0 : true;
+                const top = info.scrollTop <= 0;
 
                 // тянем вниз и мы вверху — блокируем скролл страницы, чтобы жест был "закрыть"
                 if (dy > 0 && top) {
@@ -5533,8 +5520,7 @@
 
         // если открыта инфо — свайп вниз закрывает только когда вверху
         if (isExpanded()) {
-            const details = info.querySelector('.card-details');
-            const top = details ? details.scrollTop <= 0 : true;
+            const top = info.scrollTop <= 0;
             if (lockAxis === 'y' && dy > 60 && top) {
                 closeInfo();
             }

@@ -617,6 +617,10 @@
             position: relative;
             z-index: 3;
         }
+
+        .nav-tabs.dating-tabs {
+            margin-bottom: 0;
+        }
         
         .nav-tab {
             flex: 1;
@@ -887,35 +891,14 @@
             pointer-events: none;
         }
         
-        /* ЗНАК ЗОДИАКА И ГОРОД В ВЕРХНЕМ ЛЕВОМ УГЛУ */
-        .card-top-info {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(10, 10, 25, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 8px 12px;
-            border-radius: 15px;
-            border: 1px solid rgba(64, 128, 255, 0.3);
-            color: #80c0ff;
-            font-size: 12px;
-            font-weight: 500;
-            z-index: 4;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            max-width: 80%;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
         /* ИМЯ, ВОЗРАСТ, РОСТ И РАССТОЯНИЕ ВНИЗУ КАРТОЧКИ - ИСПРАВЛЕНО */
         .card-bottom-info {
             position: absolute;
-            bottom: 15px;
+            bottom: 0;
             left: 0;
             right: 0;
             text-align: center;
-            padding: 15px 10px;
+            padding: 15px 10px calc(15px + env(safe-area-inset-bottom, 0px));
             z-index: 3;
             background: rgba(10, 10, 25, 0.48);
             backdrop-filter: blur(10px);
@@ -1040,14 +1023,15 @@
     justify-content: center;
     align-items: stretch;
     margin: 0 auto;
+    height: 100%;
 }
 .dating-card-stack .card,
 .dating-card-stack .card-info {
     width: calc(100% - 30px);
     max-width: 340px;
-    height: calc(100vh - 200px);
-    min-height: 450px;
-    max-height: 500px;
+    height: 100%;
+    min-height: 0;
+    max-height: none;
 }
 
 /* Карточка скрывается, когда открыта доп.инфо */
@@ -2179,6 +2163,11 @@
             padding-top: 5px;
             padding-bottom: env(safe-area-inset-bottom, 0px);
             z-index: 3;
+        }
+
+        .content-wrapper.dating-view {
+            padding-top: 0;
+            padding-bottom: 0;
         }
         
         /* Уведомление о мэтче */
@@ -4598,12 +4587,10 @@
                     <div class="card" id="chat-profile-card" style="height: calc(100vh - 280px);">
                         <div class="card-photo" style="background-image: url('${photoUrl}');">
                             <div class="photo-overlay"></div>
-                            <div class="card-top-info">
-                                ${user.zodiac} • ${user.city.split(',')[0]}
-                            </div>
                             <div class="card-bottom-info">
                                 <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
                                 <div class="card-metrics">
+                                    <span>${user.zodiac} • ${user.city.split(',')[0]}</span>
                                     <span>📐 ${escapeHtml(user.height)} см</span>
                                     <span>📏 ${escapeHtml(user.distance)}</span>
                                 </div>
@@ -5365,7 +5352,7 @@
         function showMainScreen(user) {
             document.getElementById('app').innerHTML = `
                 <div style="color: #c0c8ff; text-align: center; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden;">
-                    <div class="nav-tabs">
+                    <div class="nav-tabs ${currentTab === 'dating' ? 'dating-tabs' : ''}">
                         <button class="nav-tab ${currentTab === 'dating' ? 'active' : ''}" onclick="switchTab('dating')">
                             Знакомства
                         </button>
@@ -5383,7 +5370,7 @@
                         </button>
                     </div>
                     
-                    <div class="content-wrapper" id="content-container">
+                    <div class="content-wrapper ${currentTab === 'dating' ? 'dating-view' : ''}" id="content-container">
                         <!-- Контент будет здесь -->
                     </div>
                 </div>
@@ -5640,12 +5627,10 @@
                     <div class="card" id="current-card">
                         <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
                             <div class="photo-overlay"></div>
-                            <div class="card-top-info">
-                                ${currentCard.zodiac} • ${currentCard.city.split(',')[0]}
-                            </div>
                             <div class="card-bottom-info">
                                 <h2>${escapeHtml(currentCard.name)} <span class="age">${escapeHtml(currentCard.age)}</span></h2>
                                 <div class="card-metrics">
+                                    <span>${currentCard.zodiac} • ${currentCard.city.split(',')[0]}</span>
                                     <span>📐 ${escapeHtml(currentCard.height)} см</span>
                                     <span>📏 ${escapeHtml(currentCard.distance)}</span>
                                 </div>
@@ -5933,12 +5918,10 @@
                     <div class="card" id="user-card-${userId}">
                         <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
                             <div class="photo-overlay"></div>
-                            <div class="card-top-info">
-                                ${user.zodiac} • ${user.city.split(',')[0]}
-                            </div>
                             <div class="card-bottom-info">
                                 <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
                                 <div class="card-metrics">
+                                    <span>${user.zodiac} • ${user.city.split(',')[0]}</span>
                                     <span>📐 ${escapeHtml(user.height)} см</span>
                                     <span>📏 ${escapeHtml(user.distance)}</span>
                                 </div>

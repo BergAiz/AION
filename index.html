@@ -1044,6 +1044,15 @@
     max-height: none;
 }
 
+.dating-card-stack .card {
+    flex: 1;
+}
+
+.dating-card-stack .card-photo {
+    flex: 1;
+    min-height: 0;
+}
+
 /* Карточка скрывается, когда открыта доп.инфо */
 .card.is-hidden {
     opacity: 0;
@@ -2181,6 +2190,7 @@
             overflow: hidden;
             height: 100%;
             padding: 0;
+            align-items: stretch;
         }
         
         /* Уведомление о мэтче */

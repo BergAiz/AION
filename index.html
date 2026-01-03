@@ -186,7 +186,13 @@
             animation: liquidPulse 10s ease-in-out infinite;
         }
         
-        /* Контейнер приложения */
+        
+        :root {
+            /* iOS-safe viewport helpers */
+            --app-vh: 100vh;
+            --tabs-h: 0px;
+        }
+/* Контейнер приложения */
         #app {
             position: relative;
             z-index: 3;
@@ -2184,11 +2190,13 @@
         }
 
         .content-wrapper.dating-view {
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
             padding: 0;
-            align-items: stretch;
+            padding-top: 0;
+            padding-bottom: 0;
+            /* make the dating area fill the screen below tabs on iOS */
+            flex: 1;
+            height: calc(var(--app-vh) - var(--tabs-h));
+            overflow: hidden;
         }
         
         /* Уведомление о мэтче */
@@ -5370,7 +5378,27 @@
         }
         
         // ГЛАВНЫЙ ЭКРАН
-        function showMainScreen(user) {
+        
+        // iOS-safe viewport sizing: keeps the "Знакомства" card visible and full-height under the tabs
+        function updateViewportVars() {
+            try {
+                document.documentElement.style.setProperty('--app-vh', window.innerHeight + 'px');
+
+                const tabs = document.querySelector('.nav-tabs');
+                if (tabs) {
+                    const cs = window.getComputedStyle(tabs);
+                    const mt = parseFloat(cs.marginTop) || 0;
+                    const mb = parseFloat(cs.marginBottom) || 0;
+                    const h = tabs.getBoundingClientRect().height + mt + mb;
+                    document.documentElement.style.setProperty('--tabs-h', h + 'px');
+                }
+            } catch (e) {}
+        }
+
+        window.addEventListener('resize', () => updateViewportVars());
+        window.addEventListener('orientationchange', () => setTimeout(updateViewportVars, 250));
+
+function showMainScreen(user) {
             const appRoot = document.getElementById('app');
             appRoot.classList.toggle('dating-app', currentTab === 'dating');
             document.getElementById('app').innerHTML = `
@@ -5398,6 +5426,8 @@
                     </div>
                 </div>
             `;
+
+            updateViewportVars();
             
             if (currentTab === 'dating') {
                 showCurrentCard();

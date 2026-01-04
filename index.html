@@ -885,7 +885,70 @@
             z-index: 1;
         }
 
-        /* Dating view: показываем фото без сильного приближения (полноценное кадрирование) */
+        
+
+        /* Swipe glow feedback */
+        .card {
+            position: relative;
+        }
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.12s ease, box-shadow 0.12s ease;
+        }
+        .card.drag-like::after {
+            opacity: 1;
+            box-shadow: 0 0 0 2px rgba(120, 255, 150, 0.35), 0 18px 45px rgba(120, 255, 150, 0.18);
+        }
+        .card.drag-dislike::after {
+            opacity: 1;
+            box-shadow: 0 0 0 2px rgba(255, 120, 120, 0.35), 0 18px 45px rgba(255, 120, 120, 0.18);
+        }
+        .card.drag-like .card-photo {
+            box-shadow: inset 16px 0 40px rgba(120, 255, 150, 0.18);
+        }
+        .card.drag-dislike .card-photo {
+            box-shadow: inset -16px 0 40px rgba(255, 120, 120, 0.18);
+        }
+
+        /* Small swipe hints (fade away on first touch) */
+        .swipe-hints {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 5;
+            pointer-events: none;
+            opacity: 0.85;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .swipe-hints.hidden {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+        .swipe-hints span {
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 12px;
+            background: rgba(10, 10, 25, 0.55);
+            border: 1px solid rgba(64, 128, 255, 0.18);
+            color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+        .swipe-hints .hint-like {
+            color: rgba(160, 255, 190, 0.95);
+        }
+        .swipe-hints .hint-dislike {
+            color: rgba(255, 170, 170, 0.95);
+        }
+/* Dating view: показываем фото без сильного приближения (полноценное кадрирование) */
                 /* Dating view: photo fills the card (no black bars), keep natural framing */
         .content-wrapper.dating-view .card-photo {
             background-size: cover !important;
@@ -1048,6 +1111,7 @@
             justify-content: center;
             align-items: stretch;
             margin: 0 auto;
+            margin-top: 8px;
             height: 100%;
             padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0px));
             box-sizing: border-box;
@@ -2202,12 +2266,11 @@
         }
 
                 .content-wrapper.dating-view {
-            flex: 0 0 auto;
-            height: calc(var(--app-vh, 100vh) - var(--nav-tabs-h, 90px));
+            flex: 1;
             min-height: 0;
             overflow: hidden;
-            padding-top: 0;
-            padding-bottom: 0;
+            padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0px));
+            padding-top: 10px;
         }
         
         /* Уведомление о мэтче */
@@ -3246,7 +3309,13 @@
 /* Mobile: keep dating card fully visible under tabs */
 @media (max-width: 768px) {
     .content-wrapper { padding: 0 10px; }
-    .content-wrapper.dating-view { padding: 0 10px; }
+    .content-wrapper.dating-view {
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0px));
+            padding-top: 10px;
+        }
     .card {
         height: calc(100dvh - 170px);
         max-height: none;
@@ -3638,7 +3707,7 @@
             }
             // Fallback: stable portrait-sized placeholder (no black bars with background-size: cover)
             const safeId = encodeURIComponent(String(userId));
-            return `https://i.pravatar.cc/900?u=aion-${safeId}`;
+            return `https://picsum.photos/seed/aion-${safeId}/900/1200`;
         }
 
         
@@ -4666,6 +4735,7 @@
                     <div class="card" id="chat-profile-card" style="height: calc(100vh - 280px);">
                         <div class="card-photo" style="background-image: url('${photoUrl}');">
                             <div class="photo-overlay"></div>
+                            <div class="swipe-hints" id="swipe-hints"><span class="hint-like">← лайк</span><span class="hint-dislike">дизлайк →</span></div>
                             <div class="card-bottom-info">
                                 <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
                                 <div class="card-metrics">
@@ -5505,6 +5575,9 @@ function showMainScreen(user) {
     let startX = 0;
     let startY = 0;
     let dx = 0;
+        // visual feedback
+        card.classList.remove('drag-like', 'drag-dislike');
+        card.style.removeProperty('--swipe-glow');
     let dy = 0;
     let isDragging = false;
     let locked = false;
@@ -5515,6 +5588,9 @@ function showMainScreen(user) {
         locked = false;
         lockAxis = null;
         dx = 0;
+        // visual feedback
+        card.classList.remove('drag-like', 'drag-dislike');
+        card.style.removeProperty('--swipe-glow');
         dy = 0;
     };
 
@@ -5565,6 +5641,19 @@ function showMainScreen(user) {
         dx = t.clientX - startX;
         dy = t.clientY - startY;
 
+        // Glow while dragging (left=like, right=dislike)
+        if (Math.abs(dx) > 8 && lockAxis !== 'y') {
+            if (dx < 0) {
+                card.classList.add('drag-like');
+                card.classList.remove('drag-dislike');
+            } else {
+                card.classList.add('drag-dislike');
+                card.classList.remove('drag-like');
+            }
+        } else {
+            card.classList.remove('drag-like', 'drag-dislike');
+        }
+
         if (!locked) {
             const ax = Math.abs(dx);
             const ay = Math.abs(dy);
@@ -5593,6 +5682,8 @@ function showMainScreen(user) {
             // горизонтальный свайп: двигаем карточку В СТОРОНУ ПАЛЬЦА (без инверсии)
             e.preventDefault();
             isDragging = true;
+        const hints = card.querySelector('.swipe-hints');
+        if (hints) hints.classList.add('hidden');
 
             const rotate = Math.max(-12, Math.min(12, dx / 18));
             card.style.transition = 'none';
@@ -5732,6 +5823,7 @@ function showMainScreen(user) {
                     <div class="card" id="current-card">
                         <div class="card-photo" style="background-image: url('${photoUrl}'); ">
                             <div class="photo-overlay"></div>
+                            <div class="swipe-hints" id="swipe-hints"><span class="hint-like">← лайк</span><span class="hint-dislike">дизлайк →</span></div>
                             <div class="card-bottom-info">
                                 <h2>${escapeHtml(currentCard.name)} <span class="age">${escapeHtml(currentCard.age)}</span></h2>
                                 <div class="card-metrics">
@@ -6024,6 +6116,7 @@ function showMainScreen(user) {
                     <div class="card" id="user-card-${userId}">
                         <div class="card-photo" style="background-image: url('${photoUrl}'); ">
                             <div class="photo-overlay"></div>
+                            <div class="swipe-hints" id="swipe-hints"><span class="hint-like">← лайк</span><span class="hint-dislike">дизлайк →</span></div>
                             <div class="card-bottom-info">
                                 <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
                                 <div class="card-metrics">

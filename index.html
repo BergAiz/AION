@@ -1118,11 +1118,14 @@
         }
 .dating-card-stack .card,
         .dating-card-stack .card-info {
-            width: 100%;
-            max-width: 520px;
-            height: 100%;
-            min-height: 0;
-            max-height: none;
+            /* ВАЖНО: не используем height:100% (на iOS это часто даёт 0px, и карточка "пропадает") */
+            width: calc(100% - 20px);
+            max-width: 340px;
+
+            /* Высота карточки = экран минус вкладки/отступы. Используем svh для iPhone. */
+            height: calc(100svh - 190px);
+            min-height: 460px;
+            max-height: 700px;
         }
 
 .dating-card-stack .card {

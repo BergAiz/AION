@@ -888,9 +888,9 @@
         /* Dating view: показываем фото без сильного приближения (полноценное кадрирование) */
                 /* Dating view: photo fills the card (no black bars), keep natural framing */
         .content-wrapper.dating-view .card-photo {
-            background-size: cover;
+            background-size: cover !important;
             background-repeat: no-repeat;
-            background-position: center 20%;
+            background-position: center !important;
         }
 
         
@@ -922,9 +922,9 @@
             left: 0;
             right: 0;
             text-align: center;
-            padding: 15px 10px calc(15px + env(safe-area-inset-bottom, 0px));
-            z-index: 3;
-            background: rgba(10, 10, 25, 0.60);
+            padding: 14px 10px calc(14px + env(safe-area-inset-bottom, 0px));
+            z-index: 6;
+            background: rgba(10, 10, 25, 0.50);
             backdrop-filter: blur(10px);
             border-top: 1px solid rgba(64, 128, 255, 0.14);
             border-radius: 0 0 20px 20px;
@@ -1041,23 +1041,25 @@
 
         /* STACK: карточка и доп.инфо в одном месте (доп.инфо полностью заменяет карточку) */
 .dating-card-stack {
-    position: relative;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    margin: 0 auto;
-    flex: 1;
-    min-height: 0;
-}
+            position: relative;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0px));
+            box-sizing: border-box;
+        }
 .dating-card-stack .card,
-.dating-card-stack .card-info {
-    width: calc(100% - 30px);
-    max-width: 340px;
-    height: 100%;
-    min-height: 0;
-    max-height: none;
-}
+        .dating-card-stack .card-info {
+            width: 100%;
+            max-width: 520px;
+            height: 100%;
+            min-height: 0;
+            max-height: none;
+        }
 
 .dating-card-stack .card {
     flex: 1;
@@ -2200,12 +2202,12 @@
         }
 
                 .content-wrapper.dating-view {
-            padding: 0;
-            /* Dating tab should occupy the remaining space below tabs */
-            flex: 1;
+            flex: 0 0 auto;
+            height: calc(var(--app-vh, 100vh) - var(--nav-tabs-h, 90px));
             min-height: 0;
             overflow: hidden;
-            align-items: center;
+            padding-top: 0;
+            padding-bottom: 0;
         }
         
         /* Уведомление о мэтче */
@@ -3254,7 +3256,17 @@
         padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
     }
 }
-</style>
+
+        /* --- Mobile height fix for iOS (prevents blank/hidden card) --- */
+        html, body {
+            height: 100%;
+        }
+        :root{
+            --app-vh: 100vh;
+            --nav-tabs-h: 90px;
+        }
+
+    </style>
 </head>
 <body>
     <!-- Жидкие волны -->
@@ -3630,6 +3642,19 @@
         }
 
         
+        
+        function updateLayoutVars() {
+            // iOS address bar safe: use innerHeight for stable layout
+            document.documentElement.style.setProperty('--app-vh', window.innerHeight + 'px');
+            const tabs = document.querySelector('.nav-tabs');
+            if (tabs) {
+                const h = Math.ceil(tabs.getBoundingClientRect().height);
+                document.documentElement.style.setProperty('--nav-tabs-h', h + 'px');
+            }
+        }
+        window.addEventListener('resize', () => requestAnimationFrame(updateLayoutVars));
+        window.addEventListener('orientationchange', () => setTimeout(updateLayoutVars, 200));
+
         // Знаки зодиака
         const zodiacSigns = [
             "Овен", "Телец", "Близнецы", "Рак", "Лев", "Дева",
@@ -5200,7 +5225,9 @@
                         </button>
                     </div>
                 `;
-            }
+            
+            updateLayoutVars();
+}
         }
         
         // ЭКРАН АВТОРИЗАЦИИ

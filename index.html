@@ -886,11 +886,11 @@
         }
 
         /* Dating view: показываем фото без сильного приближения (полноценное кадрирование) */
+                /* Dating view: photo fills the card (no black bars), keep natural framing */
         .content-wrapper.dating-view .card-photo {
-            background-size: contain;
+            background-size: cover;
             background-repeat: no-repeat;
-            background-position: center 25%;
-            background-color: rgba(0, 0, 0, 0.18);
+            background-position: center 20%;
         }
 
         
@@ -2199,14 +2199,13 @@
             z-index: 3;
         }
 
-        .content-wrapper.dating-view {
+                .content-wrapper.dating-view {
             padding: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            /* make the dating area fill the screen below tabs on iOS */
+            /* Dating tab should occupy the remaining space below tabs */
             flex: 1;
-            height: calc(var(--app-vh) - var(--tabs-h));
+            min-height: 0;
             overflow: hidden;
+            align-items: center;
         }
         
         /* Уведомление о мэтче */
@@ -3602,18 +3601,13 @@
         let isCardExpanded = false;
         
         // ФОТОГРАФИИ ДЛЯ ТЕСТОВЫХ ПОЛЬЗОВАТЕЛЕЙ - ИСПОЛЬЗУЕМ ПУБЛИЧНО ДОСТУПНЫЕ ФОТО
-        const userPhotos = {
-            // Тестовые фото (стабильно грузятся даже при слабом интернете)
-            // pravatar.cc — публичные тестовые аватары (подобраны без сильного зума/кропа)
-            'user_1': 'https://i.pravatar.cc/900?img=11',
-            'user_2': 'https://i.pravatar.cc/900?img=16',
-            'user_3': 'https://i.pravatar.cc/900?img=20',
-            'user_4': 'https://i.pravatar.cc/900?img=21',
-            'user_5': 'https://i.pravatar.cc/900?img=24',
-            'user_6': 'https://i.pravatar.cc/900?img=27',
-            'user_7': 'https://i.pravatar.cc/900?img=29',
-            'user_8': 'https://i.pravatar.cc/900?img=31'
-        };
+        const userPhotos = {};
+
+        // Consistent portrait photos (avoid black bars on mobile)
+        function getUserPhoto(userId) {
+            return getUserPhoto(userId) || `https://picsum.photos/seed/aion-${userId}/900/1200`;
+        }
+
         
         // Знаки зодиака
         const zodiacSigns = [
@@ -4615,7 +4609,7 @@
             const user = sampleUsers.find(u => u.id === userId);
             if (!user) return;
             
-            const photoUrl = userPhotos[userId];
+            const photoUrl = getUserPhoto(userId);
             
             const container = document.getElementById('content-container');
             container.innerHTML = `
@@ -5684,7 +5678,7 @@ function showMainScreen(user) {
             }
             
             currentCard = filteredUsers[currentCardIndex];
-            const photoUrl = (userPhotos && userPhotos[currentCard.id]) ? userPhotos[currentCard.id] : `https://i.pravatar.cc/900?u=${currentCard.id}`;
+            const photoUrl = (userPhotos && getUserPhoto(currentCard.id)) ? getUserPhoto(currentCard.id) : `https://picsum.photos/seed/aion-${currentCard.id}/900/1200`;
             container.innerHTML = `
                 <div class="dating-card-stack">
                     <div class="card" id="current-card">
@@ -5943,7 +5937,7 @@ function showMainScreen(user) {
             }
             
             grid.innerHTML = filteredUsers.map(user => {
-                const photoUrl = userPhotos[user.id];
+                const photoUrl = getUserPhoto(user.id);
                 
                 return `
                     <div class="search-grid-card" data-user-id="${user.id}" onclick="openUserCard('${user.id}')">
@@ -5970,7 +5964,7 @@ function showMainScreen(user) {
             const user = filteredUsers.find(u => u.id === userId);
             if (!user) return;
             
-            const photoUrl = userPhotos[userId];
+            const photoUrl = getUserPhoto(userId);
             const isDesktop = window.innerWidth > 1024;
             
             const container = document.getElementById('content-container');

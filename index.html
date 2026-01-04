@@ -883,6 +883,15 @@
             overflow: hidden;
             z-index: 1;
         }
+
+        /* Dating view: показываем фото без сильного приближения (полноценное кадрирование) */
+        .content-wrapper.dating-view .card-photo {
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: rgba(0, 0, 0, 0.18);
+        }
+
         
         .user-photo {
             width: 100%;
@@ -5678,7 +5687,7 @@ function showMainScreen(user) {
             container.innerHTML = `
                 <div class="dating-card-stack">
                     <div class="card" id="current-card">
-                        <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
+                        <div class="card-photo" style="background-image: url('${photoUrl}'); ">
                             <div class="photo-overlay"></div>
                             <div class="card-bottom-info">
                                 <h2>${escapeHtml(currentCard.name)} <span class="age">${escapeHtml(currentCard.age)}</span></h2>
@@ -5969,7 +5978,7 @@ function showMainScreen(user) {
                         ←
                     </button>
                     <div class="card" id="user-card-${userId}">
-                        <div class="card-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
+                        <div class="card-photo" style="background-image: url('${photoUrl}'); ">
                             <div class="photo-overlay"></div>
                             <div class="card-bottom-info">
                                 <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>

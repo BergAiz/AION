@@ -877,7 +877,7 @@
             width: 100%;
             height: 100%;
             background-size: cover;
-            background-position: center 25%;
+            background-position: center;
             display: flex;
             align-items: flex-end;
             justify-content: center;
@@ -2544,7 +2544,7 @@
         .search-grid-photo {
             height: 140px;
             background-size: cover;
-            background-position: center 25%;
+            background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -3239,6 +3239,21 @@
         .dating-card-stack .card-info.expanded { transform: translate(-50%, 0) translateY(0);
             opacity: 1; pointer-events: auto; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
+
+
+/* Mobile: keep dating card fully visible under tabs */
+@media (max-width: 768px) {
+    .content-wrapper { padding: 0 10px; }
+    .content-wrapper.dating-view { padding: 0 10px; }
+    .card {
+        height: calc(100dvh - 170px);
+        max-height: none;
+        min-height: 0;
+    }
+    .card-bottom-info {
+        padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+    }
+}
 </style>
 </head>
 <body>
@@ -3605,7 +3620,13 @@
 
         // Consistent portrait photos (avoid black bars on mobile)
         function getUserPhoto(userId) {
-            return getUserPhoto(userId) || `https://picsum.photos/seed/aion-${userId}/900/1200`;
+            // Prefer explicit mapping if present
+            if (typeof userPhotos !== 'undefined' && userPhotos && userPhotos[userId]) {
+                return userPhotos[userId];
+            }
+            // Fallback: stable portrait-sized placeholder (no black bars with background-size: cover)
+            const safeId = encodeURIComponent(String(userId));
+            return `https://i.pravatar.cc/900?u=aion-${safeId}`;
         }
 
         
@@ -5941,7 +5962,7 @@ function showMainScreen(user) {
                 
                 return `
                     <div class="search-grid-card" data-user-id="${user.id}" onclick="openUserCard('${user.id}')">
-                        <div class="search-grid-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center 25%;">
+                        <div class="search-grid-photo" style="background-image: url('${photoUrl}'); background-size: cover; background-position: center;">
                             ${user.online ? '<div class="search-grid-online"></div>' : ''}
                             <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; text-align: center; background: rgba(10, 10, 25, 0.7); padding: 8px; border-radius: 10px; backdrop-filter: blur(10px);">
                                 <div style="font-size: 16px; color: white; font-weight: 600; margin-bottom: 3px;">${escapeHtml(user.name)} <span style="color: #a0d0ff;">${escapeHtml(user.age)}</span></div>

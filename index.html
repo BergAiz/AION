@@ -4857,11 +4857,6 @@
             const container = document.getElementById('content-container');
             container.innerHTML = `
                 <div class="dating-screen">
-                    <div class="swipe-hints">
-                        <span class="hint-like">← лайк</span>
-                        <span class="hint-more">вверх — подробнее</span>
-                        <span class="hint-dislike">дизлайк →</span>
-                    </div>
                     <div class="chats-list">
                     <h3 style="color: #80c0ff; margin-bottom: 15px; text-align: center; font-size: 18px;">Ваши чаты</h3>
                     ${userChats.length > 0 ? 
@@ -4972,7 +4967,7 @@
                     <div class="card" id="chat-profile-card" style="height: calc(100vh - 280px);">
                         <div class="card-photo" style="background-image: url('${photoUrl}');">
                             <div class="photo-overlay"></div>
-                            <div class="swipe-hints" id="swipe-hints"><span class="hint-like">← лайк</span><span class="hint-dislike">дизлайк →</span></div>
+                            
                             <div class="card-bottom-info">
                                 <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
                                 <div class="card-metrics">
@@ -5776,15 +5771,24 @@ function showMainScreen(user) {
 
                 <button class="nav-tab ${navTab === 'dating' ? 'active' : ''}" onclick="switchTab('dating')" aria-label="Знакомства">
                     <span class="nav-icon nav-icon-dating">
-                        <svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true">
-                            <g fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
-                                <path d="M18 18h20a6 6 0 0 1 6 6v24a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6V24a6 6 0 0 1 6-6z"/>
-                                <path d="M10 22l-3 3 3 3"/>
-                                <path d="M54 22l3 3-3 3"/>
-                                <path d="M24 30c0-3 2-5 5-5h6c3 0 5 2 5 5"/>
-                                <path d="M32 38v.1"/>
-                            </g>
-                        </svg>
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- left card (like) -->
+  <g opacity="0.9">
+    <rect x="2.7" y="7.2" width="10.2" height="14.6" rx="2.2" transform="rotate(-12 2.7 7.2)" stroke="currentColor" stroke-width="1.6"/>
+    <path d="M3.2 13.8c-1.3.4-1.9 1.4-1.9 2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.6"/>
+    <path d="M4.3 11.2c-1.6.6-2.4 1.8-2.6 3.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.35"/>
+  </g>
+  <!-- right card (dislike) -->
+  <g opacity="0.9">
+    <rect x="15.7" y="5.7" width="10.2" height="14.6" rx="2.2" transform="rotate(12 15.7 5.7)" stroke="currentColor" stroke-width="1.6"/>
+    <path d="M24.8 14.0c1.3.4 1.9 1.4 1.9 2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.6"/>
+    <path d="M23.7 11.4c1.6.6 2.4 1.8 2.6 3.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.35"/>
+  </g>
+  <!-- center card -->
+  <rect x="7.2" y="5.2" width="13.6" height="18.6" rx="2.6" stroke="currentColor" stroke-width="1.8"/>
+  <path d="M12.2 11.4c0.2-1.6 1.6-2.8 3.4-2.8 1.9 0 3.4 1.3 3.4 3 0 1.5-1 2.2-2 2.8-0.9 0.5-1.4 0.9-1.4 1.9v0.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="15.6" cy="21.2" r="1.1" fill="currentColor"/>
+</svg>
                     </span>
                     <span class="nav-label">Знакомства</span>
                 </button>
@@ -6078,6 +6082,7 @@ function showCurrentCard() {
         <div class="dating-screen">
             <div class="swipe-hints-top" aria-hidden="true">
                 <span class="hint-like">← лайк</span>
+                <span class="hint-more">↑ вверх — доп. инфо</span>
                 <span class="hint-dislike">дизлайк →</span>
             </div>
 
@@ -6130,7 +6135,7 @@ function showCurrentCard() {
             </div>
 
             <div class="swipe-hints-bottom" aria-hidden="true">
-                <span class="hint-more">↑ доп. инфо</span>
+                <span class="hint-more">↑ вверх — доп. инфо</span>
             </div>
         </div>
     `;
@@ -6404,8 +6409,7 @@ function showSettingsScreen() {
                     <div class="card" id="user-card-${userId}">
                         <div class="card-photo" style="background-image: url('${photoUrl}'); ">
                             <div class="photo-overlay"></div>
-                            <div class="swipe-hints" id="swipe-hints"><span class="hint-like">← лайк</span><span class="hint-dislike">дизлайк →</span></div>
-                            <div class="card-bottom-info">
+<div class="card-bottom-info">
                                 <h2>${escapeHtml(user.name)} <span class="age">${escapeHtml(user.age)}</span></h2>
                                 <div class="card-metrics">
                                     <span>${user.zodiac} • ${user.city.split(',')[0]}</span>
